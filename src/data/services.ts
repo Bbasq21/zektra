@@ -10,13 +10,13 @@ export type Service = {
 
 export const SERVICES: Service[] = [
   {
-    id: 'desarrollo-web',
+    id: 'software-a-la-medida',
     icon: 'code',
-    title: 'Desarrollo web a la medida',
-    summary: 'Sitios y plataformas rápidos, administrables y listos para crecer con tu negocio.',
+    title: 'Software a la medida',
+    summary: 'Desarrollamos software a la medida de tus necesidades: aplicaciones, plataformas, sistemas internos y sitios.',
     description:
-      'Construimos desde cero o sobre lo que ya tienes. Código limpio, componentes reutilizables y un panel que tu equipo puede usar sin depender de nosotros para cada cambio.',
-    deliverables: ['Sitios corporativos y landing pages', 'Plataformas y aplicaciones web', 'Integraciones con APIs y servicios externos', 'Paneles administrables'],
+      'No adaptamos tu negocio a una herramienta genérica: construimos la herramienta que tu negocio necesita. Analizamos tus procesos, diseñamos la solución y la desarrollamos desde cero o sobre lo que ya tienes, con código limpio, escalable y fácil de mantener.',
+    deliverables: ['Aplicaciones y plataformas web', 'Sistemas internos y paneles de gestión', 'Automatización de procesos', 'Integraciones con APIs y servicios externos', 'Sitios corporativos y landing pages'],
     stack: ['Astro', 'React', 'TypeScript', '.NET', 'PHP'],
   },
   {
