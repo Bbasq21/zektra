@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Process from '../components/Process.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SERVICES } from '../data/services';
+---
+<BaseLayout
+  title="Servicios"
+  description="Desarrollo web a la medida, diseño UX/UI, SEO técnico, experiencias interactivas, CMS administrables y despliegue. Servicios de Zektra en Medellín, Colombia."
+>
+  <Hero
+    scene="network"
+    eyebrow="Servicios"
+    title="Todo lo que tu producto digital necesita, <strong>conectado</strong>"
+    lead="Seis capacidades que trabajan juntas: de la estrategia y el diseño al código, el posicionamiento y el acompañamiento después del lanzamiento."
+  >
+    <Button href="#desarrollo-web" size="lg" arrow>Ver servicios</Button>
+    <Button href="/contacto/" variant="ghost" size="lg">Cotizar un proyecto</Button>
+  </Hero>
+
+  <section class="section">
+    <div class="container">
+      <nav class="service-index" aria-label="Servicios" data-stagger>
+        {SERVICES.map((s, i) => (
+          <a class="service-index__link" href={`#${s.id}`}>
+            <span class="service-index__number">{String(i + 1).padStart(2, '0')}</span>
+            <span class="service-index__label">{s.title}</span>
+          </a>
+        ))}
+      </nav>
+
+      <div class="service-list">
+        {SERVICES.map((s, i) => (
+          <article class="service-detail" id={s.id}>
+            <div class="service-detail__aside" data-reveal>
+              <span class="service-detail__number">{String(i + 1).padStart(2, '0')}</span>
+              <span class="service-detail__icon"><Icon name={s.icon} size={28} /></span>
+            </div>
+            <div class="service-detail__main">
+              <h2 class="service-detail__title" data-split>{s.title}</h2>
+              <p class="service-detail__summary" data-reveal>{s.summary}</p>
+              <p class="service-detail__text" data-reveal>{s.description}</p>
+            </div>
+            <div class="service-detail__meta" data-reveal>
+              <h3 class="service-detail__label">Qué incluye</h3>
+              <ul class="service-detail__list" role="list">
+                {s.deliverables.map((d) => <li class="service-detail__item">{d}</li>)}
+              </ul>
+              <h3 class="service-detail__label">Herramientas</h3>
+              <ul class="service-detail__tags" role="list">
+                {s.stack.map((t) => <li class="tag tag--outline">{t}</li>)}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container services-process">
+      <SectionHead eyebrow="Cómo trabajamos" title="Un proceso claro, sin sorpresas" lead="Sabes en qué etapa está tu proyecto, qué sigue y qué necesitamos de ti." />
+      <Process />
+    </div>
+  </section>
+
+  <CtaBand title="¿No sabes por dónde empezar?" text="Cuéntanos el problema, no la solución. Te proponemos el camino y el alcance." label="Hablemos de tu proyecto" />
+</BaseLayout>
+
+<style>
+  .service-index {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-9);
+  }
+  .service-index__link {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+  }
+  .service-index__link:hover { background: var(--surface-2); color: var(--accent); }
+  .service-index__number { font-size: var(--fs-caption); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .service-list { display: flex; flex-direction: column; }
+  .service-detail {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 6fr) minmax(0, 4fr);
+    gap: var(--space-7);
+    padding-block: var(--space-8);
+    border-top: 1px solid var(--line);
+    scroll-margin-top: calc(var(--header-h) + var(--space-5));
+  }
+  .service-detail:last-child { border-bottom: 1px solid var(--line); }
+  .service-detail__aside { display: flex; flex-direction: column; gap: var(--space-4); }
+  .service-detail__number { font-size: var(--fs-h1); font-weight: 600; line-height: 1; letter-spacing: -0.03em; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .service-detail__icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--surface-2); color: var(--accent); }
+  .service-detail__main { display: flex; flex-direction: column; gap: var(--space-4); }
+  .service-detail__title { font-size: var(--fs-h2); }
+  .service-detail__summary { font-size: var(--fs-lead); line-height: 1.5; color: var(--ink); }
+  .service-detail__text { color: var(--ink-2); max-width: 60ch; }
+  .service-detail__meta { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); align-self: start; }
+  .service-detail__label { font-size: var(--fs-caption); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .service-detail__label:not(:first-child) { margin-top: var(--space-3); }
+  .service-detail__list { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; padding: 0; }
+  .service-detail__item { position: relative; padding-left: var(--space-5); font-size: var(--fs-body-s); color: var(--ink-2); }
+  .service-detail__item::before { content: ''; position: absolute; left: 0; top: 0.72em; width: 12px; height: 2px; border-radius: 2px; background: var(--gradient-oficial); }
+  .service-detail__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; }
+
+  .services-process { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
+
+  @media (max-width: 1024px) {
+    .service-detail { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+    .service-detail__aside { flex-direction: row; align-items: center; }
+    .services-process { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .service-index { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

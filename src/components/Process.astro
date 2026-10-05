@@ -1,0 +1,56 @@
+---
+const steps = [
+  { title: 'Estrategia', text: 'Entendemos tu negocio, a tus usuarios y qué tiene que lograr el producto. Salimos con un alcance claro y priorizado.' },
+  { title: 'Diseño', text: 'Flujos, arquitectura y prototipo de alta fidelidad. Lo validamos contigo, y con usuarios reales cuando hace falta, antes de construir.' },
+  { title: 'Desarrollo', text: 'Código limpio, administrable y medido desde el primer despliegue. Ves avances en un entorno de pruebas durante todo el proceso.' },
+  { title: 'Evolución', text: 'Lanzamos y nos quedamos: medimos, corregimos y mejoramos. Un producto digital nunca está terminado.' },
+];
+---
+<div class="process" data-progress>
+  <div class="process__rail" aria-hidden="true"><span class="process__bar" data-progress-bar></span></div>
+  <ol class="process__list" role="list">
+    {steps.map((s, i) => (
+      <li class="process__step" data-progress-step>
+        <span class="process__number">{String(i + 1).padStart(2, '0')}</span>
+        <div class="process__body">
+          <h3 class="process__title">{s.title}</h3>
+          <p class="process__text">{s.text}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .process { position: relative; padding-left: var(--space-7); }
+  .process__rail { position: absolute; left: 11px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--line); overflow: hidden; }
+  .process__bar { position: absolute; inset: 0; background: linear-gradient(180deg, #1E02FB 0%, #6902FC 22%, #FB1195 45%, #FD432B 62%, #FEB616 80%, #89FACE 100%); transform-origin: top; }
+  .process__list { display: flex; flex-direction: column; gap: var(--space-8); margin: 0; padding: 0; }
+  .process__step { position: relative; display: grid; grid-template-columns: auto 1fr; gap: var(--space-5); align-items: baseline; }
+  .process__step::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--space-7) + 5px);
+    top: 0.85em;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--line-strong);
+    transition: border-color var(--dur) ease, background-color var(--dur) ease, box-shadow var(--dur) ease;
+  }
+  .process__step:global(.is-active)::before { border-color: var(--menta); background: var(--menta); box-shadow: 0 0 0 6px rgba(137, 250, 206, 0.15); }
+  .process__number {
+    font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--line-strong);
+    font-variant-numeric: tabular-nums;
+    transition: color var(--dur) ease;
+  }
+  .process__step:global(.is-active) .process__number { color: var(--accent); }
+  .process__title { font-size: var(--fs-h3); letter-spacing: -0.01em; }
+  .process__text { margin-top: var(--space-2); max-width: 52ch; color: var(--ink-2); }
+  :global(.js) .process__step:not(:global(.is-active)) .process__body { opacity: 0.55; }
+  .process__body { transition: opacity var(--dur) ease; }
+</style>

@@ -1,0 +1,104 @@
+/* ==========================================================================
+   Zektra — tokens
+   Fuente: Design System Zektra (Manual de Identidad Visual 2026).
+   El sitio usa solo el tema Noche.
+   ========================================================================== */
+
+@font-face { font-family: 'Google Sans'; src: url('/fonts/GoogleSans-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Google Sans'; src: url('/fonts/GoogleSans-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Google Sans'; src: url('/fonts/GoogleSans-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Google Sans'; src: url('/fonts/GoogleSans-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Google Sans'; src: url('/fonts/GoogleSans-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Google Sans'; src: url('/fonts/GoogleSans-BoldItalic.woff2') format('woff2'); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Technovier'; src: url('/fonts/Technovier-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Technovier'; src: url('/fonts/Technovier-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+
+:root {
+  /* Marca */
+  --azul-noche: #020315;
+  --indigo: #1E02FB;
+  --violeta: #6902FC;
+  --magenta: #FB1195;
+  --coral: #FD432B;
+  --ambar: #FEB616;
+  --menta: #89FACE;
+  --blanco: #FFFFFF;
+
+  /* Semánticos — tema Noche */
+  --bg: #020315;
+  --surface: #0A0C24;
+  --surface-2: #12153A;
+  --surface-3: #1C2050;
+  --line: #272B57;
+  --line-strong: #666BA0;
+  --ink: #F3F4FA;
+  --ink-2: #BCBFDA;
+  --muted: #8E92B8;
+  --accent: #89FACE;
+  --accent-hot: #FB1195;
+  --action: #6902FC;
+  --action-hover: #7B22FF;
+  --on-action: #FFFFFF;
+  --brand-fill: #89FACE;
+  --on-brand-fill: #020315;
+  --focus: #89FACE;
+  --success: #89FACE;
+  --warning: #FEB616;
+  --danger: #FF7A63;
+  --info: #8C86FF;
+  --overlay: rgba(2, 3, 21, 0.72);
+
+  /* Gradientes */
+  --gradient-oficial: linear-gradient(90deg, #1E02FB 0%, #6902FC 22%, #FB1195 45%, #FD432B 62%, #FEB616 80%, #89FACE 100%);
+  --gradient-aurora: radial-gradient(60% 80% at 85% 20%, #FB1195 0%, rgba(105, 2, 252, 0.85) 35%, rgba(2, 3, 21, 0) 70%);
+  --gradient-calido: radial-gradient(70% 140% at 100% 100%, #FD432B 0%, rgba(251, 17, 149, 0.8) 30%, rgba(105, 2, 252, 0.55) 55%, rgba(2, 3, 21, 0) 80%);
+
+  /* Tipografía */
+  --font-sans: 'Google Sans', 'Product Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Technovier', 'Google Sans', system-ui, sans-serif;
+
+  --fs-display-xl: clamp(2.75rem, 1.2rem + 5.4vw, 4.5rem);   /* 44 → 72 */
+  --fs-display-l: clamp(2.5rem, 1.6rem + 3.2vw, 3.5rem);     /* 40 → 56 */
+  --fs-h1: clamp(2.25rem, 1.7rem + 2vw, 2.75rem);            /* 36 → 44 */
+  --fs-h2: clamp(1.75rem, 1.4rem + 1.3vw, 2.125rem);         /* 28 → 34 */
+  --fs-h3: 1.5rem;     /* 24 */
+  --fs-h4: 1.1875rem;  /* 19 */
+  --fs-lead: clamp(1.125rem, 1rem + 0.4vw, 1.25rem);         /* 18 → 20 */
+  --fs-body: 1.0625rem; /* 17 */
+  --fs-body-s: 0.9375rem; /* 15 */
+  --fs-caption: 0.8125rem; /* 13 */
+
+  /* Espaciado */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --section-y: clamp(var(--space-8), 8vw, var(--space-9));
+  --gutter: clamp(var(--space-4), 4vw, var(--space-7));
+  --container: 1200px;
+
+  /* Radios */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  /* Sombras */
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 32px rgba(2, 3, 21, 0.35);
+  --glow-action: 0 8px 32px rgba(105, 2, 252, 0.45);
+  --glow-menta: 0 0 0 1px rgba(137, 250, 206, 0.35), 0 12px 40px rgba(137, 250, 206, 0.18);
+
+  /* Movimiento */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 0.18s;
+  --dur: 0.3s;
+
+  --header-h: 72px;
+}

@@ -1,0 +1,220 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import { SITE } from '../data/site';
+import { SERVICES } from '../data/services';
+---
+<BaseLayout title="Contacto" description="Cuéntanos tu idea. Zektra diseña y desarrolla soluciones digitales desde Medellín, Colombia.">
+  <Hero
+    eyebrow="Contacto"
+    title="Cuéntanos tu idea. <strong>Hagámosla real.</strong>"
+    lead="Escríbenos qué quieres construir, para quién y para cuándo. Te respondemos con los siguientes pasos."
+  />
+
+  <section class="section contact">
+    <div class="container contact__grid">
+      <form class="form" action="/api/contacto" method="post" novalidate data-contact-form data-reveal>
+        <div class="form__row">
+          <div class="field">
+            <label class="field__label" for="nombre">Nombre</label>
+            <input class="field__control" id="nombre" name="nombre" type="text" autocomplete="name" required placeholder="¿Cómo te llamas?" />
+            <p class="field__error" id="nombre-error" hidden></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="correo">Correo</label>
+            <input class="field__control" id="correo" name="correo" type="email" autocomplete="email" required placeholder="nombre@empresa.co" />
+            <p class="field__error" id="correo-error" hidden></p>
+          </div>
+        </div>
+
+        <div class="form__row">
+          <div class="field">
+            <label class="field__label" for="empresa">Empresa <span class="field__optional">(opcional)</span></label>
+            <input class="field__control" id="empresa" name="empresa" type="text" autocomplete="organization" placeholder="¿Dónde trabajas?" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="servicio">¿Qué necesitas?</label>
+            <select class="field__control field__control--select" id="servicio" name="servicio">
+              <option value="">Elige una opción</option>
+              {SERVICES.map((s) => <option value={s.title}>{s.title}</option>)}
+              <option value="Otro">Otra cosa / no estoy seguro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="mensaje">Tu idea</label>
+          <textarea class="field__control field__control--textarea" id="mensaje" name="mensaje" required placeholder="Qué quieres construir, para quién y para cuándo." rows="6"></textarea>
+          <p class="field__help">Mientras más contexto, mejor propuesta.</p>
+          <p class="field__error" id="mensaje-error" hidden></p>
+        </div>
+
+        <div class="form__honeypot" aria-hidden="true">
+          <label for="sitio">No llenes este campo</label>
+          <input id="sitio" name="sitio" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="form__footer">
+          <Button type="submit" size="lg" arrow data-submit>Enviar mensaje</Button>
+          <p class="form__status" role="status" aria-live="polite" data-status></p>
+        </div>
+      </form>
+
+      <aside class="contact__aside" data-reveal>
+        <div class="contact__card">
+          <h2 class="contact__title">También puedes escribirnos directo</h2>
+          <ul class="contact__list" role="list">
+            <li class="contact__item">
+              <span class="contact__icon"><Icon name="mail" size={20} /></span>
+              <a class="contact__link" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+            </li>
+            <li class="contact__item">
+              <span class="contact__icon"><Icon name="pin" size={20} /></span>
+              <span>{SITE.city}. Trabajamos con clientes en todo el país y en remoto.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="contact__card contact__card--steps">
+          <h2 class="contact__title">Qué pasa después</h2>
+          <ol class="contact__steps" role="list">
+            <li><span>01</span> Leemos tu mensaje y te escribimos para entender mejor la idea.</li>
+            <li><span>02</span> Agendamos una llamada corta para definir objetivos y alcance.</li>
+            <li><span>03</span> Te enviamos una propuesta clara, con etapas y entregables.</li>
+          </ol>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const label = submit.querySelector('.button__label');
+
+    const rules: Record<string, (v: string) => string> = {
+      nombre: (v) => (v.trim().length < 2 ? 'Escribe tu nombre para saber a quién responder.' : ''),
+      correo: (v) =>
+        !v.trim()
+          ? 'Escribe tu correo para poder responderte.'
+          : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())
+            ? ''
+            : 'Revisa el correo: le falta el @ o el dominio. Ejemplo: nombre@empresa.co',
+      mensaje: (v) => (v.trim().length < 10 ? 'Cuéntanos un poco más: con una o dos frases es suficiente.' : ''),
+    };
+
+    const showError = (name: string, msg: string) => {
+      const input = form.elements.namedItem(name) as HTMLInputElement;
+      const error = form.querySelector<HTMLElement>(`#${name}-error`);
+      if (!input || !error) return;
+      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      if (msg) input.setAttribute('aria-describedby', `${name}-error`);
+      else input.removeAttribute('aria-describedby');
+      error.textContent = msg;
+      error.hidden = !msg;
+    };
+
+    Object.keys(rules).forEach((name) => {
+      const input = form.elements.namedItem(name) as HTMLInputElement;
+      input?.addEventListener('blur', () => input.value && showError(name, rules[name](input.value)));
+      input?.addEventListener('input', () => input.getAttribute('aria-invalid') === 'true' && showError(name, rules[name](input.value)));
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      let firstInvalid: HTMLElement | null = null;
+      for (const [name, rule] of Object.entries(rules)) {
+        const msg = rule(String(data.get(name) ?? ''));
+        showError(name, msg);
+        if (msg && !firstInvalid) firstInvalid = form.elements.namedItem(name) as HTMLElement;
+      }
+      if (firstInvalid) {
+        firstInvalid.focus();
+        return;
+      }
+
+      submit.disabled = true;
+      if (label) label.textContent = 'Enviando…';
+      status.className = 'form__status';
+      status.textContent = '';
+
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(json.error || 'No pudimos enviar el mensaje.');
+        form.reset();
+        status.className = 'form__status form__status--success';
+        status.textContent = '¡Gracias! Recibimos tu mensaje y te responderemos pronto.';
+      } catch (err) {
+        status.className = 'form__status form__status--error';
+        status.textContent = `${(err as Error).message} Escríbenos directo a brandon@zektra.co.`;
+      } finally {
+        submit.disabled = false;
+        if (label) label.textContent = 'Enviar mensaje';
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact { padding-top: var(--space-7); }
+  .contact__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--space-8); align-items: start; }
+
+  .form { display: flex; flex-direction: column; gap: var(--space-5); }
+  .form__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+  .form__honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .form__footer { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5); margin-top: var(--space-2); }
+  .form__status { font-size: var(--fs-body-s); color: var(--ink-2); }
+  .form__status--success { color: var(--success); }
+  .form__status--error { color: var(--danger); }
+
+  .field { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+  .field__label { font-size: var(--fs-body-s); font-weight: 500; }
+  .field__optional { color: var(--muted); font-weight: 400; }
+  .field__control {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+  }
+  .field__control::placeholder { color: var(--muted); }
+  .field__control:hover { border-color: var(--ink-2); }
+  .field__control:focus { outline: 2px solid var(--focus); outline-offset: 1px; border-color: var(--focus); }
+  .field__control[aria-invalid='true'] { border-color: var(--danger); }
+  .field__control--textarea { min-height: 160px; resize: vertical; }
+  .field__control--select {
+    appearance: none;
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2389FACE' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+  .field__control--select option { background: var(--surface-2); color: var(--ink); }
+  .field__help { font-size: var(--fs-caption); color: var(--muted); }
+  .field__error { font-size: var(--fs-caption); color: var(--danger); }
+
+  .contact__aside { display: flex; flex-direction: column; gap: var(--space-5); }
+  .contact__card { padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+  .contact__title { margin-bottom: var(--space-4); font-size: var(--fs-h4); }
+  .contact__list { display: flex; flex-direction: column; gap: var(--space-4); margin: 0; padding: 0; }
+  .contact__item { display: flex; gap: var(--space-3); align-items: flex-start; font-size: var(--fs-body-s); color: var(--ink-2); }
+  .contact__icon { display: grid; place-items: center; flex: 0 0 36px; height: 36px; border-radius: var(--radius-xs); background: var(--surface-2); color: var(--accent); }
+  .contact__link { align-self: center; color: var(--accent); font-weight: 500; text-decoration: none; overflow-wrap: anywhere; }
+  .contact__link:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .contact__steps { display: flex; flex-direction: column; gap: var(--space-4); margin: 0; padding: 0; font-size: var(--fs-body-s); color: var(--ink-2); }
+  .contact__steps li { display: grid; grid-template-columns: auto 1fr; gap: var(--space-3); }
+  .contact__steps span { font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 1024px) { .contact__grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 720px) { .form__row { grid-template-columns: minmax(0, 1fr); } }
+</style>

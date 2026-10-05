@@ -1,0 +1,100 @@
+---
+type Scene = 'flow' | 'network' | 'monogram' | 'none';
+interface Props { eyebrow?: string; title: string; lead?: string; scene?: Scene; size?: 'full' | 'page' }
+const { eyebrow, title, lead, scene = 'none', size = 'page' } = Astro.props;
+---
+<section class:list={['hero', `hero--${size}`, `hero--scene-${scene}`]} data-hero>
+  <div class="hero__backdrop" aria-hidden="true"></div>
+  {scene !== 'none' && <div class="hero__scene" data-scene={scene} aria-hidden="true"></div>}
+  <div class="hero__veil" aria-hidden="true"></div>
+
+  <div class="hero__inner container">
+    <div class="hero__content">
+      {eyebrow && <span class="eyebrow hero__eyebrow" data-hero-item>{eyebrow}</span>}
+      <h1 class="hero__title" data-split data-split-immediate set:html={title} />
+      {lead && <p class="hero__lead" data-hero-item>{lead}</p>}
+      {Astro.slots.has('default') && <div class="hero__actions" data-hero-item><slot /></div>}
+    </div>
+  </div>
+
+  {size === 'full' && (
+    <div class="hero__scroll" aria-hidden="true" data-hero-item>
+      <span class="hero__scroll-line"></span>
+      <span class="hero__scroll-label">Desliza</span>
+    </div>
+  )}
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background: var(--azul-noche);
+  }
+  .hero--full { min-height: 100svh; padding-block: calc(var(--header-h) + var(--space-8)) var(--space-9); }
+  .hero--page { min-height: min(78svh, 760px); padding-block: calc(var(--header-h) + var(--space-9)) var(--space-8); }
+
+  .hero__backdrop {
+    position: absolute;
+    inset: -10% -10% -10% 25%;
+    z-index: -3;
+    background: var(--gradient-aurora);
+    filter: blur(30px);
+    opacity: 0.55;
+  }
+  .hero--scene-none .hero__backdrop { opacity: 0.9; }
+  .hero--page.hero--scene-none { min-height: 0; padding-bottom: var(--space-7); }
+
+  .hero__scene { position: absolute; inset: 0; z-index: -2; }
+  .hero__scene :global(canvas) { width: 100% !important; height: 100% !important; }
+
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(90deg, rgba(2, 3, 21, 0.85) 0%, rgba(2, 3, 21, 0.45) 45%, rgba(2, 3, 21, 0) 70%),
+      linear-gradient(0deg, var(--azul-noche) 0%, rgba(2, 3, 21, 0) 22%);
+    pointer-events: none;
+  }
+
+  .hero__content { display: flex; flex-direction: column; gap: var(--space-5); max-width: 780px; }
+  .hero__title { font-size: var(--fs-display-xl); line-height: 1.04; letter-spacing: -0.03em; color: #F3F4FA; }
+  .hero--page .hero__title { font-size: var(--fs-display-l); line-height: 1.06; }
+  .hero__title :global(em) { font-style: normal; color: var(--accent-hot); }
+  .hero__title :global(strong) { font-style: italic; font-weight: 700; color: var(--accent); }
+  .hero__lead { max-width: 56ch; font-size: var(--fs-lead); line-height: 1.55; color: var(--ink-2); }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-2); }
+
+  .hero__scroll {
+    position: absolute;
+    left: var(--gutter);
+    bottom: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--fs-caption);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .hero__scroll-line { position: relative; width: 48px; height: 1px; overflow: hidden; background: var(--line-strong); }
+  .hero__scroll-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--menta);
+    animation: scroll-hint 2.2s var(--ease-out) infinite;
+  }
+  @keyframes scroll-hint { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
+
+  @media (max-width: 720px) {
+    .hero--scene-monogram .hero__content { padding-top: 26svh; }
+    .hero--scene-monogram .hero__veil { background: linear-gradient(0deg, rgba(2, 3, 21, 0.95) 0%, rgba(2, 3, 21, 0.7) 55%, rgba(2, 3, 21, 0) 80%); }
+    .hero__veil { background: linear-gradient(0deg, rgba(2, 3, 21, 0.92) 0%, rgba(2, 3, 21, 0.55) 55%, rgba(2, 3, 21, 0.25) 100%); }
+    .hero__scroll { display: none; }
+  }
+</style>

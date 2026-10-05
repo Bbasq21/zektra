@@ -1,0 +1,18 @@
+---
+interface Props { eyebrow?: string; title: string; lead?: string; align?: 'start' | 'center'; as?: 'h1' | 'h2' }
+const { eyebrow, title, lead, align = 'start', as = 'h2' } = Astro.props;
+const H = as;
+---
+<header class:list={['section-head', align === 'center' && 'section-head--center']}>
+  {eyebrow && <span class="eyebrow section-head__eyebrow" data-reveal>{eyebrow}</span>}
+  <H class="section-head__title" data-split set:html={title} />
+  {lead && <p class="section-head__lead" data-reveal>{lead}</p>}
+</header>
+
+<style>
+  .section-head { display: flex; flex-direction: column; gap: var(--space-4); max-width: 760px; margin-bottom: var(--space-7); }
+  .section-head--center { margin-inline: auto; text-align: center; align-items: center; }
+  .section-head__title { font-size: var(--fs-h2); line-height: 1.18; letter-spacing: -0.015em; }
+  .section-head__lead { font-size: var(--fs-lead); line-height: 1.55; color: var(--ink-2); max-width: 62ch; }
+  .section-head :global(em) { font-style: italic; font-weight: 700; color: var(--accent); }
+</style>

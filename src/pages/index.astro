@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Button from '../components/Button.astro';
+import Marquee from '../components/Marquee.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import Process from '../components/Process.astro';
+import CaseCard from '../components/CaseCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SERVICES } from '../data/services';
+import { CASES } from '../data/cases';
+---
+<BaseLayout>
+  <Hero
+    size="full"
+    scene="flow"
+    eyebrow="Soluciones digitales"
+    title="Transformamos ideas en <em>soluciones digitales</em>"
+    lead="Diseñamos y desarrollamos sitios, plataformas y experiencias digitales que impulsan el crecimiento de tu negocio."
+  >
+    <Button href="/servicios/" size="lg" arrow>Nuestros servicios</Button>
+    <Button href="/casos/" variant="ghost" size="lg">Ver casos de éxito</Button>
+  </Hero>
+
+  <Marquee words={['Estrategia', 'Diseño', 'Desarrollo', 'Innovación', 'Conexión', 'Evolución']} />
+
+  <section class="section manifesto">
+    <div class="container">
+      <span class="eyebrow" data-reveal>Filosofía</span>
+      <p class="manifesto__text" data-scrub-text>
+        Zektra nace para impulsar la transformación de empresas y personas mediante la tecnología. Somos una marca moderna, cercana y dinámica: entendemos tu idea, la diseñamos con cuidado y la convertimos en un producto que funciona, crece y evoluciona contigo.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="servicios">
+    <div class="container">
+      <SectionHead
+        eyebrow="Servicios"
+        title="Tecnología que conecta, <em>ideas que evolucionan</em>"
+        lead="Acompañamos cada proyecto desde la estrategia hasta el producto en producción, y después."
+      />
+      <div class="home-services" data-stagger>
+        {SERVICES.map((s, i) => <ServiceCard service={s} index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container home-process">
+      <div class="home-process__intro">
+        <SectionHead
+          eyebrow="Proceso"
+          title="Cómo convertimos una idea en un producto real"
+          lead="Cuatro etapas, un mismo equipo y comunicación directa de principio a fin."
+        />
+        <Button href="/contacto/" variant="link" arrow>Empecemos por la estrategia</Button>
+      </div>
+      <Process />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="home-cases__head">
+        <SectionHead
+          eyebrow="Casos"
+          title="Proyectos que ya están <em>funcionando</em>"
+          lead="Por confidencialidad no nombramos a nuestros clientes; sí contamos qué hicimos."
+        />
+        <Button href="/casos/" variant="ghost" arrow class="home-cases__all">Ver todos los casos</Button>
+      </div>
+      <div class="home-cases">
+        {CASES.slice(0, 2).map((c, i) => <CaseCard item={c} index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .manifesto .container { display: flex; flex-direction: column; gap: var(--space-5); }
+  .manifesto__text {
+    max-width: 30ch;
+    font-size: clamp(1.75rem, 1.1rem + 2.6vw, 3.25rem);
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+  }
+
+  .home-services { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+
+  .home-process { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
+  .home-process__intro { position: sticky; top: calc(var(--header-h) + var(--space-6)); }
+
+  .home-cases__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--space-7); }
+  .home-cases__head :global(.section-head) { margin-bottom: 0; }
+  .home-cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+
+  @media (max-width: 1024px) {
+    .home-services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .home-process { grid-template-columns: minmax(0, 1fr); gap: var(--space-7); }
+    .home-process__intro { position: static; }
+  }
+  @media (max-width: 720px) {
+    .home-services, .home-cases { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

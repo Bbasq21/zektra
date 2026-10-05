@@ -1,0 +1,147 @@
+---
+import { NAV, SITE } from '../data/site';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<header class="header" data-header>
+  <div class="header__bar container">
+    <a class="header__brand" href="/" aria-label={`${SITE.name} — inicio`}>
+      <img class="header__logo" src="/logos/zektra-horizontal-menta.svg" alt="Zektra — Soluciones Digitales" width="112" height="28" />
+    </a>
+
+    <nav class="header__nav" aria-label="Principal">
+      <ul class="header__list" role="list">
+        {NAV.map((item) => (
+          <li class="header__item">
+            <a class:list={['header__link', isCurrent(item.href) && 'header__link--current']} href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <Button href="/contacto/" size="sm" class="header__cta">Hablemos</Button>
+
+    <button class="header__toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+      <span class="visually-hidden" data-menu-label>Abrir menú</span>
+      <Icon name="menu" size={22} class="header__toggle-icon header__toggle-icon--open" />
+      <Icon name="close" size={22} class="header__toggle-icon header__toggle-icon--close" />
+    </button>
+  </div>
+
+  <div class="menu" id="menu" data-menu hidden>
+    <nav class="menu__nav container" aria-label="Menú móvil">
+      <ul class="menu__list" role="list">
+        {[...NAV, { href: '/contacto/', label: 'Contacto' }].map((item, i) => (
+          <li class="menu__item" data-menu-item>
+            <a class:list={['menu__link', isCurrent(item.href) && 'menu__link--current']} href={item.href}>
+              <span class="menu__index">{String(i + 1).padStart(2, '0')}</span>{item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="menu__footer" data-menu-item>
+        <a class="menu__mail" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        <span class="menu__city">{SITE.city}</span>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    transition: transform var(--dur) var(--ease-out), background-color var(--dur) ease, border-color var(--dur) ease;
+    border-bottom: 1px solid transparent;
+  }
+  .header--scrolled {
+    background: rgba(2, 3, 21, 0.78);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    backdrop-filter: blur(14px) saturate(1.3);
+    border-bottom-color: var(--line);
+  }
+  .header--hidden { transform: translateY(-100%); }
+  .header--open { background: var(--bg); transform: none; }
+
+  .header__bar { display: flex; align-items: center; gap: var(--space-6); height: var(--header-h); }
+  .header__brand { display: block; flex: 0 0 auto; }
+  .header__logo { height: 28px; width: auto; }
+
+  .header__nav { margin-left: auto; }
+  .header__list { display: flex; gap: var(--space-1); margin: 0; }
+  .header__link {
+    position: relative;
+    display: block;
+    padding: var(--space-2) 14px;
+    border-radius: var(--radius-xs);
+    color: var(--ink-2);
+    font-size: var(--fs-body-s);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+  }
+  .header__link:hover { color: var(--ink); background: var(--surface-2); }
+  .header__link--current { color: var(--ink); }
+  .header__link--current::after {
+    content: '';
+    position: absolute;
+    left: 14px; right: 14px; bottom: 2px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--gradient-oficial);
+  }
+
+  .header__toggle {
+    display: none;
+    margin-left: auto;
+    width: 44px; height: 44px;
+    align-items: center; justify-content: center;
+    background: none;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .header__toggle :global(.header__toggle-icon--close) { display: none; }
+  .header--open .header__toggle :global(.header__toggle-icon--open) { display: none; }
+  .header--open .header__toggle :global(.header__toggle-icon--close) { display: block; }
+
+  .menu {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    background: var(--bg);
+    overflow-y: auto;
+  }
+  .menu::before {
+    content: '';
+    position: absolute;
+    inset: auto -20% -30% 20%;
+    height: 70%;
+    background: var(--gradient-aurora);
+    opacity: 0.55;
+    filter: blur(20px);
+    pointer-events: none;
+  }
+  .menu__nav { position: relative; display: flex; flex-direction: column; gap: var(--space-7); padding-block: var(--space-7); min-height: 100%; }
+  .menu__list { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; }
+  .menu__link {
+    display: flex; align-items: baseline; gap: var(--space-4);
+    font-size: clamp(2rem, 9vw, 2.75rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    text-decoration: none;
+  }
+  .menu__link--current { color: var(--accent); }
+  .menu__index { font-size: var(--fs-caption); font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  .menu__footer { margin-top: auto; display: flex; flex-direction: column; gap: var(--space-1); color: var(--ink-2); }
+  .menu__mail { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+  @media (max-width: 860px) {
+    .header__nav, .header :global(.header__cta) { display: none; }
+    .header__toggle { display: inline-flex; }
+  }
+  @media (min-width: 861px) { .menu { display: none !important; } }
+</style>

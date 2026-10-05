@@ -1,0 +1,117 @@
+---
+import type { Case } from '../data/cases';
+interface Props { item: Case; index: number; detailed?: boolean }
+const { item, index, detailed = false } = Astro.props;
+---
+<article class:list={['case-card', `case-card--${item.accent}`, detailed && 'case-card--detailed']} id={item.id} data-reveal>
+  <div class="case-card__visual" aria-hidden="true">
+    <span class="case-card__number">{String(index + 1).padStart(2, '0')}</span>
+    <span class="case-card__orb"></span>
+    <span class="case-card__lines"></span>
+  </div>
+  <div class="case-card__body">
+    <p class="case-card__industry">{item.industry}</p>
+    <h3 class="case-card__title">{item.title}</h3>
+    {detailed ? (
+      <div class="case-card__story">
+        <div class="case-card__block">
+          <h4 class="case-card__label">El reto</h4>
+          <p class="case-card__text">{item.challenge}</p>
+        </div>
+        <div class="case-card__block">
+          <h4 class="case-card__label">Lo que hicimos</h4>
+          <p class="case-card__text">{item.solution}</p>
+        </div>
+        <div class="case-card__block">
+          <h4 class="case-card__label">Entregables</h4>
+          <ul class="case-card__deliverables" role="list">
+            {item.deliverables.map((d) => <li class="case-card__deliverable">{d}</li>)}
+          </ul>
+        </div>
+      </div>
+    ) : (
+      <p class="case-card__text">{item.challenge}</p>
+    )}
+    <ul class="case-card__tags" role="list">
+      {item.tags.map((t) => <li class="tag">{t}</li>)}
+    </ul>
+  </div>
+</article>
+
+<style>
+  .case-card {
+    --case: var(--menta);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    transition: border-color var(--dur) ease, transform var(--dur) var(--ease-out);
+  }
+  .case-card:hover { border-color: var(--line-strong); }
+  .case-card--menta { --case: var(--menta); }
+  .case-card--violeta { --case: var(--violeta); }
+  .case-card--magenta { --case: var(--magenta); }
+  .case-card--coral { --case: var(--coral); }
+  .case-card--ambar { --case: var(--ambar); }
+  .case-card--indigo { --case: var(--indigo); }
+
+  .case-card__visual {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--azul-noche);
+    border-bottom: 1px solid var(--line);
+  }
+  .case-card__orb {
+    position: absolute;
+    inset: 15% -10% -40% 35%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, var(--case), transparent 70%);
+    opacity: 0.75;
+    filter: blur(16px);
+    transition: transform 0.8s var(--ease-out);
+  }
+  .case-card:hover .case-card__orb { transform: translate(-6%, -6%) scale(1.08); }
+  .case-card__lines {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-radial-gradient(circle at 100% 100%, transparent 0 22px, rgba(243, 244, 250, 0.08) 22px 23px);
+  }
+  .case-card__number {
+    position: absolute;
+    left: var(--space-5);
+    bottom: var(--space-3);
+    z-index: 1;
+    font-size: clamp(4rem, 9vw, 6.5rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    opacity: 0.92;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .case-card__body { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
+  .case-card__industry { font-size: var(--fs-caption); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .case-card__title { font-size: var(--fs-h3); line-height: 1.25; letter-spacing: -0.01em; }
+  .case-card__text { font-size: var(--fs-body-s); line-height: 1.6; color: var(--ink-2); }
+  .case-card__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-2) 0 0; padding: 0; list-style: none; }
+
+  .case-card--detailed { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .case-card--detailed .case-card__visual { aspect-ratio: auto; min-height: 320px; border-bottom: 0; border-right: 1px solid var(--line); }
+  .case-card--detailed .case-card__body { padding: var(--space-7); gap: var(--space-4); }
+  .case-card--detailed .case-card__title { font-size: var(--fs-h2); }
+  .case-card__story { display: grid; gap: var(--space-5); margin-top: var(--space-2); }
+  .case-card__label { margin-bottom: var(--space-1); font-size: var(--fs-body-s); font-weight: 600; color: var(--accent); letter-spacing: 0; }
+  .case-card__deliverables { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin: 0; padding: 0; list-style: none; }
+  .case-card__deliverable { position: relative; padding-left: var(--space-4); font-size: var(--fs-body-s); color: var(--ink-2); }
+  .case-card__deliverable::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 6px; height: 6px; border-radius: 50%; background: var(--case); }
+
+  @media (max-width: 860px) {
+    .case-card--detailed { grid-template-columns: minmax(0, 1fr); }
+    .case-card--detailed .case-card__visual { min-height: 200px; border-right: 0; border-bottom: 1px solid var(--line); }
+    .case-card--detailed .case-card__body { padding: var(--space-5); }
+  }
+</style>

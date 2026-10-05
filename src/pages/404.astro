@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Button from '../components/Button.astro';
+---
+<BaseLayout title="Página no encontrada" noindex>
+  <Hero
+    scene="flow"
+    eyebrow="Error 404"
+    title="Esta página se salió <strong>del flujo</strong>"
+    lead="La dirección no existe o cambió de lugar. Volvamos a un camino conocido."
+  >
+    <Button href="/" size="lg" arrow>Ir al inicio</Button>
+    <Button href="/contacto/" variant="ghost" size="lg">Escríbenos</Button>
+  </Hero>
+</BaseLayout>

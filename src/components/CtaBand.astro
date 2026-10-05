@@ -1,0 +1,42 @@
+---
+import Button from './Button.astro';
+interface Props { title?: string; text?: string; label?: string; href?: string }
+const {
+  title = '¿Tienes una idea? Hagámosla real.',
+  text = 'Cuéntanos qué quieres construir y te respondemos con una propuesta clara.',
+  label = 'Agenda una llamada',
+  href = '/contacto/',
+} = Astro.props;
+---
+<section class="section section--tight">
+  <div class="container">
+    <div class="cta-band" data-reveal>
+      <div class="cta-band__content">
+        <h2 class="cta-band__title" data-split>{title}</h2>
+        <p class="cta-band__text">{text}</p>
+      </div>
+      <Button href={href} variant="brand" size="lg" arrow>{label}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    padding: clamp(var(--space-6), 6vw, var(--space-8)) clamp(var(--space-5), 5vw, var(--space-7));
+    border-radius: var(--radius-lg);
+    background: var(--azul-noche);
+    border: 1px solid var(--line);
+  }
+  .cta-band::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--gradient-calido); }
+  .cta-band::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--gradient-oficial); }
+  .cta-band__title { font-size: var(--fs-h1); line-height: 1.12; max-width: 16ch; }
+  .cta-band__text { margin-top: var(--space-3); max-width: 46ch; color: var(--ink-2); }
+</style>

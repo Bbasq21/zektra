@@ -1,0 +1,65 @@
+---
+import Icon from './Icon.astro';
+import type { Service } from '../data/services';
+interface Props { service: Service; index: number }
+const { service, index } = Astro.props;
+---
+<a class="service-card" href={`/servicios/#${service.id}`} data-tilt>
+  <span class="service-card__index">{String(index + 1).padStart(2, '0')}</span>
+  <span class="service-card__icon"><Icon name={service.icon} /></span>
+  <h3 class="service-card__title">{service.title}</h3>
+  <p class="service-card__text">{service.summary}</p>
+  <span class="service-card__more">Ver servicio <Icon name="arrow" size={18} class="service-card__arrow" /></span>
+  <span class="service-card__glow" aria-hidden="true"></span>
+</a>
+
+<style>
+  .service-card {
+    --mx: 50%;
+    --my: 0%;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-height: 100%;
+    padding: var(--space-6);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color var(--dur) ease, box-shadow var(--dur) ease, transform var(--dur) var(--ease-out);
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: var(--gradient-oficial);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .service-card:hover { border-color: var(--line-strong); box-shadow: var(--glow-menta); transform: translateY(-3px); }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .service-card__glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(320px circle at var(--mx) var(--my), rgba(137, 250, 206, 0.09), transparent 60%);
+    opacity: 0;
+    transition: opacity var(--dur) ease;
+  }
+  .service-card:hover .service-card__glow { opacity: 1; }
+
+  .service-card__index { position: absolute; top: var(--space-6); right: var(--space-6); font-size: var(--fs-caption); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .service-card__icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--surface-2); color: var(--accent); }
+  .service-card__title { margin-top: var(--space-2); font-size: var(--fs-h3); line-height: 1.25; letter-spacing: -0.01em; }
+  .service-card__text { font-size: var(--fs-body-s); line-height: 1.55; color: var(--ink-2); }
+  .service-card__more { margin-top: auto; padding-top: var(--space-2); display: inline-flex; align-items: center; gap: var(--space-2); color: var(--accent); font-size: var(--fs-body-s); font-weight: 500; }
+  .service-card :global(.service-card__arrow) { transition: transform var(--dur-fast) var(--ease-out); }
+  .service-card:hover :global(.service-card__arrow) { transform: translateX(3px); }
+</style>

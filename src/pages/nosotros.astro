@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Button from '../components/Button.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+const values = [
+  { word: 'Innovación', color: 'violeta', text: 'Buscamos la mejor forma de resolver, no la más conocida. Probamos, medimos y elegimos con criterio.' },
+  { word: 'Tecnología', color: 'menta', text: 'Usamos herramientas modernas y estables para que tu producto sea rápido, seguro y fácil de mantener.' },
+  { word: 'Confianza', color: 'indigo', text: 'Comunicación directa, alcances claros y entregas que puedes revisar en cada etapa del proyecto.' },
+  { word: 'Evolución', color: 'ambar', text: 'Un producto digital nunca está terminado. Te acompañamos para que crezca al ritmo de tu negocio.' },
+];
+
+const principles = [
+  { title: 'Primero entender', text: 'Antes de diseñar una pantalla entendemos el proceso, a las personas que lo usan y lo que el negocio necesita lograr.' },
+  { title: 'Diseño que se valida', text: 'Los prototipos se prueban antes de convertirse en código. Es la forma más barata de equivocarse.' },
+  { title: 'Hecho para tu equipo', text: 'Entregamos productos que tu equipo puede administrar, con documentación y sin depender de nosotros para cada cambio.' },
+  { title: 'Rendimiento por defecto', text: 'Velocidad, accesibilidad y SEO técnico no son un extra: son parte de cómo construimos.' },
+];
+---
+<BaseLayout
+  title="Nosotros"
+  description="Zektra es una marca de soluciones digitales con base en Medellín, Colombia. Conoce cómo pensamos y cómo trabajamos."
+>
+  <Hero
+    scene="monogram"
+    eyebrow="Nosotros"
+    title="Una marca moderna, cercana y <strong>dinámica</strong>"
+    lead="Zektra nace en Medellín como una marca enfocada en el desarrollo de soluciones digitales que impulsan la transformación de empresas y personas mediante la tecnología."
+  >
+    <Button href="/contacto/" size="lg" arrow>Trabajemos juntos</Button>
+  </Hero>
+
+  <section class="section">
+    <div class="container about-story">
+      <SectionHead eyebrow="Quiénes somos" title="Diseño y desarrollo, <em>en un mismo equipo</em>" />
+      <div class="about-story__body">
+        <p class="text--lead" data-reveal>
+          Zektra es un estudio de soluciones digitales liderado por Brandon Sosa, desarrollador web y diseñador de experiencia en Medellín, Colombia.
+        </p>
+        <p data-reveal>
+          Trabajamos con empresas que necesitan algo más que una página bonita: plataformas con procesos reales, sitios que deben posicionar, migraciones que no pueden perder tráfico y experiencias que tienen que sorprender sin volverse lentas.
+        </p>
+        <p data-reveal>
+          Como diseño y desarrollo viven en el mismo equipo, lo que se aprueba en el prototipo es lo que llega a producción.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container">
+      <SectionHead eyebrow="Valores" title="Lo que nos mueve" lead="Los cuatro valores que representa nuestra marca, y lo que significan en el día a día de un proyecto." />
+      <div class="values" data-stagger>
+        {values.map((v) => (
+          <article class:list={['value', `value--${v.color}`]}>
+            <span class="value__swatch" aria-hidden="true"></span>
+            <h3 class="value__word">{v.word}</h3>
+            <p class="value__text">{v.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead eyebrow="Principios" title="Cómo trabajamos" />
+      <ol class="principles" role="list" data-stagger>
+        {principles.map((p, i) => (
+          <li class="principles__item">
+            <span class="principles__number">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="principles__title">{p.title}</h3>
+            <p class="principles__text">{p.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .about-story { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
+  .about-story__body { display: flex; flex-direction: column; gap: var(--space-5); color: var(--ink-2); max-width: 62ch; }
+  .about-story__body .text--lead { color: var(--ink); }
+
+  .values { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-5); }
+  .value {
+    --swatch: var(--menta);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-6) var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .value--violeta { --swatch: var(--violeta); }
+  .value--menta { --swatch: var(--menta); }
+  .value--indigo { --swatch: var(--indigo); }
+  .value--ambar { --swatch: var(--ambar); }
+  .value__swatch { width: 48px; height: 48px; border-radius: var(--radius-sm) var(--radius-lg) var(--radius-sm) var(--radius-sm); background: var(--swatch); }
+  .value__word { font-family: var(--font-display); font-size: clamp(1.0625rem, 0.85rem + 0.5vw, 1.3rem); font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; overflow-wrap: anywhere; }
+  .value__text { font-size: var(--fs-body-s); line-height: 1.6; color: var(--ink-2); }
+
+  .principles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--space-8); margin: 0; padding: 0; }
+  .principles__item { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-5); padding-block: var(--space-6); border-top: 1px solid var(--line); }
+  .principles__number { grid-row: span 2; font-size: var(--fs-h3); font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .principles__title { font-size: var(--fs-h4); }
+  .principles__text { color: var(--ink-2); font-size: var(--fs-body-s); line-height: 1.6; }
+
+  @media (max-width: 1024px) {
+    .about-story { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+    .values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 720px) {
+    .values, .principles { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
