@@ -8,5 +8,10 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [sitemap({ filter: (page) => !page.includes('/404') })],
   devToolbar: { enabled: false },
+  vite: {
+    optimizeDeps: {
+      include: ['three', 'three/examples/jsm/loaders/SVGLoader.js', 'three/examples/jsm/environments/RoomEnvironment.js', 'gsap', 'gsap/ScrollTrigger', 'lenis'],
+    },
+  },
   build: { inlineStylesheets: 'auto' },
 });

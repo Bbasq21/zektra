@@ -29,25 +29,25 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
       <Icon name="close" size={22} class="header__toggle-icon header__toggle-icon--close" />
     </button>
   </div>
-
-  <div class="menu" id="menu" data-menu hidden>
-    <nav class="menu__nav container" aria-label="Menú móvil">
-      <ul class="menu__list" role="list">
-        {[...NAV, { href: '/contacto/', label: 'Contacto' }].map((item, i) => (
-          <li class="menu__item" data-menu-item>
-            <a class:list={['menu__link', isCurrent(item.href) && 'menu__link--current']} href={item.href}>
-              <span class="menu__index">{String(i + 1).padStart(2, '0')}</span>{item.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <div class="menu__footer" data-menu-item>
-        <a class="menu__mail" href={`mailto:${SITE.email}`}>{SITE.email}</a>
-        <span class="menu__city">{SITE.city}</span>
-      </div>
-    </nav>
-  </div>
 </header>
+
+<div class="menu" id="menu" data-menu hidden>
+  <nav class="menu__nav container" aria-label="Menú móvil">
+    <ul class="menu__list" role="list">
+      {[...NAV, { href: '/contacto/', label: 'Contacto' }].map((item, i) => (
+        <li class="menu__item" data-menu-item>
+          <a class:list={['menu__link', isCurrent(item.href) && 'menu__link--current']} href={item.href}>
+            <span class="menu__index">{String(i + 1).padStart(2, '0')}</span>{item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="menu__footer" data-menu-item>
+      <a class="menu__mail" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      <span class="menu__city">{SITE.city}</span>
+    </div>
+  </nav>
+</div>
 
 <style>
   .header {
@@ -108,9 +108,12 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   .header--open .header__toggle :global(.header__toggle-icon--open) { display: none; }
   .header--open .header__toggle :global(.header__toggle-icon--close) { display: block; }
 
+  /* El menú vive fuera de .header: el backdrop-filter del header crea un
+     contenedor para los elementos fixed y lo dejaría con 0px de alto. */
   .menu {
     position: fixed;
     inset: var(--header-h) 0 0 0;
+    z-index: 99;
     background: var(--bg);
     overflow-y: auto;
   }

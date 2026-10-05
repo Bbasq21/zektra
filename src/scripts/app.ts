@@ -48,7 +48,7 @@ function initHeader() {
   window.addEventListener('scroll', onScroll, { passive: true });
 
   const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
-  const menu = header.querySelector<HTMLElement>('[data-menu]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
   const label = header.querySelector<HTMLElement>('[data-menu-label]');
   if (!toggle || !menu) return;
 
