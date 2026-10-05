@@ -1,0 +1,102 @@
+---
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+
+const ai = [
+  'Explorar más ideas y variantes de diseño en menos tiempo',
+  'Acelerar prototipos, código repetitivo y pruebas',
+  'Analizar contenido, datos y SEO para decidir con evidencia',
+];
+const human = [
+  'Entender tu negocio y decidir qué se construye',
+  'Diseñar la experiencia y cuidar cada detalle de la marca',
+  'Revisar, probar y responder por todo lo que entregamos',
+];
+---
+<section class="section ai-human" aria-labelledby="ai-human-title">
+  <div class="container ai-human__grid">
+    <div class="ai-human__intro">
+      <SectionHead
+        eyebrow="IA + criterio humano"
+        title="Trabajamos con inteligencia artificial, <em>sin perder la calidad humana</em>"
+        lead="La IA es parte de nuestro proceso: nos hace más rápidos y nos deja explorar más. Las decisiones, el diseño y la calidad siguen en manos de personas."
+      />
+      <p class="ai-human__promise" data-reveal>
+        <Icon name="check" size={20} class="ai-human__promise-icon" />
+        Nada llega a tus manos sin pasar por revisión humana.
+      </p>
+    </div>
+
+    <div class="ai-human__pair" data-stagger>
+      <article class="ai-human__card ai-human__card--ai">
+        <span class="ai-human__badge"><Icon name="sparkles" size={20} /></span>
+        <h3 class="ai-human__title">La IA nos ayuda a</h3>
+        <ul class="ai-human__list" role="list">
+          {ai.map((item) => <li class="ai-human__item">{item}</li>)}
+        </ul>
+      </article>
+      <article class="ai-human__card ai-human__card--human">
+        <span class="ai-human__badge"><Icon name="human" size={20} /></span>
+        <h3 class="ai-human__title">Las personas se encargan de</h3>
+        <ul class="ai-human__list" role="list">
+          {human.map((item) => <li class="ai-human__item">{item}</li>)}
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ai-human { overflow: hidden; }
+  .ai-human::before {
+    content: '';
+    position: absolute;
+    inset: 20% -20% -10% 45%;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(105, 2, 252, 0.35), transparent 70%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+  .ai-human__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: center; }
+  .ai-human__intro :global(.section-head) { margin-bottom: var(--space-5); }
+  .ai-human__promise { display: flex; align-items: center; gap: var(--space-3); font-weight: 500; color: var(--ink); }
+  .ai-human__promise :global(.ai-human__promise-icon) { flex: 0 0 auto; padding: 4px; box-sizing: content-box; border-radius: 50%; background: var(--brand-fill); color: var(--on-brand-fill); }
+
+  .ai-human__pair { position: relative; display: grid; gap: var(--space-5); }
+  .ai-human__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+  .ai-human__card--ai { margin-right: var(--space-8); }
+  .ai-human__card--human { margin-left: var(--space-8); border-color: var(--line-strong); }
+  .ai-human__card--human::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: var(--radius-md);
+    right: var(--radius-md);
+    height: 2px;
+    border-radius: 2px;
+    background: var(--gradient-oficial);
+  }
+  .ai-human__badge { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--surface-2); color: var(--accent); }
+  .ai-human__card--ai .ai-human__badge { color: var(--info); }
+  .ai-human__title { font-size: var(--fs-h4); }
+  .ai-human__list { display: flex; flex-direction: column; gap: var(--space-3); margin: 0; padding: 0; }
+  .ai-human__item { position: relative; padding-left: var(--space-5); font-size: var(--fs-body-s); line-height: 1.55; color: var(--ink-2); }
+  .ai-human__item::before { content: ''; position: absolute; left: 0; top: 0.72em; width: 12px; height: 2px; border-radius: 2px; background: var(--line-strong); }
+  .ai-human__card--human .ai-human__item::before { background: var(--accent); }
+
+  @media (max-width: 1024px) {
+    .ai-human__grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+  }
+  @media (max-width: 720px) {
+    .ai-human__card--ai, .ai-human__card--human { margin: 0; }
+  }
+</style>

@@ -3,7 +3,7 @@ export const SITE = {
   tagline: 'Soluciones Digitales',
   promise: 'Transformamos ideas en soluciones digitales',
   description:
-    'Zektra diseña y desarrolla sitios, plataformas y experiencias digitales a la medida desde Medellín, Colombia. Estrategia, diseño UX/UI y desarrollo web.',
+    'Zektra diseña y desarrolla sitios, plataformas y experiencias digitales a la medida desde Medellín, Colombia. Estrategia, diseño UX/UI y desarrollo web, con inteligencia artificial de la mano y calidad humana.',
   url: 'https://zektra.co',
   email: 'brandon@zektra.co',
   city: 'Medellín, Colombia',
