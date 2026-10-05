@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['Orbitron', 'sans-serif'],
-        body: ['Montserrat Alternates', 'sans-serif'],
+        heading: ['Space Grotesk', 'sans-serif'],
+        body: ['DM Sans', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -53,9 +54,10 @@ export default {
         },
         neon: {
           purple: "hsl(var(--neon-purple))",
-          cyan: "hsl(var(--neon-cyan))",
           blue: "hsl(var(--neon-blue))",
           lime: "hsl(var(--electric-lime))",
+          turquoise: "hsl(var(--turquoise))",
+          deep: "hsl(var(--deep-purple))",
         },
       },
       borderRadius: {

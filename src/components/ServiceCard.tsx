@@ -1,28 +1,28 @@
 import { LucideIcon } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface ServiceCardProps {
   icon: LucideIcon;
   title: string;
   description: string;
+  index: number;
 }
 
-const ServiceCard = ({ icon: Icon, title, description }: ServiceCardProps) => {
+const ServiceCard = ({ icon: Icon, title, description, index }: ServiceCardProps) => {
   return (
-    <Card className="group relative overflow-hidden bg-card border-border hover:border-secondary transition-all duration-300 cursor-pointer">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <CardContent className="p-6 relative z-10">
-        <div className="mb-4 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-secondary/20 transition-colors duration-300">
-          <Icon className="w-6 h-6 text-secondary" />
-        </div>
-        <h3 className="text-xl font-heading font-semibold mb-2 text-foreground group-hover:text-secondary transition-colors duration-300">
-          {title}
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          {description}
-        </p>
-      </CardContent>
-    </Card>
+    <div className="group relative p-8 md:p-10 bg-card hover:bg-muted/40 transition-colors duration-300 cursor-pointer">
+      <div className="flex items-center justify-between mb-6">
+        <span className="font-mono text-xs tracking-widest text-secondary">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <Icon className="w-5 h-5 text-muted-foreground group-hover:text-secondary transition-colors duration-300" />
+      </div>
+      <h3 className="text-xl font-heading font-bold mb-3 group-hover:text-secondary transition-colors duration-300">
+        {title}
+      </h3>
+      <p className="text-sm text-muted-foreground leading-relaxed">
+        {description}
+      </p>
+    </div>
   );
 };
 
