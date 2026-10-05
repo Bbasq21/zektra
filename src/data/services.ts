@@ -1,6 +1,6 @@
 export type Service = {
   id: string;
-  icon: 'code' | 'layout' | 'gauge' | 'sparkles' | 'blocks' | 'cloud';
+  icon: 'code' | 'layout' | 'gauge' | 'sparkles' | 'blocks' | 'cloud' | 'zap' | 'palette' | 'trending' | 'pen';
   title: string;
   summary: string;
   description: string;
@@ -30,6 +30,16 @@ export const SERVICES: Service[] = [
     stack: ['Figma', 'Figma Make', 'FigJam'],
   },
   {
+    id: 'automatizaciones',
+    icon: 'zap',
+    title: 'Automatizaciones e IA',
+    summary: 'Procesos que se hacen solos: flujos automáticos, integraciones y chatbots que ahorran tiempo y errores.',
+    description:
+      'Identificamos las tareas repetitivas de tu operación y las automatizamos: conectamos tus herramientas, movemos datos entre sistemas y sumamos asistentes con inteligencia artificial donde de verdad aportan.',
+    deliverables: ['Flujos de trabajo automatizados', 'Integración entre herramientas', 'Chatbots y asistentes con IA', 'Optimización de procesos'],
+    stack: ['APIs', 'Webhooks', 'IA generativa'],
+  },
+  {
     id: 'seo-rendimiento',
     icon: 'gauge',
     title: 'SEO técnico y rendimiento',
@@ -38,6 +48,36 @@ export const SERVICES: Service[] = [
       'Medimos antes de tocar. Levantamos una línea base de SEO y rendimiento, planeamos redirecciones y migramos sin que tu tráfico orgánico pague el cambio.',
     deliverables: ['Auditoría de SEO y Core Web Vitals', 'Plan de migración y redirecciones', 'Optimización de carga e imágenes', 'Seguimiento posterior al lanzamiento'],
     stack: ['Search Console', 'Lighthouse', 'PageSpeed', 'Screaming Frog'],
+  },
+  {
+    id: 'marketing-digital',
+    icon: 'trending',
+    title: 'Marketing digital',
+    summary: 'Estrategias digitales que impulsan tu presencia en línea y generan resultados medibles.',
+    description:
+      'Conectamos tu producto digital con las personas correctas. Planeamos campañas y contenidos alineados con tu marca y medimos lo que funciona para invertir mejor cada mes.',
+    deliverables: ['Campañas en redes sociales', 'Email marketing', 'Contenido estratégico', 'Análisis de métricas'],
+    stack: ['Redes sociales', 'Email', 'Analítica web'],
+  },
+  {
+    id: 'branding',
+    icon: 'palette',
+    title: 'Branding e identidad',
+    summary: 'Identidades de marca únicas y memorables que conectan con tu audiencia.',
+    description:
+      'Construimos la marca desde su idea central hasta un sistema visual completo: logotipo, paleta, tipografía y un manual para que se aplique igual en cada pieza, digital o impresa.',
+    deliverables: ['Estrategia de marca', 'Diseño de logotipo', 'Identidad visual completa', 'Manual de marca y design system'],
+    stack: ['Illustrator', 'Figma', 'Photoshop'],
+  },
+  {
+    id: 'diseno-grafico',
+    icon: 'pen',
+    title: 'Diseño gráfico',
+    summary: 'Piezas profesionales que comunican tu mensaje de forma clara y atractiva.',
+    description:
+      'Diseñamos las piezas del día a día de tu marca con el mismo cuidado que un sitio: publicidad, material corporativo, presentaciones y contenido para redes.',
+    deliverables: ['Diseño publicitario', 'Material corporativo y papelería', 'Infografías y presentaciones', 'Diseño para redes sociales'],
+    stack: ['Illustrator', 'Photoshop', 'Figma', 'InDesign'],
   },
   {
     id: 'experiencias-interactivas',

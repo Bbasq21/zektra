@@ -10,13 +10,13 @@ import { SERVICES } from '../data/services';
 ---
 <BaseLayout
   title="Servicios"
-  description="Software a la medida de tus necesidades, diseño UX/UI, SEO técnico, experiencias interactivas, CMS administrables y despliegue. Servicios de Zektra en Medellín, Colombia."
+  description="Software a la medida de tus necesidades, automatizaciones e IA, branding, marketing digital, diseño gráfico, diseño UX/UI, SEO técnico, experiencias interactivas, CMS administrables y despliegue. Servicios de Zektra en Medellín, Colombia."
 >
   <Hero
     scene="network"
     eyebrow="Servicios"
     title="Todo lo que tu producto digital necesita, <strong>conectado</strong>"
-    lead="Seis capacidades que trabajan juntas: de la estrategia y el diseño al código, el posicionamiento y el acompañamiento después del lanzamiento."
+    lead="Capacidades que trabajan juntas: de la estrategia, la marca y el diseño al software, la automatización, el posicionamiento y el acompañamiento después del lanzamiento."
   >
     <Button href="#software-a-la-medida" size="lg" arrow>Ver servicios</Button>
     <Button href="/contacto/" variant="ghost" size="lg">Cotizar un proyecto</Button>
@@ -74,7 +74,7 @@ import { SERVICES } from '../data/services';
 <style>
   .service-index {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: var(--space-3);
     margin-bottom: var(--space-9);
   }
@@ -126,6 +126,8 @@ import { SERVICES } from '../data/services';
     .service-detail__aside { flex-direction: row; align-items: center; }
     .services-process { grid-template-columns: minmax(0, 1fr); }
   }
+  @media (max-width: 1200px) { .service-index { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 860px) { .service-index { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 720px) {
     .service-index { grid-template-columns: minmax(0, 1fr); }
   }

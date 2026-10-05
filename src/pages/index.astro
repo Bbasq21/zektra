@@ -43,7 +43,10 @@ import { CASES } from '../data/cases';
         lead="Acompañamos cada proyecto desde la estrategia hasta el producto en producción, y después."
       />
       <div class="home-services" data-stagger>
-        {SERVICES.map((s, i) => <ServiceCard service={s} index={i} />)}
+        {SERVICES.slice(0, 6).map((s, i) => <ServiceCard service={s} index={i} />)}
+      </div>
+      <div class="home-services__more" data-reveal>
+        <Button href="/servicios/" variant="ghost" arrow>Ver los {SERVICES.length} servicios</Button>
       </div>
     </div>
   </section>
@@ -93,6 +96,7 @@ import { CASES } from '../data/cases';
     letter-spacing: -0.02em;
   }
 
+  .home-services__more { display: flex; justify-content: center; margin-top: var(--space-7); }
   .home-services { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
 
   .home-process { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
