@@ -35,7 +35,18 @@ function initHeader() {
   const header = document.querySelector<HTMLElement>('[data-header]');
   if (!header) return;
   let last = window.scrollY;
+  const lightRegions = Array.from(document.querySelectorAll<HTMLElement>('[data-header-theme="light"]'));
+  const updateTheme = () => {
+    if (header.classList.contains('header--open')) return header.classList.remove('theme-light');
+    const probe = header.offsetHeight / 2;
+    const onLight = lightRegions.some((el) => {
+      const r = el.getBoundingClientRect();
+      return r.top <= probe && r.bottom >= probe;
+    });
+    header.classList.toggle('theme-light', onLight);
+  };
   const onScroll = () => {
+    updateTheme();
     const y = window.scrollY;
     header.classList.toggle('header--scrolled', y > 24);
     if (!header.classList.contains('header--open')) {
@@ -57,6 +68,7 @@ function initHeader() {
     toggle.setAttribute('aria-expanded', String(open));
     if (label) label.textContent = open ? 'Cerrar menú' : 'Abrir menú';
     header.classList.toggle('header--open', open);
+    if (open) header.classList.remove('theme-light');
     document.body.style.overflow = open ? 'hidden' : '';
     open ? lenis?.stop() : lenis?.start();
     if (open) {
@@ -67,6 +79,7 @@ function initHeader() {
       }
     } else {
       menu.hidden = true;
+      updateTheme();
     }
   };
   toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));

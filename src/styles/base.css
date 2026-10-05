@@ -60,6 +60,52 @@ p { text-wrap: pretty; }
 .text--muted { color: var(--muted); }
 .text--hl { color: var(--accent); font-style: italic; font-weight: 700; }
 .text--hot { color: var(--accent-hot); }
+.text--title-gradient {
+  background: var(--gradient-title, var(--gradient-oficial));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Bloque: label (rótulo de sección estilo índice: [SERVICIOS — 02]) ---- */
+.label {
+  display: inline-block;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bloque: display-title (títulos gigantes de sección) ------------------- */
+.display-title {
+  width: fit-content;
+  font-size: clamp(3.25rem, 1rem + 9vw, 9rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  padding-bottom: 0.08em;
+}
+
+/* Bloque: pill-button (CTA redondo en menta, como acento de alto impacto) */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  background: var(--brand-fill);
+  color: var(--on-brand-fill);
+  font-size: var(--fs-body-s);
+  font-weight: 500;
+  text-decoration: none;
+  transition: box-shadow var(--dur-fast) ease, transform var(--dur-fast) ease;
+}
+.pill:hover { box-shadow: 0 8px 24px rgba(137, 250, 206, 0.45); }
+.pill--dark { background: var(--azul-noche); color: #F3F4FA; }
+.pill--dark:hover { box-shadow: 0 8px 24px rgba(2, 3, 21, 0.25); }
+
 .text--gradient {
   background: var(--gradient-oficial);
   -webkit-background-clip: text;

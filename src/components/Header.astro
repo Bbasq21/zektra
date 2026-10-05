@@ -8,7 +8,8 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
 <header class="header" data-header>
   <div class="header__bar container">
     <a class="header__brand" href="/" aria-label={`${SITE.name} — inicio`}>
-      <img class="header__logo" src="/logos/zektra-horizontal-menta.svg" alt="Zektra — Soluciones Digitales" width="112" height="28" />
+      <img class="header__logo header__logo--on-dark" src="/logos/zektra-horizontal-menta.svg" alt="Zektra — Soluciones Digitales" width="112" height="28" />
+      <img class="header__logo header__logo--on-light" src="/logos/zektra-horizontal-negro.svg" alt="" aria-hidden="true" width="112" height="28" />
     </a>
 
     <nav class="header__nav" aria-label="Principal">
@@ -64,6 +65,11 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
     border-bottom-color: var(--line);
   }
   .header--hidden { transform: translateY(-100%); }
+  .header:global(.theme-light) { background: transparent; }
+  .header:global(.theme-light).header--scrolled { background: rgba(247, 247, 251, 0.82); }
+  .header__logo--on-light { display: none; }
+  .header:global(.theme-light) .header__logo--on-dark { display: none; }
+  .header:global(.theme-light) .header__logo--on-light { display: block; }
   .header--open { background: var(--bg); transform: none; }
 
   .header__bar { display: flex; align-items: center; gap: var(--space-6); height: var(--header-h); }

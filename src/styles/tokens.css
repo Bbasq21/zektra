@@ -102,3 +102,57 @@
 
   --header-h: 72px;
 }
+
+/* --------------------------------------------------------------------------
+   Temas por sección. La raíz es Noche; .theme-light vuelve claras las
+   secciones de contenido y .theme-dark devuelve a Noche un bloque dentro
+   de una zona clara (hero, banda CTA, footer, tarjetas oscuras).
+   -------------------------------------------------------------------------- */
+.theme-light {
+  --bg: #F7F7FB;
+  --surface: #FFFFFF;
+  --surface-2: #EFEFF7;
+  --surface-3: #E4E5F1;
+  --line: #DADBEA;
+  --line-strong: #7C80A3;
+  --ink: #020315;
+  --ink-2: #373A5C;
+  --muted: #5E6185;
+  --accent: #6902FC;
+  --accent-hot: #C4006F;
+  --action: #6902FC;
+  --action-hover: #5A0AD6;
+  --focus: #6902FC;
+  --success: #0A7A57;
+  --warning: #8A5A00;
+  --danger: #C42A12;
+  --info: #1E02FB;
+  --shadow-card: 0 1px 2px rgba(2, 3, 21, 0.04), 0 12px 32px rgba(2, 3, 21, 0.06);
+  --glow-menta: 0 1px 2px rgba(2, 3, 21, 0.04), 0 18px 40px rgba(105, 2, 252, 0.12);
+  --gradient-title: linear-gradient(90deg, #1E02FB 0%, #6902FC 55%, #A86BFF 100%);
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.theme-dark {
+  --bg: #020315;
+  --surface: #0A0C24;
+  --surface-2: #12153A;
+  --surface-3: #1C2050;
+  --line: #272B57;
+  --line-strong: #666BA0;
+  --ink: #F3F4FA;
+  --ink-2: #BCBFDA;
+  --muted: #8E92B8;
+  --accent: #89FACE;
+  --accent-hot: #FB1195;
+  --action: #6902FC;
+  --action-hover: #7B22FF;
+  --focus: #89FACE;
+  --success: #89FACE;
+  --warning: #FEB616;
+  --danger: #FF7A63;
+  --info: #8C86FF;
+  --glow-menta: 0 0 0 1px rgba(137, 250, 206, 0.35), 0 12px 40px rgba(137, 250, 206, 0.18);
+  color: var(--ink);
+}

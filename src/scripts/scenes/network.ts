@@ -168,8 +168,11 @@ const network: SceneFactory = (host, opts) => {
     },
     resize(stage) {
       const aspect = stage.size.w / stage.size.h;
-      group.position.x = aspect > 1.2 ? 3.6 : 0;
-      group.position.y = aspect > 1.2 ? 0 : 1.5;
+      const centered = host.dataset.center !== undefined;
+      group.position.x = centered ? 0 : aspect > 1.2 ? 3.6 : 0;
+      group.position.y = centered ? 0 : aspect > 1.2 ? 0 : 1.5;
+      if (centered) stage.camera.position.z = aspect < 1 ? 14 / aspect * 0.75 : 12;
+      stage.camera.updateProjectionMatrix();
     },
     dispose() {
       lineGeo.dispose();

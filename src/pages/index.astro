@@ -1,117 +1,228 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
-import Button from '../components/Button.astro';
-import Marquee from '../components/Marquee.astro';
-import SectionHead from '../components/SectionHead.astro';
-import ServiceCard from '../components/ServiceCard.astro';
-import Process from '../components/Process.astro';
+import Icon from '../components/Icon.astro';
+import ServicesAccordion from '../components/ServicesAccordion.astro';
 import CaseCard from '../components/CaseCard.astro';
-import CtaBand from '../components/CtaBand.astro';
 import AiHuman from '../components/AiHuman.astro';
-import { SERVICES } from '../data/services';
 import { CASES } from '../data/cases';
+import { SITE } from '../data/site';
+
+const steps = [
+  { n: '01', title: 'Estrategia', text: 'Entendemos tu negocio y definimos un alcance claro.' },
+  { n: '02', title: 'Diseño', text: 'Flujos y prototipos que se validan antes de construir.' },
+  { n: '03', title: 'Desarrollo', text: 'Software limpio, medido y fácil de administrar.' },
+  { n: '04', title: 'Evolución', text: 'Medimos, mejoramos y crecemos contigo.' },
+];
+const stack = ['Astro', 'React', 'TypeScript', '.NET', 'WordPress', 'Oqtane', 'Figma', 'three.js', 'GSAP', 'Vercel'];
 ---
 <BaseLayout>
-  <Hero
-    size="full"
-    scene="flow"
-    eyebrow="Soluciones digitales"
-    title="Transformamos ideas en <em>soluciones digitales</em>"
-    lead="Desarrollamos software a la medida de tus necesidades: aplicaciones, plataformas, sitios y experiencias digitales que impulsan el crecimiento de tu negocio."
-  >
-    <Button href="/servicios/" size="lg" arrow>Nuestros servicios</Button>
-    <Button href="/casos/" variant="ghost" size="lg">Ver casos de éxito</Button>
-  </Hero>
+  <!-- HERO ─ Noche, flujo de luz y el logotipo gigante como cierre -->
+  <section class="home-hero" data-hero>
+    <div class="home-hero__backdrop" aria-hidden="true"></div>
+    <div class="home-hero__scene" data-scene="flow" aria-hidden="true"></div>
+    <div class="home-hero__veil" aria-hidden="true"></div>
 
-  <Marquee words={['Estrategia', 'Diseño', 'Desarrollo', 'Innovación', 'Conexión', 'Evolución']} />
+    <div class="home-hero__inner container">
+      <div class="home-hero__top">
+        <div class="home-hero__intro">
+          <span class="label home-hero__label" data-hero-item>Soluciones digitales · Medellín</span>
+          <h1 class="home-hero__title" data-split data-split-immediate>Software a la medida que transforma ideas en <strong>soluciones digitales</strong>.</h1>
+          <div class="home-hero__actions" data-hero-item>
+            <a class="pill" href="/contacto/">Hablemos <Icon name="arrow" size={16} /></a>
+            <a class="home-hero__link" href="/servicios/">Ver servicios</a>
+          </div>
+        </div>
+        <span class="label home-hero__scroll" data-hero-item>(Desliza para ver más)</span>
+      </div>
 
-  <section class="section manifesto">
-    <div class="container">
-      <span class="eyebrow" data-reveal>Filosofía</span>
-      <p class="manifesto__text" data-scrub-text>
-        Zektra nace para impulsar la transformación de empresas y personas mediante la tecnología. Somos una marca moderna, cercana y dinámica: entendemos tu idea, la diseñamos con cuidado y la convertimos en un producto que funciona, crece y evoluciona contigo.
-      </p>
+      <img class="home-hero__wordmark" src="/logos/zektra-wordmark-blanco.svg" alt="Zektra" width="1200" height="230" data-hero-item />
     </div>
   </section>
 
-  <section class="section" id="servicios">
-    <div class="container">
-      <SectionHead
-        eyebrow="Servicios"
-        title="Tecnología que conecta, <em>ideas que evolucionan</em>"
-        lead="Acompañamos cada proyecto desde la estrategia hasta el producto en producción, y después."
-      />
-      <div class="home-services" data-stagger>
-        {SERVICES.slice(0, 6).map((s, i) => <ServiceCard service={s} index={i} />)}
-      </div>
-      <div class="home-services__more" data-reveal>
-        <Button href="/servicios/" variant="ghost" arrow>Ver los {SERVICES.length} servicios</Button>
-      </div>
-    </div>
-  </section>
+  <div class="theme-light" data-header-theme="light">
+    <!-- INTRO ─ declaración + bento -->
+    <section class="section home-intro">
+      <div class="container">
+        <p class="home-intro__statement" data-reveal>
+          Transformamos lo que existe en algo mejor:
+          <span class="home-intro__muted">software, marcas y experiencias con claridad, criterio y tecnología.</span>
+        </p>
 
-  <AiHuman />
+        <div class="bento" data-stagger>
+          <article class="bento__card bento__card--gradient">
+            <Icon name="sparkles" size={28} class="bento__icon" />
+            <div>
+              <span class="bento__kicker">Hecho a la medida</span>
+              <p class="bento__text">No adaptamos tu negocio a una plantilla: construimos lo que tu negocio necesita.</p>
+            </div>
+          </article>
+          <article class="bento__card bento__card--image">
+            <img src="/zektra-zk.webp" alt="" width="900" height="900" loading="lazy" class="bento__img" />
+            <span class="bento__caption">Zektra · Est. Medellín</span>
+          </article>
+          <article class="bento__card bento__card--light">
+            <span class="label">(Cómo trabajamos)</span>
+            <p class="bento__big text--title-gradient">IA + criterio humano</p>
+            <p class="bento__small">Usamos inteligencia artificial para ir más rápido. Las decisiones y la calidad siguen siendo humanas.</p>
+          </article>
+        </div>
 
-  <section class="section section--surface">
-    <div class="container home-process">
-      <div class="home-process__intro">
-        <SectionHead
-          eyebrow="Proceso"
-          title="Cómo convertimos una idea en un producto real"
-          lead="Cuatro etapas, un mismo equipo y comunicación directa de principio a fin."
-        />
-        <Button href="/contacto/" variant="link" arrow>Empecemos por la estrategia</Button>
+        <div class="home-intro__foot">
+          <span class="label">[Nosotros — 01]</span>
+          <p class="home-intro__note">Diseño y desarrollo en un mismo equipo: lo que apruebas en el prototipo es lo que llega a producción.</p>
+          <a class="home-intro__cta" href="/contacto/">Agenda una llamada</a>
+        </div>
       </div>
-      <Process />
-    </div>
-  </section>
+    </section>
 
-  <section class="section">
-    <div class="container">
-      <div class="home-cases__head">
-        <SectionHead
-          eyebrow="Casos"
-          title="Proyectos que ya están <em>funcionando</em>"
-          lead="Por confidencialidad no nombramos a nuestros clientes; sí contamos qué hicimos."
-        />
-        <Button href="/casos/" variant="ghost" arrow class="home-cases__all">Ver todos los casos</Button>
+    <!-- SERVICIOS ─ título gigante + acordeón -->
+    <section class="section home-services" id="servicios">
+      <div class="container">
+        <h2 class="display-title text--title-gradient" data-reveal>Servicios</h2>
+        <div class="home-head">
+          <span class="label">[Servicios — 02]</span>
+          <p class="home-head__text" data-reveal>Un estudio que lleva <span class="home-intro__muted">criterio y tecnología</span> a cada proyecto.</p>
+        </div>
+        <ServicesAccordion />
       </div>
-      <div class="home-cases">
-        {CASES.slice(0, 2).map((c, i) => <CaseCard item={c} index={i} />)}
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <CtaBand />
+    <!-- CASOS -->
+    <section class="section home-work">
+      <div class="container">
+        <div class="home-work__title">
+          <h2 class="display-title text--title-gradient" data-reveal>Casos</h2>
+          <span class="label">(Proyectos — 03)</span>
+        </div>
+        <div class="home-work__grid">
+          {CASES.slice(0, 2).map((c, i) => <CaseCard item={c} index={i} />)}
+        </div>
+        <div class="home-work__mission">
+          <div class="home-work__mini theme-dark" aria-hidden="true">
+            <img src="/logos/zektra-monograma-menta.svg" alt="" width="120" height="63" />
+          </div>
+          <div>
+            <p class="home-work__statement" data-reveal>
+              <span class="home-intro__muted">Nacimos en Medellín con una misión:</span> crear software que funcione, crezca y no se parezca a ningún otro.
+            </p>
+            <a class="pill" href="/casos/">Ver todos los casos <Icon name="arrow" size={16} /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESO ─ cifras grandes sin datos inventados -->
+    <section class="section section--tight home-steps">
+      <div class="container">
+        <span class="label">Nuestro proceso</span>
+        <ol class="home-steps__list" role="list" data-stagger>
+          {steps.map((s) => (
+            <li class="home-steps__item">
+              <span class="home-steps__n">{s.n}</span>
+              <h3 class="home-steps__title">{s.title}</h3>
+              <p class="home-steps__text">{s.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <AiHuman />
+
+    <!-- STACK ─ en lugar de logos de clientes -->
+    <section class="section section--tight home-stack">
+      <div class="container">
+        <span class="label">• Tecnologías con las que trabajamos</span>
+        <ul class="home-stack__list" role="list" data-stagger>
+          {stack.map((t) => <li class="home-stack__item">{t}</li>)}
+        </ul>
+      </div>
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
-  .manifesto .container { display: flex; flex-direction: column; gap: var(--space-5); }
-  .manifesto__text {
-    max-width: 30ch;
-    font-size: clamp(1.75rem, 1.1rem + 2.6vw, 3.25rem);
-    font-weight: 500;
-    line-height: 1.18;
-    letter-spacing: -0.02em;
-  }
+  /* ───────── Hero ───────── */
+  .home-hero { position: relative; isolation: isolate; overflow: hidden; min-height: 100svh; display: flex; background: var(--azul-noche); }
+  .home-hero__backdrop { position: absolute; inset: -10% -10% 10% 20%; z-index: -3; background: var(--gradient-aurora); filter: blur(30px); opacity: 0.7; }
+  .home-hero__scene { position: absolute; inset: 0; z-index: -2; }
+  .home-hero__scene :global(canvas) { width: 100% !important; height: 100% !important; }
+  .home-hero__veil { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(2, 3, 21, 0.8) 0%, rgba(2, 3, 21, 0.3) 50%, rgba(2, 3, 21, 0) 75%), linear-gradient(0deg, rgba(2, 3, 21, 0.75) 0%, rgba(2, 3, 21, 0) 40%); }
 
-  .home-services__more { display: flex; justify-content: center; margin-top: var(--space-7); }
-  .home-services { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+  .home-hero__inner { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-8); padding-top: calc(var(--header-h) + var(--space-8)); padding-bottom: var(--space-5); }
+  .home-hero__top { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-6); }
+  .home-hero__intro { display: flex; flex-direction: column; gap: var(--space-5); max-width: 560px; }
+  .home-hero__label { color: var(--ink-2); }
+  .home-hero__title { font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.5rem); line-height: 1.15; letter-spacing: -0.025em; color: #F3F4FA; }
+  .home-hero__title :global(strong) { font-style: italic; font-weight: 700; color: var(--menta); }
+  .home-hero__actions { display: flex; align-items: center; gap: var(--space-5); }
+  .home-hero__link { color: var(--ink); font-size: var(--fs-body-s); font-weight: 500; text-decoration: underline; text-underline-offset: 5px; text-decoration-color: var(--line-strong); }
+  .home-hero__link:hover { text-decoration-color: var(--menta); }
+  .home-hero__scroll { color: var(--muted); white-space: nowrap; }
+  .home-hero__wordmark { width: 100%; height: auto; margin-bottom: calc(-1 * var(--space-2)); }
 
-  .home-process { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
-  .home-process__intro { position: sticky; top: calc(var(--header-h) + var(--space-6)); }
+  /* ───────── Intro ───────── */
+  .home-intro__statement { max-width: 22ch; font-size: clamp(2rem, 1.2rem + 3vw, 3.5rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.03em; margin-bottom: var(--space-8); }
+  .home-intro__muted { color: var(--muted); }
 
-  .home-cases__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--space-7); }
-  .home-cases__head :global(.section-head) { margin-bottom: 0; }
-  .home-cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+  .bento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+  .bento__card { position: relative; min-height: 300px; overflow: hidden; border-radius: var(--radius-lg); padding: var(--space-6); display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5); }
+  .bento__card--gradient { background: radial-gradient(120% 90% at 100% 0%, #6902FC 0%, #1E02FB 45%, #0A0C24 100%); color: #F3F4FA; }
+  .bento__card--gradient :global(.bento__icon) { color: var(--menta); }
+  .bento__kicker { display: block; margin-bottom: var(--space-2); font-size: var(--fs-caption); letter-spacing: 0.08em; text-transform: uppercase; color: #BCBFDA; }
+  .bento__text { font-size: var(--fs-h4); font-weight: 500; line-height: 1.35; }
+  .bento__card--image { padding: 0; background: var(--azul-noche); }
+  .bento__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease-out); }
+  .bento__card--image:hover .bento__img { transform: scale(1.05); }
+  .bento__caption { position: absolute; left: var(--space-5); bottom: var(--space-5); font-size: var(--fs-caption); color: #F3F4FA; }
+  .bento__card--light { background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-card); }
+  .bento__big { font-size: clamp(2rem, 1.4rem + 1.8vw, 2.75rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.03em; }
+  .bento__small { font-size: var(--fs-body-s); color: var(--ink-2); line-height: 1.55; }
+
+  .home-intro__foot { display: grid; grid-template-columns: 1fr 2fr auto; gap: var(--space-6); align-items: baseline; margin-top: var(--space-7); padding-top: var(--space-5); border-top: 1px solid var(--line); }
+  .home-intro__note { max-width: 46ch; color: var(--ink-2); font-size: var(--fs-body-s); }
+  .home-intro__cta { color: var(--ink); font-size: var(--fs-body-s); font-weight: 600; text-decoration: underline; text-underline-offset: 5px; }
+
+  /* ───────── Encabezados de sección ───────── */
+  .home-head { display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-6); align-items: start; margin: var(--space-6) 0 var(--space-8); padding-bottom: var(--space-6); border-bottom: 1px solid var(--line); }
+  .home-head__text { font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; max-width: 22ch; }
+
+  /* ───────── Casos ───────── */
+  .home-work { border-top: 1px solid var(--line); }
+  .home-work__title { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-5); margin-bottom: var(--space-7); padding-bottom: var(--space-5); border-bottom: 1px solid var(--line); }
+  .home-work__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+  .home-work__grid :global(.case-card) { background: var(--surface); box-shadow: var(--shadow-card); }
+  .home-work__mission { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--space-7); align-items: center; margin-top: var(--space-8); }
+  .home-work__mini { display: grid; place-items: center; aspect-ratio: 16 / 10; border-radius: var(--radius-md); background: radial-gradient(90% 90% at 80% 20%, rgba(251, 17, 149, 0.6), rgba(105, 2, 252, 0.5) 40%, #020315 75%); }
+  .home-work__mini img { width: 40%; height: auto; }
+  .home-work__statement { margin-bottom: var(--space-5); font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem); font-weight: 500; line-height: 1.22; letter-spacing: -0.02em; max-width: 26ch; }
+
+  /* ───────── Proceso ───────── */
+  .home-steps__list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); margin: var(--space-5) 0 0; padding: 0; }
+  .home-steps__item { display: flex; flex-direction: column; gap: var(--space-2); padding-top: var(--space-5); border-top: 1px solid var(--line); }
+  .home-steps__n { font-size: clamp(3rem, 2rem + 3vw, 4.5rem); font-weight: 500; line-height: 1; letter-spacing: -0.05em; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .home-steps__title { margin-top: var(--space-3); font-size: var(--fs-h4); }
+  .home-steps__text { font-size: var(--fs-body-s); color: var(--ink-2); }
+
+  /* ───────── Stack ───────── */
+  .home-stack__list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-3); margin: var(--space-5) 0 0; padding: 0; }
+  .home-stack__item { display: grid; place-items: center; min-height: 72px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); font-weight: 600; letter-spacing: -0.01em; color: var(--ink); transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease; }
+  .home-stack__item:hover { border-color: var(--accent); box-shadow: var(--shadow-card); }
 
   @media (max-width: 1024px) {
-    .home-services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .home-process { grid-template-columns: minmax(0, 1fr); gap: var(--space-7); }
-    .home-process__intro { position: static; }
+    .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bento__card--light { grid-column: 1 / -1; min-height: 0; }
+    .home-steps__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .home-stack__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   @media (max-width: 720px) {
-    .home-services, .home-cases { grid-template-columns: minmax(0, 1fr); }
+    .home-hero__top { flex-direction: column; align-items: flex-start; }
+    .home-hero__scroll { display: none; }
+    .home-hero__veil { background: linear-gradient(0deg, rgba(2, 3, 21, 0.9) 0%, rgba(2, 3, 21, 0.5) 60%, rgba(2, 3, 21, 0.2) 100%); }
+    .bento { grid-template-columns: minmax(0, 1fr); }
+    .bento__card { min-height: 240px; }
+    .home-intro__foot, .home-head, .home-work__mission { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+    .home-work__grid { grid-template-columns: minmax(0, 1fr); }
+    .home-stack__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 </style>

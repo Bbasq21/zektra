@@ -1,0 +1,106 @@
+---
+import Icon from './Icon.astro';
+import { SERVICES } from '../data/services';
+---
+<div class="services-accordion">
+  <ol class="services-accordion__list" role="list">
+    {SERVICES.map((s, i) => (
+      <li class="services-accordion__item">
+        <details class="services-accordion__details" name="servicios" open={i === 0}>
+          <summary class="services-accordion__summary">
+            <span class="services-accordion__number">{String(i + 1).padStart(2, '0')}.</span>
+            <span class="services-accordion__title">{s.title}</span>
+            <span class="services-accordion__toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="services-accordion__panel">
+            <p class="services-accordion__text">{s.summary} {s.description}</p>
+            <ul class="services-accordion__tags" role="list">
+              {s.deliverables.map((d) => <li class="tag tag--outline">{d}</li>)}
+            </ul>
+            <a class="services-accordion__link" href={`/servicios/#${s.id}`}>Ver el servicio <Icon name="arrow" size={16} /></a>
+          </div>
+        </details>
+      </li>
+    ))}
+  </ol>
+
+  <aside class="services-accordion__visual theme-dark" aria-hidden="true">
+    <div class="services-accordion__scene" data-scene="network" data-center></div>
+    <span class="services-accordion__badge">Tecnología que conecta</span>
+  </aside>
+</div>
+
+<style>
+  .services-accordion { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-8); align-items: start; }
+
+  .services-accordion__list { margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .services-accordion__item { border-bottom: 1px solid var(--line); }
+  .services-accordion__summary {
+    display: grid;
+    grid-template-columns: 48px 1fr 24px;
+    align-items: center;
+    gap: var(--space-4);
+    padding-block: var(--space-5);
+    list-style: none;
+    cursor: pointer;
+  }
+  .services-accordion__summary::-webkit-details-marker { display: none; }
+  .services-accordion__number { font-size: var(--fs-caption); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .services-accordion__title { font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; transition: color var(--dur-fast) ease; }
+  .services-accordion__summary:hover .services-accordion__title { color: var(--accent); }
+  .services-accordion__toggle { position: relative; width: 16px; height: 16px; justify-self: end; }
+  .services-accordion__toggle::before,
+  .services-accordion__toggle::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; margin-top: -0.75px; background: var(--ink); transition: transform var(--dur) var(--ease-out); }
+  .services-accordion__toggle::after { transform: rotate(90deg); }
+  .services-accordion__details[open] .services-accordion__toggle::after { transform: rotate(0deg); }
+
+  .services-accordion__panel { display: flex; flex-direction: column; gap: var(--space-4); padding: 0 0 var(--space-6) calc(48px + var(--space-4)); }
+  .services-accordion__text { max-width: 60ch; font-size: var(--fs-body-s); line-height: 1.65; color: var(--ink-2); }
+  .services-accordion__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; }
+  .services-accordion__tags :global(.tag) { font-size: 12px; padding: 3px 10px; }
+  .services-accordion__link { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--accent); font-size: var(--fs-body-s); font-weight: 500; text-decoration: none; }
+  .services-accordion__link:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  .services-accordion__visual {
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-6));
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--azul-noche);
+    isolation: isolate;
+  }
+  .services-accordion__visual::before {
+    content: '';
+    position: absolute;
+    inset: 30% -30% -30% 10%;
+    z-index: -1;
+    background: var(--gradient-aurora);
+    filter: blur(30px);
+    opacity: 0.8;
+  }
+  .services-accordion__scene { position: absolute; inset: 0; }
+  .services-accordion__scene :global(canvas) { width: 100% !important; height: 100% !important; }
+  .services-accordion__badge {
+    position: absolute;
+    left: var(--space-5);
+    bottom: var(--space-5);
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    background: rgba(2, 3, 21, 0.6);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-size: var(--fs-caption);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  @media (max-width: 1024px) {
+    .services-accordion { grid-template-columns: minmax(0, 1fr); }
+    .services-accordion__visual { position: relative; top: auto; aspect-ratio: 16 / 10; order: -1; }
+  }
+  @media (max-width: 560px) {
+    .services-accordion__panel { padding-left: 0; }
+    .services-accordion__summary { grid-template-columns: 36px 1fr 20px; }
+  }
+</style>

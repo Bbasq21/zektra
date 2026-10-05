@@ -1,77 +1,66 @@
 ---
-import { SITE } from '../data/site';
-import { SERVICES } from '../data/services';
+import { NAV, SITE } from '../data/site';
+import Icon from './Icon.astro';
 const year = new Date().getFullYear();
 ---
-<footer class="footer">
+<footer class="footer theme-dark">
   <div class="footer__inner container">
-    <div class="footer__brand">
-      <img class="footer__logo" src="/logos/zektra-horizontal-menta.svg" alt="Zektra — Soluciones Digitales" width="128" height="32" loading="lazy" />
-      <p class="footer__promise">{SITE.promise}.</p>
+    <div class="footer__cta">
+      <span class="label footer__kicker">¿Tienes un proyecto en mente?</span>
+      <div class="footer__mail-row">
+        <a class="footer__mail text--gradient" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        <a class="pill" href="/contacto/">Agenda una llamada <Icon name="arrow" size={16} /></a>
+      </div>
     </div>
 
-    <div class="footer__col">
-      <h2 class="footer__title">Servicios</h2>
-      <ul class="footer__list" role="list">
-        {SERVICES.slice(0, 4).map((s) => <li><a class="footer__link" href={`/servicios/#${s.id}`}>{s.title}</a></li>)}
-      </ul>
+    <div class="footer__cols">
+      <div class="footer__about">
+        <p class="footer__legal-top">© {year} Zektra · Soluciones Digitales</p>
+        <p class="footer__promise">Diseñamos y desarrollamos software a la medida, con inteligencia artificial de la mano y calidad humana.</p>
+      </div>
+      <nav class="footer__col" aria-label="Pie de página">
+        <h2 class="footer__title">Navegación</h2>
+        <ul class="footer__list" role="list">
+          {[...NAV, { href: '/contacto/', label: 'Contacto' }].map((i) => <li><a class="footer__link" href={i.href}>{i.label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="footer__col">
+        <h2 class="footer__title">Contacto</h2>
+        <ul class="footer__list" role="list">
+          <li><a class="footer__link" href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+          <li class="footer__text">{SITE.city}</li>
+        </ul>
+      </div>
     </div>
 
-    <div class="footer__col">
-      <h2 class="footer__title">Zektra</h2>
-      <ul class="footer__list" role="list">
-        <li><a class="footer__link" href="/casos/">Casos</a></li>
-        <li><a class="footer__link" href="/nosotros/">Nosotros</a></li>
-        <li><a class="footer__link" href="/contacto/">Contacto</a></li>
-      </ul>
-    </div>
-
-    <div class="footer__col">
-      <h2 class="footer__title">Contacto</h2>
-      <ul class="footer__list" role="list">
-        <li><a class="footer__link footer__link--accent" href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
-        <li class="footer__text">{SITE.city}</li>
-      </ul>
-    </div>
-
-    <div class="footer__legal">
-      <span>© {year} Zektra · Soluciones Digitales</span>
-      <span>Innovación que conecta.</span>
-    </div>
+    <img class="footer__wordmark" src="/logos/zektra-wordmark-blanco.svg" alt="Zektra" width="1200" height="230" loading="lazy" />
   </div>
   <span class="footer__thread thread" aria-hidden="true"></span>
 </footer>
 
 <style>
-  .footer { position: relative; border-top: 1px solid var(--line); background: var(--bg); }
-  .footer__inner {
-    display: grid;
-    grid-template-columns: 1.5fr repeat(3, 1fr);
-    gap: var(--space-6);
-    padding-block: var(--space-8) var(--space-6);
-    font-size: var(--fs-body-s);
-    line-height: 1.55;
-    color: var(--ink-2);
-  }
-  .footer__logo { height: 32px; width: auto; }
-  .footer__promise { margin-top: var(--space-4); max-width: 28ch; }
+  .footer { position: relative; overflow: hidden; background: var(--azul-noche); }
+  .footer::before { content: ''; position: absolute; inset: -30% -20% 40% 40%; background: var(--gradient-aurora); filter: blur(40px); opacity: 0.35; pointer-events: none; }
+  .footer__inner { position: relative; display: flex; flex-direction: column; gap: var(--space-8); padding-block: var(--space-9) var(--space-5); }
+
+  .footer__kicker { color: var(--ink-2); }
+  .footer__mail-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-5); margin-top: var(--space-3); }
+  .footer__mail { font-size: clamp(2rem, 0.8rem + 5vw, 5rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.04em; text-decoration: none; overflow-wrap: anywhere; }
+  .footer__mail:hover { filter: brightness(1.15); }
+
+  .footer__cols { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--line); font-size: var(--fs-body-s); color: var(--ink-2); }
+  .footer__legal-top { color: var(--muted); font-size: var(--fs-caption); }
+  .footer__promise { margin-top: var(--space-3); max-width: 40ch; color: var(--ink); }
   .footer__title { margin-bottom: var(--space-3); font-size: var(--fs-caption); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
   .footer__list { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; }
   .footer__link { color: var(--ink-2); text-decoration: none; transition: color var(--dur-fast) ease; }
   .footer__link:hover { color: var(--accent); }
-  .footer__link--accent { color: var(--accent); }
-  .footer__legal {
-    grid-column: 1 / -1;
-    display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3);
-    padding-top: var(--space-5);
-    border-top: 1px solid var(--line);
-    font-size: var(--fs-caption);
-    color: var(--muted);
-  }
+
+  .footer__wordmark { width: 100%; height: auto; opacity: 0.95; }
   .footer__thread { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 0; }
 
   @media (max-width: 760px) {
-    .footer__inner { grid-template-columns: 1fr 1fr; }
-    .footer__brand { grid-column: 1 / -1; }
+    .footer__cols { grid-template-columns: 1fr 1fr; }
+    .footer__about { grid-column: 1 / -1; }
   }
 </style>

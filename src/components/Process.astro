@@ -38,7 +38,7 @@ const steps = [
     border: 2px solid var(--line-strong);
     transition: border-color var(--dur) ease, background-color var(--dur) ease, box-shadow var(--dur) ease;
   }
-  .process__step:global(.is-active)::before { border-color: var(--menta); background: var(--menta); box-shadow: 0 0 0 6px rgba(137, 250, 206, 0.15); }
+  .process__step:global(.is-active)::before { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent); }
   .process__number {
     font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem);
     font-weight: 600;

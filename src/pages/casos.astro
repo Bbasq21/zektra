@@ -15,6 +15,8 @@ import { CASES } from '../data/cases';
     lead="Por confidencialidad no mostramos los nombres de nuestros clientes. Sí te contamos el reto, lo que hicimos y lo que entregamos."
   />
 
+  <div class="theme-light" data-header-theme="light">
+
   <section class="section">
     <div class="container case-list">
       {CASES.map((c, i) => <CaseCard item={c} index={i} detailed />)}
@@ -22,6 +24,7 @@ import { CASES } from '../data/cases';
   </section>
 
   <CtaBand title="¿Tu proyecto puede ser el siguiente?" text="Si tienes un reto parecido, o uno que no se parece a nada, conversemos." label="Contar mi proyecto" />
+  </div>
 </BaseLayout>
 
 <style>
