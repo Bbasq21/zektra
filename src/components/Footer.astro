@@ -13,7 +13,8 @@ const year = new Date().getFullYear();
     <div class="footer__col">
       <h2 class="footer__title">Servicios</h2>
       <ul class="footer__list" role="list">
-        {SERVICES.slice(0, 4).map((s) => <li><a class="footer__link" href={`/servicios/#${s.id}`}>{s.title}</a></li>)}
+        {SERVICES.slice(0, 4).map((s) => <li><a class="footer__link" href={`/servicios/${s.id}/`}>{s.title}</a></li>)}
+        <li><a class="footer__link" href="/servicios/">Todos los servicios</a></li>
       </ul>
     </div>
 

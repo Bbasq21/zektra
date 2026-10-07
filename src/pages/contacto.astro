@@ -6,7 +6,11 @@ import Icon from '../components/Icon.astro';
 import { SITE } from '../data/site';
 import { SERVICES } from '../data/services';
 ---
-<BaseLayout title="Contacto" description="Cuéntanos tu idea. Zektra diseña y desarrolla soluciones digitales desde Medellín, Colombia.">
+<BaseLayout
+  title="Contacto: cotiza tu proyecto digital"
+  description="Cuéntanos tu idea y te respondemos con una propuesta clara. Zektra diseña y desarrolla software y soluciones digitales desde Medellín, Colombia."
+  breadcrumbs={[{ name: 'Contacto', path: '/contacto/' }]}
+>
   <Hero
     eyebrow="Contacto"
     title="Cuéntanos tu idea. <strong>Hagámosla real.</strong>"
@@ -38,7 +42,7 @@ import { SERVICES } from '../data/services';
             <label class="field__label" for="servicio">¿Qué necesitas?</label>
             <select class="field__control field__control--select" id="servicio" name="servicio">
               <option value="">Elige una opción</option>
-              {SERVICES.map((s) => <option value={s.title}>{s.title}</option>)}
+              {SERVICES.map((s) => <option value={s.title} data-id={s.id}>{s.title}</option>)}
               <option value="Otro">Otra cosa / no estoy seguro</option>
             </select>
           </div>
@@ -87,6 +91,15 @@ import { SERVICES } from '../data/services';
       </aside>
     </div>
   </section>
+  <script is:inline>
+    (function () {
+      var id = new URLSearchParams(location.search).get('servicio');
+      var select = document.getElementById('servicio');
+      if (!id || !select) return;
+      var opt = select.querySelector('option[data-id="' + CSS.escape(id) + '"]');
+      if (opt) select.value = opt.value;
+    })();
+  </script>
 </BaseLayout>
 
 <script>

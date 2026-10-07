@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import Button from '../../components/Button.astro';
+import Icon from '../../components/Icon.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import Process from '../../components/Process.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { SERVICES, type Service } from '../../data/services';
+import { SITE } from '../../data/site';
+
+export function getStaticPaths() {
+  return SERVICES.map((service, index) => ({ params: { slug: service.id }, props: { service, index } }));
+}
+
+interface Props { service: Service; index: number }
+const { service, index } = Astro.props;
+const url = new URL(`/servicios/${service.id}/`, Astro.site).toString();
+const related = SERVICES.filter((s) => s.id !== service.id).slice(0, 3);
+const relatedIndex = (s: Service) => SERVICES.findIndex((x) => x.id === s.id);
+
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `${url}#servicio`,
+  name: service.title,
+  serviceType: service.title,
+  description: `${service.summary} ${service.description}`,
+  url,
+  provider: { '@id': `${new URL('/', Astro.site)}#organizacion` },
+  areaServed: [
+    { '@type': 'City', name: 'Medellín' },
+    { '@type': 'Country', name: 'Colombia' },
+  ],
+  availableChannel: { '@type': 'ServiceChannel', serviceUrl: new URL('/contacto/', Astro.site).toString(), availableLanguage: 'es' },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: `Qué incluye: ${service.title}`,
+    itemListElement: service.deliverables.map((d) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: d } })),
+  },
+};
+---
+<BaseLayout
+  title={service.seoTitle}
+  description={service.seoDescription}
+  breadcrumbs={[
+    { name: 'Servicios', path: '/servicios/' },
+    { name: service.title, path: `/servicios/${service.id}/` },
+  ]}
+  schema={[serviceSchema]}
+>
+  <Hero eyebrow={`Servicio ${String(index + 1).padStart(2, '0')}`} title={service.heading} lead={service.summary}>
+    <Button href={`/contacto/?servicio=${service.id}`} size="lg" arrow>Cotizar este servicio</Button>
+    <Button href="/servicios/" variant="ghost" size="lg">Ver todos los servicios</Button>
+  </Hero>
+
+  <section class="section">
+    <div class="container">
+      <nav class="crumbs" aria-label="Ruta de navegación">
+        <ol class="crumbs__list" role="list">
+          <li><a class="crumbs__link" href="/">Inicio</a></li>
+          <li><a class="crumbs__link" href="/servicios/">Servicios</a></li>
+          <li aria-current="page">{service.title}</li>
+        </ol>
+      </nav>
+
+      <div class="service-page">
+        <div class="service-page__main">
+          <span class="service-page__icon" aria-hidden="true"><Icon name={service.icon} size={28} /></span>
+          <h2 class="service-page__title" data-split>Qué hacemos</h2>
+          <p class="service-page__text" data-reveal>{service.description}</p>
+          <p class="service-page__text" data-reveal>
+            Trabajamos desde {SITE.city} con empresas de toda Colombia. Usamos inteligencia artificial para ir más rápido,
+            y cada entrega pasa por revisión humana antes de llegar a tus manos.
+          </p>
+        </div>
+
+        <aside class="service-page__meta" data-reveal>
+          <h2 class="service-page__label">Qué incluye</h2>
+          <ul class="service-page__list" role="list">
+            {service.deliverables.map((d) => <li class="service-page__item">{d}</li>)}
+          </ul>
+          <h2 class="service-page__label">Herramientas</h2>
+          <ul class="service-page__tags" role="list">
+            {service.stack.map((t) => <li class="tag tag--outline">{t}</li>)}
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container service-page__process">
+      <SectionHead eyebrow="Cómo trabajamos" title="Un proceso claro, sin sorpresas" lead="Sabes en qué etapa está tu proyecto, qué sigue y qué necesitamos de ti." />
+      <Process />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead eyebrow="Otros servicios" title="Capacidades que trabajan juntas" />
+      <div class="service-page__related">
+        {related.map((s) => <ServiceCard service={s} index={relatedIndex(s)} />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand text="Cuéntanos el problema, no la solución. Te proponemos el camino y el alcance." />
+</BaseLayout>
+
+<style>
+  .crumbs { margin-bottom: var(--space-7); font-size: var(--fs-caption); color: var(--muted); }
+  .crumbs__list { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; }
+  .crumbs__list li { display: inline-flex; align-items: center; gap: var(--space-2); }
+  .crumbs__list li + li::before { content: '/'; color: var(--line-strong); }
+  .crumbs__link { color: var(--ink-2); text-decoration: none; }
+  .crumbs__link:hover { color: var(--accent); }
+
+  .service-page { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 4fr); gap: var(--space-8); align-items: start; }
+  .service-page__main { display: flex; flex-direction: column; gap: var(--space-5); }
+  .service-page__icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--surface-2); color: var(--accent); }
+  .service-page__title { font-size: var(--fs-h2); }
+  .service-page__text { color: var(--ink-2); max-width: 62ch; font-size: var(--fs-lead); line-height: 1.55; }
+  .service-page__meta { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+  .service-page__label { font-size: var(--fs-caption); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .service-page__label:not(:first-child) { margin-top: var(--space-4); }
+  .service-page__list { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; padding: 0; }
+  .service-page__item { position: relative; padding-left: var(--space-5); color: var(--ink-2); }
+  .service-page__item::before { content: ''; position: absolute; left: 0; top: 0.8em; width: 12px; height: 2px; border-radius: 2px; background: var(--gradient-oficial); }
+  .service-page__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; }
+
+  .service-page__process { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
+  .service-page__related { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+
+  @media (max-width: 1024px) {
+    .service-page, .service-page__process { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    .service-page__related { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
