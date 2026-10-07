@@ -8,6 +8,9 @@ import ServiceCard from '../../components/ServiceCard.astro';
 import Process from '../../components/Process.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import { SERVICES, type Service } from '../../data/services';
+import { CASES } from '../../data/cases';
+import CaseCard from '../../components/CaseCard.astro';
+import { getPosts } from '../../data/blog';
 import { SITE } from '../../data/site';
 
 export function getStaticPaths() {
@@ -19,6 +22,16 @@ const { service, index } = Astro.props;
 const url = new URL(`/servicios/${service.id}/`, Astro.site).toString();
 const related = SERVICES.filter((s) => s.id !== service.id).slice(0, 3);
 const relatedIndex = (s: Service) => SERVICES.findIndex((x) => x.id === s.id);
+const cases = CASES.filter((c) => c.service === service.id);
+const faqs = service.faqs ?? [];
+const posts = (await getPosts()).filter((p) => p.data.service === service.id);
+const faqSchema = faqs.length
+  ? [{
+      '@type': 'FAQPage',
+      '@id': `${url}#preguntas`,
+      mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    }]
+  : [];
 
 const serviceSchema = {
   '@type': 'Service',
@@ -47,7 +60,7 @@ const serviceSchema = {
     { name: 'Servicios', path: '/servicios/' },
     { name: service.title, path: `/servicios/${service.id}/` },
   ]}
-  schema={[serviceSchema]}
+  schema={[serviceSchema, ...faqSchema]}
 >
   <Hero eyebrow={`Servicio ${String(index + 1).padStart(2, '0')}`} title={service.heading} lead={service.summary}>
     <Button href={`/contacto/?servicio=${service.id}`} size="lg" arrow>Cotizar este servicio</Button>
@@ -70,7 +83,7 @@ const serviceSchema = {
           <h2 class="service-page__title" data-split>Qué hacemos</h2>
           <p class="service-page__text" data-reveal>{service.description}</p>
           <p class="service-page__text" data-reveal>
-            Trabajamos desde {SITE.city} con empresas de toda Colombia. Usamos inteligencia artificial para ir más rápido,
+            Trabajamos desde {SITE.city}. Usamos inteligencia artificial para ir más rápido,
             y cada entrega pasa por revisión humana antes de llegar a tus manos.
           </p>
         </div>
@@ -95,6 +108,44 @@ const serviceSchema = {
       <Process />
     </div>
   </section>
+
+  {cases.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <SectionHead eyebrow="Casos" title="Así lo hemos aplicado" lead="Por confidencialidad no nombramos a nuestros clientes; sí contamos qué hicimos." />
+        <div class="service-page__cases">
+          {cases.map((c) => <CaseCard item={c} index={CASES.indexOf(c)} detailed />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {posts.length > 0 && (
+    <section class="section section--tight">
+      <div class="container">
+        <p class="service-page__label">Del blog</p>
+        <ul class="service-page__posts" role="list">
+          {posts.map((p) => <li><a class="service-page__post" href={`/blog/${p.id}/`}>{p.data.title} <span aria-hidden="true">→</span></a></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {faqs.length > 0 && (
+    <section class="section">
+      <div class="container container--narrow">
+        <SectionHead eyebrow="Preguntas frecuentes" title={`Lo que suelen preguntarnos sobre ${service.title.toLowerCase()}`} />
+        <div class="faq">
+          {faqs.map((f) => (
+            <details class="faq__item">
+              <summary class="faq__question">{f.q}</summary>
+              <p class="faq__answer">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
   <section class="section">
     <div class="container">
@@ -130,6 +181,16 @@ const serviceSchema = {
   .service-page__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; }
 
   .service-page__process { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
+  .service-page__posts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); margin: var(--space-4) 0 0; padding: 0; }
+  .service-page__post { display: block; height: 100%; padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font-weight: 500; text-decoration: none; }
+  .service-page__post:hover { border-color: var(--line-strong); color: var(--accent); }
+  @media (max-width: 860px) { .service-page__posts { grid-template-columns: minmax(0, 1fr); } }
+  .service-page__cases { display: flex; flex-direction: column; gap: var(--space-6); }
+  .faq { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+  .faq__item { border-bottom: 1px solid var(--line); }
+  .faq__question { padding: var(--space-5) 0; color: var(--ink); font-size: var(--fs-h4); font-weight: 500; cursor: pointer; }
+  .faq__question:hover { color: var(--accent); }
+  .faq__answer { padding-bottom: var(--space-5); color: var(--ink-2); max-width: 65ch; }
   .service-page__related { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
 
   @media (max-width: 1024px) {
