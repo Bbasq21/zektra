@@ -1,4 +1,5 @@
 ---
+import Analytics from '@vercel/analytics/astro';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import Header from '../components/Header.astro';
@@ -57,6 +58,7 @@ const jsonLd = {
       document.documentElement.classList.add('js');
       setTimeout(function () { if (!document.documentElement.classList.contains('is-ready')) document.documentElement.classList.remove('js'); }, 3500);
     </script>
+    <Analytics />
   </head>
   <body>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
