@@ -29,8 +29,9 @@ export const POST: APIRoute = async ({ request }) => {
   const empresa = String(data.get('empresa') ?? '').trim().slice(0, 160);
   const servicio = String(data.get('servicio') ?? '').trim().slice(0, 120);
   const mensaje = String(data.get('mensaje') ?? '').trim().slice(0, 5000);
+  const autorizacion = data.get('autorizacion') === 'si';
 
-  if (nombre.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo) || mensaje.length < 10) {
+  if (nombre.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo) || mensaje.length < 10 || !autorizacion) {
     return json({ error: 'Revisa los campos del formulario.' }, 422);
   }
 
@@ -48,6 +49,8 @@ export const POST: APIRoute = async ({ request }) => {
     ['Correo', correo],
     ['Empresa', empresa || '—'],
     ['Servicio', servicio || '—'],
+    // Prueba de la autorización de tratamiento de datos (Ley 1581 de 2012, art. 9): queda en el correo recibido.
+    ['Autorización de datos', `Sí, aceptada en el formulario el ${new Date().toISOString()} (UTC)`],
   ];
   const html = `
     <div style="font-family:Arial,sans-serif;font-size:15px;color:#020315">

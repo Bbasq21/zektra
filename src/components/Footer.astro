@@ -1,5 +1,5 @@
 ---
-import { SITE } from '../data/site';
+import { SITE, LEGAL_NAV } from '../data/site';
 import { SERVICES } from '../data/services';
 const year = new Date().getFullYear();
 ---
@@ -38,6 +38,9 @@ const year = new Date().getFullYear();
 
     <div class="footer__legal">
       <span>© {year} Zektra · Soluciones Digitales</span>
+      <ul class="footer__legal-nav" role="list">
+        {LEGAL_NAV.map((l) => <li><a class="footer__link" href={l.href}>{l.label}</a></li>)}
+      </ul>
       <span>Innovación que conecta.</span>
     </div>
   </div>
@@ -70,6 +73,9 @@ const year = new Date().getFullYear();
     font-size: var(--fs-caption);
     color: var(--muted);
   }
+  .footer__legal-nav { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin: 0; padding: 0; }
+  .footer__legal-nav .footer__link { color: var(--muted); }
+  .footer__legal-nav .footer__link:hover { color: var(--accent); }
   .footer__thread { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 0; }
 
   @media (max-width: 760px) {

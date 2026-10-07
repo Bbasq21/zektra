@@ -145,3 +145,20 @@ p { text-wrap: pretty; }
 }
 .tag--outline { background: transparent; border-color: var(--line-strong); color: var(--ink); }
 .tag--brand { background: var(--brand-fill); border-color: transparent; color: var(--on-brand-fill); }
+
+/* Bloque: prose (texto largo: blog y páginas legales) -------------------- */
+.prose { max-width: 70ch; font-size: var(--fs-body); line-height: 1.7; color: var(--ink-2); }
+.prose > * + * { margin-top: var(--space-5); }
+.prose h2 { margin-top: var(--space-8); font-size: var(--fs-h2); line-height: 1.2; color: var(--ink); scroll-margin-top: calc(var(--header-h) + var(--space-5)); }
+.prose h3 { margin-top: var(--space-7); font-size: var(--fs-h4); line-height: 1.3; color: var(--ink); scroll-margin-top: calc(var(--header-h) + var(--space-5)); }
+.prose h2:first-child { margin-top: 0; }
+.prose strong { color: var(--ink); font-weight: 600; }
+.prose a { color: var(--accent); text-underline-offset: 3px; }
+.prose ul, .prose ol { padding-left: var(--space-5); }
+.prose li + li { margin-top: var(--space-2); }
+.prose li::marker { color: var(--accent); }
+.prose blockquote { padding: var(--space-5); border-left: 2px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; background: var(--surface); color: var(--ink); }
+.prose code { padding: 2px 6px; border-radius: 6px; background: var(--surface-2); font-size: 0.9em; color: var(--ink); }
+.prose table { width: 100%; border-collapse: collapse; font-size: var(--fs-body-s); display: block; overflow-x: auto; }
+.prose th, .prose td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.prose th { color: var(--ink); font-weight: 600; }

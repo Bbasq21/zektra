@@ -1,0 +1,51 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import { LEGAL, LEGAL_NAV } from '../data/site';
+import { formatDate } from '../data/blog';
+
+interface Props { title: string; description: string; lead: string; path: string }
+const { title, description, lead, path } = Astro.props;
+---
+<BaseLayout title={title} description={description} breadcrumbs={[{ name: title, path }]}>
+  <Hero eyebrow="Legal" title={title} lead={lead} />
+
+  <section class="section">
+    <div class="container legal">
+      <aside class="legal__aside">
+        <nav aria-label="Documentos legales">
+          <p class="legal__title">Documentos legales</p>
+          <ul class="legal__nav" role="list">
+            {LEGAL_NAV.map((l) => (
+              <li>
+                <a class:list={['legal__link', { 'is-active': l.href === path }]} href={l.href} aria-current={l.href === path ? 'page' : undefined}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <p class="legal__meta">
+          Vigente desde el <time datetime={LEGAL.updated.toISOString().slice(0, 10)}>{formatDate(LEGAL.updated)}</time>
+        </p>
+      </aside>
+
+      <article class="prose">
+        <slot />
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+  .legal__aside { position: sticky; top: calc(var(--header-h) + var(--space-5)); display: flex; flex-direction: column; gap: var(--space-5); font-size: var(--fs-body-s); }
+  .legal__title { margin-bottom: var(--space-3); font-size: var(--fs-caption); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .legal__nav { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; padding: 0; }
+  .legal__link { color: var(--ink-2); text-decoration: none; line-height: 1.4; }
+  .legal__link:hover, .legal__link.is-active { color: var(--accent); }
+  .legal__meta { padding-top: var(--space-5); border-top: 1px solid var(--line); color: var(--muted); line-height: 1.7; }
+
+  @media (max-width: 1024px) {
+    .legal { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    .legal__aside { position: static; }
+  }
+</style>

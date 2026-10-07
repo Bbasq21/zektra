@@ -55,6 +55,17 @@ import { SERVICES } from '../data/services';
           <p class="field__error" id="mensaje-error" hidden></p>
         </div>
 
+        <div class="field">
+          <div class="consent">
+            <input class="consent__control" id="autorizacion" name="autorizacion" type="checkbox" value="si" required />
+            <label class="consent__label" for="autorizacion">
+              Autorizo a Zektra a tratar mis datos personales para responder mi solicitud, según la{' '}
+              <a href="/legal/privacidad/" target="_blank" rel="noopener">Política de tratamiento de datos personales</a>.
+            </label>
+          </div>
+          <p class="field__error" id="autorizacion-error" hidden></p>
+        </div>
+
         <div class="form__honeypot" aria-hidden="true">
           <label for="sitio">No llenes este campo</label>
           <input id="sitio" name="sitio" type="text" tabindex="-1" autocomplete="off" />
@@ -118,6 +129,7 @@ import { SERVICES } from '../data/services';
             ? ''
             : 'Revisa el correo: le falta el @ o el dominio. Ejemplo: nombre@empresa.co',
       mensaje: (v) => (v.trim().length < 10 ? 'Cuéntanos un poco más: con una o dos frases es suficiente.' : ''),
+      autorizacion: (v) => (v ? '' : 'Necesitamos tu autorización para usar tus datos y poder responderte.'),
     };
 
     const showError = (name: string, msg: string) => {
@@ -133,8 +145,13 @@ import { SERVICES } from '../data/services';
 
     Object.keys(rules).forEach((name) => {
       const input = form.elements.namedItem(name) as HTMLInputElement;
-      input?.addEventListener('blur', () => input.value && showError(name, rules[name](input.value)));
-      input?.addEventListener('input', () => input.getAttribute('aria-invalid') === 'true' && showError(name, rules[name](input.value)));
+      const value = () => (input.type === 'checkbox' ? (input.checked ? input.value : '') : input.value);
+      if (input?.type === 'checkbox') {
+        input.addEventListener('change', () => input.getAttribute('aria-invalid') === 'true' && showError(name, rules[name](value())));
+        return;
+      }
+      input?.addEventListener('blur', () => input.value && showError(name, rules[name](value())));
+      input?.addEventListener('input', () => input.getAttribute('aria-invalid') === 'true' && showError(name, rules[name](value())));
     });
 
     form.addEventListener('submit', async (e) => {
@@ -165,7 +182,7 @@ import { SERVICES } from '../data/services';
         status.textContent = '¡Gracias! Recibimos tu mensaje y te responderemos pronto.';
       } catch (err) {
         status.className = 'form__status form__status--error';
-        status.textContent = `${(err as Error).message} Escríbenos directo a brandon@zektra.co.`;
+        status.textContent = `${(err as Error).message} Escríbenos directo a comunicaciones@zektra.co.`;
       } finally {
         submit.disabled = false;
         if (label) label.textContent = 'Enviar mensaje';
@@ -215,6 +232,13 @@ import { SERVICES } from '../data/services';
   .field__control--select option { background: var(--surface-2); color: var(--ink); }
   .field__help { font-size: var(--fs-caption); color: var(--muted); }
   .field__error { font-size: var(--fs-caption); color: var(--danger); }
+
+  .consent { display: flex; gap: var(--space-3); align-items: flex-start; }
+  .consent__control { flex: 0 0 auto; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+  .consent__control:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .consent__control[aria-invalid='true'] { outline: 2px solid var(--danger); outline-offset: 2px; }
+  .consent__label { font-size: var(--fs-body-s); line-height: 1.5; color: var(--ink-2); cursor: pointer; }
+  .consent__label a { color: var(--accent); text-underline-offset: 3px; }
 
   .contact__aside { display: flex; flex-direction: column; gap: var(--space-5); }
   .contact__card { padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }

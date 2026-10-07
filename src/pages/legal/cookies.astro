@@ -1,0 +1,45 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { LEGAL } from '../../data/site';
+---
+<LegalLayout
+  title="Política de cookies"
+  description="Qué cookies y tecnologías similares usa el sitio de Zektra. Hoy no usamos cookies de analítica, publicidad ni seguimiento."
+  lead="Corta y clara: hoy este sitio no usa cookies de analítica, publicidad ni seguimiento."
+  path="/legal/cookies/"
+>
+  <h2 id="que-son">1. Qué son las cookies</h2>
+  <p>
+    Las cookies son pequeños archivos que un sitio guarda en tu navegador para recordar información entre visitas. Hay tecnologías
+    parecidas, como el almacenamiento local del navegador, que cumplen funciones similares.
+  </p>
+
+  <h2 id="cuales">2. Qué cookies usamos</h2>
+  <p>
+    <strong>Ninguna propia.</strong> El sitio de Zektra no instala cookies de analítica, publicidad, redes sociales ni de seguimiento
+    entre sitios, y no usa herramientas como Google Analytics o píxeles publicitarios. Las fuentes tipográficas se sirven desde
+    nuestro propio dominio, sin conectar con terceros.
+  </p>
+  <p>
+    Nuestro proveedor de alojamiento puede usar mecanismos técnicos estrictamente necesarios para entregar el sitio de forma segura
+    (por ejemplo, protección contra tráfico malicioso). No sirven para identificarte ni para seguir tu navegación.
+  </p>
+
+  <h2 id="cambios">3. Si esto cambia</h2>
+  <p>
+    Si en el futuro incorporamos cookies que no sean estrictamente necesarias (por ejemplo, de medición de audiencia), actualizaremos
+    esta política con el detalle de cada una y te pediremos tu consentimiento antes de activarlas.
+  </p>
+
+  <h2 id="control">4. Cómo controlar las cookies</h2>
+  <p>
+    Puedes ver, bloquear o borrar las cookies desde la configuración de tu navegador (Chrome, Safari, Firefox, Edge u otros).
+    Bloquearlas no afecta el funcionamiento de este sitio.
+  </p>
+
+  <h2 id="contacto">5. Contacto</h2>
+  <p>
+    Si tienes preguntas, escríbenos a <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a>. El tratamiento de tus datos personales
+    se explica en la <a href="/legal/privacidad/">Política de tratamiento de datos personales</a>.
+  </p>
+</LegalLayout>

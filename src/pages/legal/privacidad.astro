@@ -1,0 +1,143 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { LEGAL, SITE } from '../../data/site';
+---
+<LegalLayout
+  title="Política de tratamiento de datos personales"
+  description="Cómo Zektra recolecta, usa y protege tus datos personales, y cómo ejercer tus derechos de habeas data según la Ley 1581 de 2012."
+  lead="Qué datos recogemos, para qué los usamos y cómo puedes conocerlos, corregirlos o pedir que los borremos."
+  path="/legal/privacidad/"
+>
+  <p>
+    Esta política explica cómo {LEGAL.holder} («Zektra», «nosotros») trata los datos personales que recibe a través de
+    {' '}<a href={SITE.url}>zektra.co</a>, del correo electrónico y de la relación comercial con clientes y proveedores.
+    Cumple con la Ley Estatutaria 1581 de 2012, el Decreto 1377 de 2013 (compilado en el Decreto Único 1074 de 2015)
+    y demás normas que las modifiquen o complementen.
+  </p>
+
+  <h2 id="responsable">1. Responsable del tratamiento</h2>
+  <ul>
+    <li><strong>Nombre:</strong> {LEGAL.holder}</li>
+    {LEGAL.document && <li><strong>Identificación:</strong> {LEGAL.document}</li>}
+    <li><strong>Domicilio:</strong> {LEGAL.domicile}</li>
+    {LEGAL.address && <li><strong>Dirección:</strong> {LEGAL.address}</li>}
+    <li><strong>Correo:</strong> <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a></li>
+    {LEGAL.phone && <li><strong>Teléfono:</strong> {LEGAL.phone}</li>}
+  </ul>
+
+  <h2 id="definiciones">2. Definiciones</h2>
+  <ul>
+    <li><strong>Dato personal:</strong> cualquier información vinculada o que pueda asociarse a una persona natural determinada o determinable.</li>
+    <li><strong>Titular:</strong> la persona natural cuyos datos son objeto de tratamiento.</li>
+    <li><strong>Tratamiento:</strong> cualquier operación sobre datos personales, como recolección, almacenamiento, uso, circulación o supresión.</li>
+    <li><strong>Autorización:</strong> consentimiento previo, expreso e informado del titular para el tratamiento de sus datos.</li>
+    <li><strong>Encargado del tratamiento:</strong> quien trata datos personales por cuenta del responsable.</li>
+    <li><strong>Transferencia y transmisión:</strong> envío de datos a un responsable (transferencia) o a un encargado (transmisión), dentro o fuera de Colombia.</li>
+  </ul>
+
+  <h2 id="datos">3. Qué datos recolectamos</h2>
+  <ul>
+    <li><strong>Formulario de contacto:</strong> nombre, correo electrónico, empresa (opcional), servicio de interés y el mensaje que nos escribes.</li>
+    <li><strong>Correo y llamadas:</strong> los datos de contacto y la información que compartas al escribirnos o en reuniones.</li>
+    <li><strong>Clientes y proveedores:</strong> datos de identificación, contacto, facturación y los necesarios para ejecutar el contrato.</li>
+    <li><strong>Datos técnicos:</strong> al visitar el sitio, nuestro proveedor de alojamiento registra de forma automática datos como la dirección IP, el navegador y las páginas solicitadas, con fines de seguridad y funcionamiento.</li>
+  </ul>
+  <p>
+    No solicitamos datos sensibles (como origen racial, salud, orientación sexual, convicciones religiosas o políticas,
+    ni datos biométricos). Te pedimos no incluirlos en tus mensajes. Si los recibimos, no los usaremos y los eliminaremos.
+  </p>
+
+  <h2 id="finalidades">4. Para qué usamos tus datos</h2>
+  <ul>
+    <li>Responder tus mensajes, consultas y solicitudes de cotización.</li>
+    <li>Preparar, enviar y hacer seguimiento a propuestas comerciales.</li>
+    <li>Ejecutar los contratos de servicios: comunicación del proyecto, entregas, soporte y facturación.</li>
+    <li>Cumplir obligaciones legales, contables y tributarias.</li>
+    <li>Enviarte información sobre nuestros servicios o contenidos, solo si lo autorizaste. Puedes pedir que dejemos de hacerlo en cualquier momento.</li>
+    <li>Mantener la seguridad del sitio y prevenir usos fraudulentos.</li>
+  </ul>
+  <p>No vendemos ni alquilamos tus datos personales a terceros.</p>
+
+  <h2 id="derechos">5. Tus derechos</h2>
+  <p>Como titular de los datos tienes derecho a:</p>
+  <ul>
+    <li>Conocer, actualizar y rectificar tus datos personales.</li>
+    <li>Pedir prueba de la autorización que nos diste, salvo cuando la ley no la exige.</li>
+    <li>Ser informado sobre el uso que les hemos dado.</li>
+    <li>Presentar quejas ante la Superintendencia de Industria y Comercio (SIC) por infracciones a la ley, después de haber agotado el trámite de consulta o reclamo ante nosotros.</li>
+    <li>Revocar la autorización o pedir la supresión de tus datos, cuando no exista un deber legal o contractual de conservarlos.</li>
+    <li>Acceder gratis a tus datos personales que sean objeto de tratamiento.</li>
+  </ul>
+
+  <h2 id="procedimiento">6. Cómo ejercer tus derechos</h2>
+  <p>
+    Las consultas y reclamos se atienden en <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a>, canal responsable de
+    la atención de peticiones relacionadas con datos personales. En tu solicitud incluye tu nombre, el medio para responderte,
+    la descripción de lo que pides y, si aplica, los documentos que quieras hacer valer. Podemos pedirte que verifiques tu
+    identidad antes de responder.
+  </p>
+  <h3>Consultas</h3>
+  <p>
+    Respondemos en un máximo de diez (10) días hábiles desde que la recibimos. Si no es posible en ese plazo, te informaremos
+    el motivo y la fecha de respuesta, que no superará cinco (5) días hábiles adicionales.
+  </p>
+  <h3>Reclamos</h3>
+  <p>
+    Si consideras que tus datos deben corregirse, actualizarse o suprimirse, o que incumplimos la ley, puedes presentar un reclamo.
+    Si está incompleto, te pediremos dentro de los cinco (5) días siguientes que lo completes; si pasan dos (2) meses sin que lo hagas,
+    entenderemos que desististe. Respondemos en un máximo de quince (15) días hábiles desde el día siguiente a su recibo completo.
+    Si no es posible en ese plazo, te informaremos el motivo y la fecha de respuesta, que no superará ocho (8) días hábiles adicionales.
+  </p>
+
+  <h2 id="autorizacion">7. Autorización</h2>
+  <p>
+    Pedimos tu autorización de forma previa, expresa e informada. En el formulario de contacto la das al marcar la casilla de
+    aceptación antes de enviar el mensaje; cuando nos escribes directo por correo, la das con esa conducta inequívoca después de
+    haber tenido acceso a esta política. Conservamos prueba de la autorización.
+  </p>
+
+  <h2 id="encargados">8. Proveedores y transferencia internacional</h2>
+  <p>
+    Para operar el sitio y el correo usamos proveedores tecnológicos que actúan como encargados y pueden almacenar los datos
+    en servidores fuera de Colombia, principalmente en Estados Unidos:
+  </p>
+  <ul>
+    <li><strong>Vercel Inc.:</strong> alojamiento del sitio web y del formulario de contacto.</li>
+    <li><strong>Resend:</strong> envío del correo que genera el formulario de contacto.</li>
+    <li>El proveedor de correo electrónico que usamos para comunicarnos contigo.</li>
+  </ul>
+  <p>
+    Con la aceptación de esta política autorizas esa transmisión internacional. Elegimos proveedores que aplican medidas de
+    seguridad adecuadas y que solo usan los datos para prestarnos el servicio. Solo compartiremos tus datos con autoridades
+    cuando una norma o una orden judicial o administrativa lo exija.
+  </p>
+
+  <h2 id="seguridad">9. Seguridad</h2>
+  <p>
+    Aplicamos medidas técnicas, humanas y administrativas razonables para proteger tus datos contra pérdida, consulta, uso o
+    acceso no autorizado: conexión cifrada (HTTPS), acceso restringido a las cuentas donde se almacenan los datos y
+    autenticación segura. Ningún sistema es infalible; si detectamos un incidente que afecte tus datos, lo informaremos a la SIC
+    y a los titulares afectados según la ley.
+  </p>
+
+  <h2 id="menores">10. Datos de niños, niñas y adolescentes</h2>
+  <p>
+    Nuestros servicios están dirigidos a empresas y personas mayores de edad. No recolectamos de forma intencional datos de menores.
+    Si un menor nos escribe, eliminaremos sus datos salvo que su representante legal autorice el tratamiento, respetando siempre
+    su interés superior.
+  </p>
+
+  <h2 id="conservacion">11. Tiempo de conservación</h2>
+  <p>
+    Conservamos los datos mientras sean necesarios para las finalidades descritas: los de contactos comerciales, hasta por dos (2)
+    años desde la última comunicación; los de clientes y proveedores, durante la relación contractual y el tiempo que exijan las
+    normas contables, tributarias y comerciales (en general, diez (10) años). Cumplido ese plazo, los suprimimos o anonimizamos.
+  </p>
+
+  <h2 id="vigencia">12. Cambios y vigencia</h2>
+  <p>
+    Esta política rige desde la fecha indicada en esta página. Las bases de datos estarán vigentes mientras Zektra desarrolle su
+    actividad. Si hacemos cambios sustanciales, los publicaremos aquí y, cuando cambien las finalidades, te pediremos una nueva
+    autorización.
+  </p>
+</LegalLayout>
