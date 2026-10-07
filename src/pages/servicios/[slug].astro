@@ -5,23 +5,24 @@ import Button from '../../components/Button.astro';
 import Icon from '../../components/Icon.astro';
 import SectionHead from '../../components/SectionHead.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
-import Process from '../../components/Process.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import { SERVICES, type Service } from '../../data/services';
 import { CASES } from '../../data/cases';
+import { SERVICE_DETAILS } from '../../data/service-details';
 import CaseCard from '../../components/CaseCard.astro';
 import { getPosts } from '../../data/blog';
 import { SITE } from '../../data/site';
 
 export function getStaticPaths() {
-  return SERVICES.map((service, index) => ({ params: { slug: service.id }, props: { service, index } }));
+  return SERVICES.map((service) => ({ params: { slug: service.id }, props: { service } }));
 }
 
-interface Props { service: Service; index: number }
-const { service, index } = Astro.props;
+interface Props { service: Service }
+const { service } = Astro.props;
 const url = new URL(`/servicios/${service.id}/`, Astro.site).toString();
 const related = SERVICES.filter((s) => s.id !== service.id).slice(0, 3);
 const relatedIndex = (s: Service) => SERVICES.findIndex((x) => x.id === s.id);
+const detail = SERVICE_DETAILS[service.id];
 const cases = CASES.filter((c) => c.service === service.id);
 const faqs = service.faqs ?? [];
 const posts = (await getPosts()).filter((p) => p.data.service === service.id);
@@ -38,7 +39,7 @@ const serviceSchema = {
   '@id': `${url}#servicio`,
   name: service.title,
   serviceType: service.title,
-  description: `${service.summary} ${service.description}`,
+  description: detail ? `${detail.intro} ${service.description}` : `${service.summary} ${service.description}`,
   url,
   provider: { '@id': `${new URL('/', Astro.site)}#organizacion` },
   areaServed: [
@@ -62,7 +63,7 @@ const serviceSchema = {
   ]}
   schema={[serviceSchema, ...faqSchema]}
 >
-  <Hero eyebrow={`Servicio ${String(index + 1).padStart(2, '0')}`} title={service.heading} lead={service.summary}>
+  <Hero eyebrow="Servicios" title={service.heading} lead={service.summary}>
     <Button href={`/contacto/?servicio=${service.id}`} size="lg" arrow>Cotizar este servicio</Button>
     <Button href="/servicios/" variant="ghost" size="lg">Ver todos los servicios</Button>
   </Hero>
@@ -81,7 +82,8 @@ const serviceSchema = {
         <div class="service-page__main">
           <span class="service-page__icon" aria-hidden="true"><Icon name={service.icon} size={28} /></span>
           <h2 class="service-page__title" data-split>Qué hacemos</h2>
-          <p class="service-page__text" data-reveal>{service.description}</p>
+          {detail && <p class="service-page__text service-page__text--lead" data-reveal>{detail.intro}</p>}
+          {!detail && <p class="service-page__text" data-reveal>{service.description}</p>}
           <p class="service-page__text" data-reveal>
             Trabajamos desde {SITE.city}. Usamos inteligencia artificial para ir más rápido,
             y cada entrega pasa por revisión humana antes de llegar a tus manos.
@@ -102,12 +104,42 @@ const serviceSchema = {
     </div>
   </section>
 
-  <section class="section section--surface">
-    <div class="container service-page__process">
-      <SectionHead eyebrow="Cómo trabajamos" title="Un proceso claro, sin sorpresas" lead="Sabes en qué etapa está tu proyecto, qué sigue y qué necesitamos de ti." />
-      <Process />
-    </div>
-  </section>
+  {detail && (
+    <section class="section section--surface">
+      <div class="container service-page__needs">
+        <SectionHead eyebrow="Cuándo lo necesitas" title="Señales de que es el momento" />
+        <ul class="needs" role="list">
+          {detail.needs.map((n) => (
+            <li class="needs__item" data-reveal>
+              <span class="needs__icon" aria-hidden="true"><Icon name="check" size={18} /></span>
+              <span>{n}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {detail && (
+    <section class="section">
+      <div class="container">
+        <SectionHead eyebrow="Cómo lo trabajamos" title="Paso a paso, sin sorpresas" lead="Sabes en qué etapa está tu proyecto, qué sigue y qué necesitamos de ti." />
+        <ol class="approach" role="list">
+          {detail.approach.map((a, i) => (
+            <li class="approach__step" data-reveal>
+              <span class="approach__number">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="approach__title">{a.title}</h3>
+              <p class="approach__text">{a.text}</p>
+            </li>
+          ))}
+        </ol>
+        <div class="outcome" data-reveal>
+          <h2 class="outcome__title">Qué recibes al final</h2>
+          <p class="outcome__text">{detail.outcome}</p>
+        </div>
+      </div>
+    </section>
+  )}
 
   {cases.length > 0 && (
     <section class="section">
@@ -134,7 +166,7 @@ const serviceSchema = {
   {faqs.length > 0 && (
     <section class="section">
       <div class="container container--narrow">
-        <SectionHead eyebrow="Preguntas frecuentes" title={`Lo que suelen preguntarnos sobre ${service.title.toLowerCase()}`} />
+        <SectionHead eyebrow="Preguntas frecuentes" title="Lo que suelen preguntarnos" />
         <div class="faq">
           {faqs.map((f) => (
             <details class="faq__item">
@@ -180,10 +212,29 @@ const serviceSchema = {
   .service-page__item::before { content: ''; position: absolute; left: 0; top: 0.8em; width: 12px; height: 2px; border-radius: 2px; background: var(--gradient-oficial); }
   .service-page__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; }
 
-  .service-page__process { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
+  .service-page__text--lead { color: var(--ink); }
+
+  .service-page__needs { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
+  .service-page__needs :global(.section-head) { margin-bottom: 0; }
+  .needs { display: flex; flex-direction: column; gap: var(--space-4); margin: 0; padding: 0; }
+  .needs__item { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: var(--space-4); align-items: start; padding-bottom: var(--space-4); border-bottom: 1px solid var(--line); color: var(--ink); font-size: var(--fs-lead); line-height: 1.5; }
+  .needs__item:last-child { border-bottom: 0; padding-bottom: 0; }
+  .needs__icon { display: grid; place-items: center; width: 32px; height: 32px; margin-top: 2px; border-radius: 999px; background: var(--surface-2); color: var(--accent); }
+
+  .approach { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-5); margin: 0; padding: 0; counter-reset: none; }
+  .approach__step { position: relative; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6) var(--space-5) var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+  .approach__step::before { content: ''; position: absolute; inset: -1px -1px auto; height: 2px; border-radius: var(--radius-md) var(--radius-md) 0 0; background: var(--gradient-oficial); opacity: 0.8; }
+  .approach__number { font-size: var(--fs-h3); font-weight: 600; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .approach__title { font-size: var(--fs-h4); line-height: 1.3; }
+  .approach__text { color: var(--ink-2); font-size: var(--fs-body-s); line-height: 1.6; }
+
+  .outcome { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-7); align-items: baseline; margin-top: var(--space-7); padding: var(--space-6) var(--space-7); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-2); }
+  .outcome__title { font-size: var(--fs-h3); }
+  .outcome__text { color: var(--ink); font-size: var(--fs-lead); line-height: 1.55; }
   .service-page__posts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); margin: var(--space-4) 0 0; padding: 0; }
   .service-page__post { display: block; height: 100%; padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font-weight: 500; text-decoration: none; }
   .service-page__post:hover { border-color: var(--line-strong); color: var(--accent); }
+  @media (max-width: 640px) { .approach { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 860px) { .service-page__posts { grid-template-columns: minmax(0, 1fr); } }
   .service-page__cases { display: flex; flex-direction: column; gap: var(--space-6); }
   .faq { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
@@ -194,7 +245,9 @@ const serviceSchema = {
   .service-page__related { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
 
   @media (max-width: 1024px) {
-    .service-page, .service-page__process { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    .service-page, .service-page__needs, .outcome { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    .approach { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .outcome { gap: var(--space-4); padding: var(--space-6); }
     .service-page__related { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
