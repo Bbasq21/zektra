@@ -1,7 +1,9 @@
 ---
 import type { Case } from '../data/cases';
+import { SERVICES } from '../data/services';
 interface Props { item: Case; index: number; detailed?: boolean }
 const { item, index, detailed = false } = Astro.props;
+const service = SERVICES.find((s) => s.id === item.service);
 ---
 <article class:list={['case-card', `case-card--${item.accent}`, detailed && 'case-card--detailed']} id={item.id} data-reveal>
   <div class="case-card__visual" aria-hidden="true">
@@ -35,10 +37,15 @@ const { item, index, detailed = false } = Astro.props;
     <ul class="case-card__tags" role="list">
       {item.tags.map((t) => <li class="tag">{t}</li>)}
     </ul>
+    {detailed && service && (
+      <a class="case-card__service" href={`/servicios/${service.id}/`}>Servicio: {service.title} <span aria-hidden="true">→</span></a>
+    )}
   </div>
 </article>
 
 <style>
+  .case-card__service { align-self: start; color: var(--accent); font-size: var(--fs-body-s); font-weight: 500; text-decoration: none; }
+  .case-card__service:hover { text-decoration: underline; text-underline-offset: 4px; }
   .case-card {
     --case: var(--menta);
     display: grid;

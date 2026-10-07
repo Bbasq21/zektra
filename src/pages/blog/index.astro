@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getPosts, formatDate, readingTime } from '../../data/blog';
+
+const posts = await getPosts();
+const blogUrl = new URL('/blog/', Astro.site).toString();
+const blogSchema = {
+  '@type': 'Blog',
+  '@id': `${blogUrl}#blog`,
+  name: 'Blog de Zektra',
+  url: blogUrl,
+  inLanguage: 'es-CO',
+  publisher: { '@id': `${new URL('/', Astro.site)}#organizacion` },
+  blogPost: posts.map((p) => ({
+    '@type': 'BlogPosting',
+    headline: p.data.title,
+    url: new URL(`/blog/${p.id}/`, Astro.site).toString(),
+    datePublished: p.data.pubDate.toISOString(),
+  })),
+};
+---
+<BaseLayout
+  title="Blog: software, SEO y producto digital"
+  description="Guías prácticas sobre software a la medida, SEO técnico, migraciones y diseño UX/UI, escritas desde la experiencia de Zektra en proyectos reales."
+  breadcrumbs={[{ name: 'Blog', path: '/blog/' }]}
+  schema={[blogSchema]}
+>
+  <Hero
+    eyebrow="Blog"
+    title="Lo que aprendemos construyendo <strong>productos digitales</strong>"
+    lead="Guías prácticas sobre software, SEO y diseño para que tomes mejores decisiones antes de invertir."
+  />
+
+  <section class="section">
+    <div class="container">
+      {posts.length === 0 ? (
+        <p class="blog-empty">Pronto publicaremos los primeros artículos.</p>
+      ) : (
+        <ul class="post-list" role="list">
+          {posts.map((p) => (
+            <li>
+              <a class="post-card" href={`/blog/${p.id}/`} data-reveal>
+                <p class="post-card__meta">
+                  <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
+                  <span aria-hidden="true">·</span>
+                  <span>{readingTime(p.body)} min de lectura</span>
+                </p>
+                <h2 class="post-card__title">{p.data.title}</h2>
+                <p class="post-card__text">{p.data.description}</p>
+                {p.data.tags.length > 0 && (
+                  <ul class="post-card__tags" role="list">
+                    {p.data.tags.map((t) => <li class="tag">{t}</li>)}
+                  </ul>
+                )}
+                <span class="post-card__more">Leer artículo →</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .blog-empty { color: var(--ink-2); }
+  .post-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); margin: 0; padding: 0; }
+  .post-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    height: 100%;
+    padding: var(--space-6);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform var(--dur, 0.3s) ease, border-color var(--dur, 0.3s) ease, box-shadow var(--dur, 0.3s) ease;
+  }
+  .post-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    background: var(--gradient-oficial);
+    opacity: 0;
+    transition: opacity var(--dur, 0.3s) ease;
+  }
+  .post-card:hover { transform: translateY(-2px); border-color: var(--line-strong); box-shadow: 0 0 32px -12px var(--accent); }
+  .post-card:hover::before { opacity: 1; }
+  .post-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .post-card__meta { display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: var(--fs-caption); color: var(--muted); }
+  .post-card__title { font-size: var(--fs-h3); line-height: 1.25; }
+  .post-card__text { color: var(--ink-2); }
+  .post-card__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; }
+  .post-card__more { margin-top: auto; color: var(--accent); font-weight: 500; }
+
+  @media (max-width: 860px) { .post-list { grid-template-columns: minmax(0, 1fr); } }
+</style>
