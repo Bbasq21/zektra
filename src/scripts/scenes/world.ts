@@ -94,6 +94,17 @@ const world: SceneFactory = (host, opts) => {
   };
 
   const geo = <T extends BufferGeometry>(g: T) => (geos.push(g), g);
+  /** Geometrías compartidas: cientos de cajas y cilindros repiten medidas, así que una
+      misma forma se sube a la GPU una sola vez. */
+  const geoCache = new Map<string, BufferGeometry>();
+  const shared = (key: string, make: () => BufferGeometry) => {
+    let g = geoCache.get(key);
+    if (!g) {
+      g = geo(make());
+      geoCache.set(key, g);
+    }
+    return g;
+  };
 
   /** Material de arcilla. `glow` lo vuelve emisivo (ventanas, pantallas, luces). */
   const mat = (color: string, glow = 0, rough = 0.82) => {
@@ -115,10 +126,14 @@ const world: SceneFactory = (host, opts) => {
     return m;
   };
 
-  const box = (w: number, h: number, d: number, c: string, glow = 0) => new Mesh(geo(new BoxGeometry(w, h, d)), mat(c, glow));
-  const cyl = (rt: number, rb: number, h: number, c: string, seg = 10, glow = 0) => new Mesh(geo(new CylinderGeometry(rt, rb, h, seg)), mat(c, glow));
-  const ball = (r: number, c: string, glow = 0, ws = 10, hs = 8) => new Mesh(geo(new SphereGeometry(r, ws, hs)), mat(c, glow));
-  const cone = (r: number, h: number, c: string, seg = 8, glow = 0) => new Mesh(geo(new ConeGeometry(r, h, seg)), mat(c, glow));
+  const box = (w: number, h: number, d: number, c: string, glow = 0) =>
+    new Mesh(shared(`b${w},${h},${d}`, () => new BoxGeometry(w, h, d)), mat(c, glow));
+  const cyl = (rt: number, rb: number, h: number, c: string, seg = 10, glow = 0) =>
+    new Mesh(shared(`c${rt},${rb},${h},${seg}`, () => new CylinderGeometry(rt, rb, h, seg)), mat(c, glow));
+  const ball = (r: number, c: string, glow = 0, ws = 10, hs = 8) =>
+    new Mesh(shared(`s${r},${ws},${hs}`, () => new SphereGeometry(r, ws, hs)), mat(c, glow));
+  const cone = (r: number, h: number, c: string, seg = 8, glow = 0) =>
+    new Mesh(shared(`k${r},${h},${seg}`, () => new ConeGeometry(r, h, seg)), mat(c, glow));
 
   function put<T extends Object3D>(parent: Object3D, obj: T, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0): T {
     obj.position.set(x, y, z);
@@ -622,7 +637,7 @@ const world: SceneFactory = (host, opts) => {
   /* ---------- Recorrido: dónde está cada isla y desde dónde la mira la cámara */
   const BUILDERS = [origen, estrategia, diseno, desarrollo, evolucion, proyecto];
   const SPOTS: { at: [number, number, number]; close: [number, number, number]; focus: [number, number, number] }[] = [
-    { at: [0, 0, 0], close: [3.8, 4.4, 11], focus: [0, 1.5, 2.5] },
+    { at: [0, 0, 0], close: [4.6, 5.4, 13], focus: [0, 1.4, 2.0] },
     { at: [28, -2, -24], close: [1.5, 4.6, 10.5], focus: [0, 2.0, -2.0] },
     { at: [2, 1, -50], close: [0, 4.2, 10.5], focus: [0, 2.6, -1.2] },
     { at: [-26, -1, -74], close: [3, 5.5, 13], focus: [0.5, 1.8, -0.5] },
@@ -653,7 +668,7 @@ const world: SceneFactory = (host, opts) => {
   const lastKey = keyPos.length - 1;
 
   /* ---------- Montaje (en el primer cuadro, cuando ya existe el renderer) */
-  const pieces: { group: Group; base: Vector3; ticks: Tick[] }[] = [];
+  const pieces: { group: Group; base: Vector3; ticks: Tick[]; fill: PointLight; fillIntensity: number }[] = [];
   const packets: { mesh: Mesh; curve: QuadraticBezierCurve3; offset: number }[] = [];
   const clouds: Group[] = [];
   let starGeo: BufferGeometry | null = null;
@@ -677,11 +692,11 @@ const world: SceneFactory = (host, opts) => {
       const base = v(SPOTS[i].at);
       piece.group.position.copy(base);
       scene.add(piece.group);
-      pieces.push({ group: piece.group, base, ticks: piece.ticks });
       // Luz de relleno de cada isla, teñida con su color
       const fill = new PointLight(new Color(accent).lerp(new Color('#ffffff'), 0.55), 70, 26, 1.3);
       fill.position.copy(base).add(new Vector3(1.5, 8, 6));
       scene.add(fill);
+      pieces.push({ group: piece.group, base, ticks: piece.ticks, fill, fillIntensity: fill.intensity });
     }
 
     // Hilo de datos entre islas: puntos con el gradiente oficial y paquetes que viajan
@@ -753,6 +768,7 @@ const world: SceneFactory = (host, opts) => {
   }
 
   /* ---------- Cámara */
+  const VISIBLE_RANGE = 125; // un poco más que el final de la niebla (118)
   let key: number | null = null;
   let drift = 0;
   const cp = new Vector3();
@@ -768,7 +784,7 @@ const world: SceneFactory = (host, opts) => {
       const pos = chapters.length ? readStory(chapters) : { index: 0, s: 0 };
       const target = Math.min(lastKey, chapterKey(Math.min(pos.index, count - 1), pos.s, count));
       const targetDrift = holdDrift(pos.index, pos.s, count);
-      const a = 1 - Math.pow(1 - 0.12, Math.max(dt, 0) * 60);
+      const a = 1 - Math.pow(1 - 0.16, Math.max(dt, 0) * 60);
       if (key === null || opts.reduced) {
         key = target;
         drift = targetDrift;
@@ -788,14 +804,24 @@ const world: SceneFactory = (host, opts) => {
       camera.position.copy(cp);
       camera.lookAt(ct);
 
+      /* Más allá de la niebla no se ve nada: las islas lejanas no se dibujan ni se animan,
+         y su luz se apaga (sin recompilar shaders). Normalmente quedan 2–3 islas activas. */
       pieces.forEach((p, i) => {
+        const near = p.base.distanceTo(camera.position) < VISIBLE_RANGE;
+        p.group.visible = near;
+        p.fill.intensity = near ? p.fillIntensity : 0;
+        if (!near) return;
         p.group.position.y = p.base.y + Math.sin(t * 0.5 + i * 1.7) * 0.22;
         p.ticks.forEach((f) => f(t));
       });
-      packets.forEach((p) => p.curve.getPoint(0.04 + ((t * 0.08 + p.offset) % 1) * 0.92, p.mesh.position));
+      packets.forEach((p) => {
+        p.curve.getPoint(0.04 + ((t * 0.08 + p.offset) % 1) * 0.92, p.mesh.position);
+        p.mesh.visible = p.mesh.position.distanceTo(camera.position) < VISIBLE_RANGE;
+      });
       clouds.forEach((c, k) => {
         c.position.x += dt * (0.25 + (k % 3) * 0.1);
         if (c.position.x > 60) c.position.x = -50;
+        c.visible = c.position.distanceTo(camera.position) < VISIBLE_RANGE;
       });
     },
     resize(stage) {

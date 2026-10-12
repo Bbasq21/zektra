@@ -56,11 +56,11 @@ export function holdDrift(index: number, s: number, n: number) {
   return Math.sin(((s - a) / (b - a)) * Math.PI);
 }
 
-/** La tarjeta se ve mientras la cámara está llegando o quieta, y se va antes del vuelo. */
+/** La tarjeta se ve mientras la cámara está llegando o quieta, y se va apenas empieza el vuelo. */
 export function cardVisible(index: number, s: number, n: number) {
-  if (index === 0) return s < 0.78;
+  if (index === 0) return s < 0.68;
   if (index >= n - 1) return s > 0.15;
-  return s > 0.15 && s < 0.78;
+  return s > 0.15 && s < 0.68;
 }
 
 /** Punto de scroll donde el capítulo tiene la cámara quieta y la tarjeta a la vista. */
