@@ -252,8 +252,8 @@ const world: SceneFactory = (host, opts) => {
     ];
     terr.forEach(([w, h, d, z, c]) => put(g, box(w, h, d, c), 0, h / 2, z));
     const rows: [number, number, number[]][] = [
-      [1, -2.7, [-4.3, -2.5, 2.4, 4.3]],
-      [2, -3.95, [-3.3, -1.2, 1.1, 3.3]],
+      [1, -2.7, [-4.1, -2.4, 1.6, 3.2]],
+      [2, -3.95, [-3.3, -1.2, 1.1, 2.9]],
       [3, -5.4, [-2.1, 0, 2.1]],
     ];
     const roofs = [C.coral, C.ladera, '#7A2F5A'];
@@ -286,13 +286,69 @@ const world: SceneFactory = (host, opts) => {
     put(g, cyl(0.28, 0.3, 0.45, C.coral, 10), 0, 0.385, 3.7);
     put(g, person(C.violeta), 0, 0.6, 3.7, 0, Math.PI, 0);
 
-    ([[-4.9, 1.4, 2.8], [5.1, 1.0, 2.6], [-2.8, 4.7, 2.1], [4.2, 4.3, 2.2]] as const).forEach(([x, z, h]) => put(g, palm(h), x, 0, z, 0, rnd() * 6, 0));
-    lamp(g, -2.2, 4.4);
-    lamp(g, 2.6, 5.2);
-    lamp(g, -5.6, -0.6);
+    ([[-4.3, 1.6, 2.8], [5.1, 1.0, 2.6], [-3.4, 4.4, 2.1], [4.6, 4.0, 2.2]] as const).forEach(([x, z, h]) => put(g, palm(h), x, 0, z, 0, rnd() * 6, 0));
+    lamp(g, -2.2, 4.6);
+    lamp(g, 2.6, 5.0);
+    lamp(g, -4.2, -0.9);
+
+    // Edificio Coltejer: la torre esbelta con remate en punta de aguja, sobre la primera ladera
+    const coltejer = new Group();
+    const torreH = 7.4;
+    put(coltejer, box(1.5, torreH, 1.0, '#2A2F6E'), 0, torreH / 2, 0);
+    for (let r = 0; r < 13; r++) {
+      const y = 0.55 + r * 0.52;
+      const lit = (r * 7) % 5 !== 0; // alguna fila apagada para que no sea un bloque de luz
+      put(coltejer, box(1.2, 0.09, 0.03, lit ? C.ambar : C.ladera, lit ? 0.9 : 0), 0, y, 0.51);
+      put(coltejer, box(0.03, 0.09, 0.76, lit ? C.ambar : C.ladera, lit ? 0.9 : 0), 0.76, y, 0);
+      put(coltejer, box(0.03, 0.09, 0.76, lit ? C.ambar : C.ladera, lit ? 0.9 : 0), -0.76, y, 0);
+    }
+    // El remate: un cincel con la cara frontal vertical y la trasera inclinada hasta la punta
+    const needle = geo(new CylinderGeometry(0, 1, 2.6, 4));
+    needle.rotateY(Math.PI / 4);
+    const np = needle.attributes.position as Float32BufferAttribute;
+    for (let k = 0; k < np.count; k++) {
+      // vértices del ápice: llevarlos al borde frontal; base: ajustarla a la planta de la torre
+      if (np.getY(k) > 1.2) np.setXYZ(k, 0, 1.3, 0.5);
+      else np.setXYZ(k, Math.sign(np.getX(k)) * 0.75, -1.3, Math.sign(np.getZ(k)) * 0.5);
+    }
+    needle.computeVertexNormals();
+    put(coltejer, new Mesh(needle, mat('#2A2F6E')), 0, torreH + 1.3, 0);
+    put(coltejer, box(0.9, 0.5, 0.05, C.ladera), 0, torreH + 0.55, 0.49); // el «ojo» de la aguja
+    put(coltejer, new Mesh(geo(new SphereGeometry(0.07, 6, 5)), neon(C.magenta)), 0, torreH + 2.62, 0.5);
+    put(g, coltejer, 4.9, 1, -3.2, 0, 0.08, 0);
+
+    // Metro de Medellín: viaducto elevado sobre pilares por el borde izquierdo y un tren de
+    // tres vagones que va y viene (en la ciudad real el Metrocable conecta con el Metro)
+    const MX = -5.6;
+    const MY = 2.5;
+    [-3.8, -1.3, 1.3, 3.8].forEach((z) => {
+      put(g, cyl(0.17, 0.22, MY, C.papel, 8), MX, MY / 2, z);
+      put(g, box(1.3, 0.22, 0.5, C.papel), MX, MY - 0.11, z);
+    });
+    put(g, box(1.3, 0.3, 10.6, C.papel), MX, MY + 0.15, 0);
+    put(g, box(1.34, 0.05, 10.6, '#3A3F7E'), MX, MY + 0.32, 0);
+    put(g, box(0.06, 0.26, 10.6, C.gris), MX - 0.62, MY + 0.43, 0);
+    put(g, box(0.06, 0.26, 10.6, C.gris), MX + 0.62, MY + 0.43, 0);
+    [-0.25, 0.25].forEach((dx) => put(g, box(0.05, 0.04, 10.6, C.maquina), MX + dx, MY + 0.32, 0));
+    const train = new Group();
+    [-1.3, 0, 1.3].forEach((z, k) => {
+      const car = new Group();
+      put(car, box(0.8, 0.55, 1.2, C.ink), 0, 0.3, 0);
+      put(car, box(0.82, 0.1, 1.22, C.menta, 0.8), 0, 0.17, 0); // la franja verde de los trenes
+      put(car, box(0.84, 0.18, 0.95, C.ladera), 0, 0.42, 0);    // ventanas corridas
+      put(car, box(0.7, 0.06, 1.1, C.gris), 0, 0.6, 0);
+      if (k === 0) put(car, box(0.4, 0.2, 0.06, C.ambar, 1.6), 0, 0.25, -0.62); // faros
+      put(train, car, 0, 0, z);
+    });
+    put(g, train, MX, MY + 0.36, 0);
+    ticks.push((t) => {
+      // Avanza, se detiene un momento en cada extremo (como en una estación) y vuelve
+      const c = Math.sin(t * 0.3);
+      train.position.z = Math.sign(c) * Math.min(1, Math.abs(c) * 1.25) * 4.2;
+    });
 
     // Metrocable entre dos torres, con la cabina yendo y viniendo
-    const A = new Vector3(-6.2, 5.2, 0.6);
+    const A = new Vector3(-6.8, 5.2, 0.6);
     const B = new Vector3(6.1, 7.2, -0.4);
     put(g, box(0.3, 5.2, 0.3, C.ladera), A.x, 2.6, A.z);
     put(g, box(1.2, 0.16, 0.16, C.ladera), A.x, 5.2, A.z);
@@ -637,7 +693,7 @@ const world: SceneFactory = (host, opts) => {
   /* ---------- Recorrido: dónde está cada isla y desde dónde la mira la cámara */
   const BUILDERS = [origen, estrategia, diseno, desarrollo, evolucion, proyecto];
   const SPOTS: { at: [number, number, number]; close: [number, number, number]; focus: [number, number, number] }[] = [
-    { at: [0, 0, 0], close: [4.6, 5.4, 13], focus: [0, 1.4, 2.0] },
+    { at: [0, 0, 0], close: [0.8, 8.6, 18.5], focus: [1.4, 4.3, -0.8] },
     { at: [28, -2, -24], close: [1.5, 4.6, 10.5], focus: [0, 2.0, -2.0] },
     { at: [2, 1, -50], close: [0, 4.2, 10.5], focus: [0, 2.6, -1.2] },
     { at: [-26, -1, -74], close: [3, 5.5, 13], focus: [0.5, 1.8, -0.5] },
