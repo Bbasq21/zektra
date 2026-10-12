@@ -81,6 +81,8 @@ export function createStage(
         running = false;
         cancelAnimationFrame(raf);
         window.removeEventListener('pointermove', onPointer);
+        // Avisa a la página por si necesita una alternativa sin escena (p. ej. /historia/).
+        host.dispatchEvent(new CustomEvent('scene:frozen', { bubbles: true }));
         return;
       }
     }
