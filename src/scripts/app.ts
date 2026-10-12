@@ -109,7 +109,12 @@ function splitWords(el: HTMLElement) {
     });
     node.replaceWith(frag);
   });
-  el.setAttribute('aria-label', label);
+  /* Texto íntegro para lectores de pantalla: aria-label no está permitido en <p>/<h*> sin rol,
+     así que va en un span visualmente oculto y las palabras animadas quedan aria-hidden. */
+  const sr = document.createElement('span');
+  sr.className = 'visually-hidden';
+  sr.textContent = label;
+  el.prepend(sr);
   return inners;
 }
 
@@ -135,7 +140,7 @@ function initSplits() {
 function initReveals() {
   const heroItems = document.querySelectorAll<HTMLElement>('[data-hero-item]');
   if (heroItems.length) {
-    gsap.fromTo(heroItems, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'expo.out', stagger: 0.12, delay: 0.45 });
+    gsap.fromTo(heroItems, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.1, delay: 0.25 });
   }
 
   document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
@@ -168,7 +173,7 @@ function initReveals() {
   document.querySelectorAll<HTMLElement>('[data-scrub-text]').forEach((el) => {
     const words = splitWords(el);
     if (!words.length) return;
-    gsap.fromTo(words, { opacity: 0.18 }, { opacity: 1, stagger: 0.05, ease: 'none', scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: true } });
+    gsap.fromTo(words, { opacity: 0.45 }, { opacity: 1, stagger: 0.05, ease: 'none', scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: true } });
   });
 
   document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
