@@ -413,6 +413,40 @@ const world: SceneFactory = (host, opts) => {
     put(g, cyl(0.02, 0.02, 1.2, C.gris, 4), 1.4, 3.7, 0.7);
     put(g, cone(0.45, 0.4, C.maquina, 10), 1.4, 3.0, 0.7);
     put(g, ball(0.16, C.ambar, 2.4, 8, 6), 1.4, 2.82, 0.7);
+
+    // Distrito de innovación alrededor del taller: Ruta N detrás, las cajas rojas del Parque
+    // Explora a la derecha y los módulos hexagonales del Orquideorama en la esquina del frente.
+    const glass = new MeshStandardMaterial({ color: C.menta, transparent: true, opacity: 0.55, roughness: 0.15, metalness: 0.1, emissive: C.menta, emissiveIntensity: 0.12, flatShading: true });
+    extraMats.push(glass);
+    const rutaN = new Group();
+    put(rutaN, box(4.6, 6.2, 1.9, C.maquina), 0, 3.1, 0);
+    put(rutaN, new Mesh(shared('rutaN-glass', () => new BoxGeometry(4.7, 6.1, 1.96)), glass), 0, 3.15, 0);
+    for (let r = 0; r < 6; r++) put(rutaN, box(4.75, 0.08, 2.0, C.ladera), 0, 0.9 + r * 0.98, 0); // losas
+    for (let c = 0; c < 5; c++) {
+      // jardines verticales: franjas de hojas que trepan por la fachada que da al taller
+      const h = 2.2 + ((c * 3) % 4) * 0.9;
+      put(rutaN, box(0.42, h, 0.14, c % 2 ? C.hoja : C.hojaClara), -1.8 + c * 0.9, h / 2 + 0.35, 1.04);
+    }
+    put(rutaN, box(5.0, 0.3, 2.3, C.hoja), 0, 6.35, 0); // cubierta verde
+    put(g, rutaN, -2.4, 0, -5.3, 0, 0.1, 0);
+
+    const explora = new Group();
+    ([[0, 0.3], [1.35, -0.1], [2.7, 0.25], [4.05, -0.05]] as const).forEach(([x, dy], k) => {
+      // sobre pilotes altos para que asomen por encima del muro del taller
+      put(explora, cyl(0.07, 0.09, 3.9, C.gris, 6), x - 0.35, 1.95, -0.4);
+      put(explora, cyl(0.07, 0.09, 3.9, C.gris, 6), x + 0.35, 1.95, 0.4);
+      put(explora, box(1.15, 1.25, 1.5, C.coral, 0.12), x, 4.5 + dy, 0);
+      put(explora, box(0.5, 0.28, 0.05, C.ambar, 1.2), x + (k % 2 ? 0.2 : -0.2), 4.6 + dy, 0.78);
+    });
+    put(g, explora, 1.6, 0, -5.0, 0, -0.1, 0);
+
+    ([[4.6, 3.2, 2.5, 0], [5.5, 4.1, 2.9, 0.5], [5.3, 2.5, 2.1, 1.1], [6.2, 3.4, 1.8, 1.7]] as const).forEach(([x, z, h, rot]) => {
+      put(g, cyl(0.07, 0.1, h, C.tronco, 6), x, h / 2, z);
+      put(g, cyl(1.0, 0.75, 0.22, '#C9A36B', 6), x, h, z, 0, rot, 0);   // pétalo hexagonal de madera
+      put(g, cyl(0.55, 0.55, 0.06, C.hojaClara, 6), x, h + 0.14, z, 0, rot, 0);
+    });
+    ([[4.0, 4.4], [6.3, 2.4], [5.0, 1.4]] as const).forEach(([x, z]) => put(g, ball(0.35, C.hoja, 0, 8, 6), x, 0.55, z));
+    ([[4.4, 1.9, C.magenta], [5.9, 3.9, C.ambar], [6.0, 1.2, C.magenta]] as const).forEach(([x, z, c]) => put(g, ball(0.1, c, 0.6, 6, 5), x, 0.95, z));
     return { group: g, ticks: [] };
   }
 
@@ -694,7 +728,7 @@ const world: SceneFactory = (host, opts) => {
   const BUILDERS = [origen, estrategia, diseno, desarrollo, evolucion, proyecto];
   const SPOTS: { at: [number, number, number]; close: [number, number, number]; focus: [number, number, number] }[] = [
     { at: [0, 0, 0], close: [0.8, 8.6, 18.5], focus: [1.4, 4.3, -0.8] },
-    { at: [28, -2, -24], close: [1.5, 4.6, 10.5], focus: [0, 2.0, -2.0] },
+    { at: [28, -2, -24], close: [1.8, 5.4, 11.5], focus: [0.4, 2.4, -2.2] },
     { at: [2, 1, -50], close: [0, 4.2, 10.5], focus: [0, 2.6, -1.2] },
     { at: [-26, -1, -74], close: [3, 5.5, 13], focus: [0.5, 1.8, -0.5] },
     { at: [0, 0, -100], close: [2.5, 5.5, 14], focus: [0, 3.8, 0] },
