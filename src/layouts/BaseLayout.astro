@@ -3,6 +3,9 @@ import '../styles/tokens.css';
 import '../styles/base.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
+import CookieBanner from '../components/CookieBanner.astro';
+import { ANALYTICS } from '../data/site';
 import { SITE } from '../data/site';
 import { SERVICES } from '../data/services';
 
@@ -139,18 +142,32 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
     <meta name="twitter:image:alt" content={imageAlt} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <Analytics />
     <script is:inline>
       document.documentElement.classList.add('js');
       setTimeout(function () { if (!document.documentElement.classList.contains('is-ready')) document.documentElement.classList.remove('js'); }, 3500);
     </script>
   </head>
   <body>
+    {ANALYTICS.gtmId && (
+      <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${ANALYTICS.gtmId}`} height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
+    )}
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
     <Header />
     <main id="contenido">
       <slot />
     </main>
     <Footer />
+    <CookieBanner />
+    {import.meta.env.PROD && (
+      <>
+        {/* Vercel Speed Insights (Core Web Vitals reales) y Web Analytics: sin cookies. Actívalos en Vercel → proyecto → Speed Insights / Analytics. */}
+        <script is:inline>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
+        <script is:inline defer src="/_vercel/speed-insights/script.js"></script>
+        <script is:inline>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+        <script is:inline defer src="/_vercel/insights/script.js"></script>
+      </>
+    )}
     <script>
       import { initApp } from '../scripts/app';
       initApp();

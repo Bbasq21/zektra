@@ -13,6 +13,12 @@ export const SITE = {
   sameAs: [] as string[],
 };
 
+/** IDs de medición. Déjalos vacíos para desactivar la carga de Google Tag Manager / GA4. */
+export const ANALYTICS = {
+  gtmId: 'GTM-W5DMKQQ2',
+  ga4Id: 'G-XCJE11088N',
+};
+
 export const NAV = [
   { href: '/', label: 'Inicio' },
   { href: '/servicios/', label: 'Servicios' },
@@ -34,7 +40,7 @@ export const LEGAL = {
   email: SITE.email,
   domicile: 'Medellín, Antioquia, Colombia',
   /** Fecha de entrada en vigencia de la versión actual de las políticas (AAAA-MM-DD). */
-  updated: new Date('2026-10-07'),
+  updated: new Date('2026-10-12'),
 };
 
 export const LEGAL_NAV = [

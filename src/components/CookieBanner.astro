@@ -1,0 +1,118 @@
+---
+/* Banner de consentimiento de cookies (Ley 1581 de 2012 · Consent Mode v2).
+   Guarda la decisión en localStorage ("zk-consent": granted | denied) y la comunica a
+   Google vía gtag('consent','update'). Se puede reabrir con cualquier [data-cookie-settings]. */
+import { ANALYTICS } from '../data/site';
+import Button from './Button.astro';
+---
+{ANALYTICS.gtmId && (
+  <aside class="cookie-banner" data-cookie-banner hidden role="region" aria-labelledby="cookie-banner-title">
+    <div class="cookie-banner__inner">
+      <p class="cookie-banner__title" id="cookie-banner-title">Usamos cookies para medir el sitio</p>
+      <p class="cookie-banner__text">
+        Con tu permiso usamos Google Analytics para entender qué páginas sirven más y mejorar el sitio. No vendemos tus datos ni
+        mostramos publicidad. Puedes cambiar de opinión cuando quieras desde el pie de página.
+        <a class="cookie-banner__link" href="/legal/cookies/">Ver política de cookies</a>
+      </p>
+      <div class="cookie-banner__actions">
+        <Button variant="primary" size="sm" data-cookie-accept>Aceptar cookies</Button>
+        <Button variant="ghost" size="sm" data-cookie-reject>Solo las necesarias</Button>
+      </div>
+    </div>
+  </aside>
+)}
+
+<script>
+  const KEY = 'zk-consent';
+  const banner = document.querySelector<HTMLElement>('[data-cookie-banner]');
+
+  type Gtag = (...args: unknown[]) => void;
+  const gtag: Gtag = (...args) => {
+    const w = window as Window & { gtag?: Gtag; dataLayer?: unknown[] };
+    if (w.gtag) w.gtag(...args);
+    else (w.dataLayer = w.dataLayer || []).push(args);
+  };
+
+  const read = () => {
+    try { return localStorage.getItem(KEY); } catch { return null; }
+  };
+  const save = (value: 'granted' | 'denied') => {
+    try { localStorage.setItem(KEY, value); } catch { /* modo privado: no persiste */ }
+  };
+
+  const apply = (value: 'granted' | 'denied') => {
+    gtag('consent', 'update', {
+      analytics_storage: value,
+      ad_storage: value,
+      ad_user_data: value,
+      ad_personalization: value,
+    });
+    gtag('event', 'consent_' + value);
+  };
+
+  const show = () => {
+    if (!banner) return;
+    banner.hidden = false;
+    requestAnimationFrame(() => banner.classList.add('cookie-banner--visible'));
+  };
+  const hide = () => {
+    if (!banner) return;
+    banner.classList.remove('cookie-banner--visible');
+    banner.addEventListener('transitionend', () => { banner.hidden = true; }, { once: true });
+    setTimeout(() => { banner.hidden = true; }, 400);
+  };
+
+  if (banner) {
+    banner.querySelector('[data-cookie-accept]')?.addEventListener('click', () => { save('granted'); apply('granted'); hide(); });
+    banner.querySelector('[data-cookie-reject]')?.addEventListener('click', () => { save('denied'); apply('denied'); hide(); });
+    document.querySelectorAll('[data-cookie-settings]').forEach((el) => el.addEventListener('click', (e) => { e.preventDefault(); show(); }));
+
+    if (read() === null) setTimeout(show, 1200);
+  }
+</script>
+
+<style>
+  .cookie-banner {
+    position: fixed;
+    z-index: 90;
+    inset-inline: var(--space-4);
+    bottom: var(--space-4);
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+    pointer-events: none;
+  }
+  .cookie-banner--visible { opacity: 1; transform: none; pointer-events: auto; }
+  .cookie-banner__inner {
+    position: relative;
+    width: min(100%, 560px);
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+  /* Hilo del gradiente oficial en el borde superior */
+  .cookie-banner__inner::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: var(--gradient-oficial);
+  }
+  .cookie-banner__title { margin: 0 0 var(--space-2); font-size: var(--fs-h4); font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+  .cookie-banner__text { margin: 0 0 var(--space-4); font-size: var(--fs-body-s); line-height: 1.55; color: var(--ink-2); }
+  .cookie-banner__link { display: inline-block; margin-top: var(--space-1); color: var(--accent); text-underline-offset: 3px; }
+  .cookie-banner__link:hover { text-decoration: underline; }
+  .cookie-banner__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  @media (max-width: 480px) {
+    .cookie-banner { inset-inline: var(--space-3); bottom: var(--space-3); }
+    .cookie-banner__actions :global(.button) { flex: 1 1 auto; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cookie-banner { transition: none; transform: none; }
+  }
+</style>
