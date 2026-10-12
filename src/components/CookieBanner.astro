@@ -12,10 +12,10 @@ import Button from './Button.astro';
       <p class="cookie-banner__text">
         Con tu permiso usamos Google Analytics para entender qué páginas sirven más y mejorar el sitio. No vendemos tus datos ni
         mostramos publicidad. Puedes cambiar de opinión cuando quieras desde el pie de página.
-        <a class="cookie-banner__link" href="/legal/cookies/">Ver política de cookies</a>
       </p>
+      <p class="cookie-banner__text"><a class="cookie-banner__link" href="/legal/cookies/">Ver política de cookies</a></p>
       <div class="cookie-banner__actions">
-        <Button variant="primary" size="sm" data-cookie-accept>Aceptar cookies</Button>
+        <Button variant="brand" size="sm" data-cookie-accept>Aceptar cookies</Button>
         <Button variant="ghost" size="sm" data-cookie-reject>Solo las necesarias</Button>
       </div>
     </div>
@@ -105,7 +105,7 @@ import Button from './Button.astro';
   }
   .cookie-banner__title { margin: 0 0 var(--space-2); font-size: var(--fs-h4); font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
   .cookie-banner__text { margin: 0 0 var(--space-4); font-size: var(--fs-body-s); line-height: 1.55; color: var(--ink-2); }
-  .cookie-banner__link { display: inline-block; margin-top: var(--space-1); color: var(--accent); text-underline-offset: 3px; }
+  .cookie-banner__link { color: var(--accent); text-underline-offset: 3px; }
   .cookie-banner__link:hover { text-decoration: underline; }
   .cookie-banner__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
   @media (max-width: 480px) {
