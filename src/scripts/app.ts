@@ -119,6 +119,8 @@ function splitWords(el: HTMLElement) {
 }
 
 function initSplits() {
+  // En móvil el titular se deja quieto: es el elemento LCP y no debe esperar al JS.
+  if (!window.matchMedia('(min-width: 861px)').matches) return;
   document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
     const words = splitWords(el);
     if (!words.length) return;

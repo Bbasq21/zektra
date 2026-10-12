@@ -36,5 +36,6 @@ export default defineConfig({
       include: ['three', 'three/examples/jsm/loaders/SVGLoader.js', 'three/examples/jsm/environments/RoomEnvironment.js', 'gsap', 'gsap/ScrollTrigger', 'lenis'],
     },
   },
-  build: { inlineStylesheets: 'auto' },
+  /* Todo el CSS va inline en el HTML: sin peticiones bloqueantes antes del primer render. */
+  build: { inlineStylesheets: 'always' },
 });

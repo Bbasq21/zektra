@@ -119,8 +119,11 @@ p { text-wrap: pretty; }
 .js [data-stagger] > * { opacity: 0; }
 /* El hero es el LCP: nunca arranca invisible; GSAP solo lo desliza a su sitio. */
 .js [data-hero-item] { transform: translateY(24px); }
-.js [data-split] { visibility: hidden; }
-.js [data-split][data-split-done] { visibility: visible; }
+/* El H1 del hero es el LCP en móvil: la animación de palabras solo se hace desde 861px. */
+@media (min-width: 861px) {
+  .js [data-split] { visibility: hidden; }
+  .js [data-split][data-split-done] { visibility: visible; }
+}
 .js [data-split] .split__word { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
 .js [data-split] .split__inner { display: inline-block; will-change: transform; }
 
