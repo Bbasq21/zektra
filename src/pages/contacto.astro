@@ -5,6 +5,7 @@ import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
 import { SITE } from '../data/site';
 import { SERVICES } from '../data/services';
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
 ---
 <BaseLayout
   title="Contacto: cotiza tu proyecto digital"
@@ -70,6 +71,13 @@ import { SERVICES } from '../data/services';
           <label for="sitio">No llenes este campo</label>
           <input id="sitio" name="sitio" type="text" tabindex="-1" autocomplete="off" />
         </div>
+        <input type="hidden" name="t0" value="" data-t0 />
+
+        {turnstileKey && (
+          <div class="form__turnstile">
+            <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="dark" data-language="es" data-size="flexible"></div>
+          </div>
+        )}
 
         <div class="form__footer">
           <Button type="submit" size="lg" arrow data-submit>Enviar mensaje</Button>
@@ -102,8 +110,11 @@ import { SERVICES } from '../data/services';
       </aside>
     </div>
   </section>
+  {turnstileKey && <script is:inline async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>}
   <script is:inline>
     (function () {
+      var t0 = document.querySelector('[data-t0]');
+      if (t0) t0.value = String(Date.now());
       var id = new URLSearchParams(location.search).get('servicio');
       var select = document.getElementById('servicio');
       if (!id || !select) return;
@@ -178,6 +189,8 @@ import { SERVICES } from '../data/services';
         const json = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(json.error || 'No pudimos enviar el mensaje.');
         form.reset();
+        form.querySelector<HTMLInputElement>('[data-t0]')!.value = String(Date.now());
+        (window as Window & { turnstile?: { reset: () => void } }).turnstile?.reset();
         status.className = 'form__status form__status--success';
         status.textContent = '¡Gracias! Recibimos tu mensaje y te responderemos pronto.';
       } catch (err) {
@@ -198,6 +211,7 @@ import { SERVICES } from '../data/services';
   .form { display: flex; flex-direction: column; gap: var(--space-5); }
   .form__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
   .form__honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .form__turnstile { min-height: 65px; }
   .form__footer { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5); margin-top: var(--space-2); }
   .form__status { font-size: var(--fs-body-s); color: var(--ink-2); }
   .form__status--success { color: var(--success); }
