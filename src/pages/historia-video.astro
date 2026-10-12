@@ -1,0 +1,326 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { CHAPTERS } from '../data/story';
+import { CHAPTER_VIDEOS, TRANSITIONS, REEL } from '../data/story-video';
+
+/* Tramos del recorrido, en orden: escena 1, transición 1→2, escena 2, … */
+type Seg = {
+  kind: 'scene' | 'transition';
+  chapter: number;
+  clip?: string;
+  clipMobile?: string;
+  poster?: string;
+  w: number;
+  linger?: number;
+  accent: string;
+};
+const segs: Seg[] = [];
+CHAPTERS.forEach((c, i) => {
+  const v = CHAPTER_VIDEOS[c.id] ?? {};
+  segs.push({
+    kind: 'scene',
+    chapter: i,
+    clip: v.clip,
+    clipMobile: v.clipMobile,
+    poster: v.poster,
+    w: v.scroll ?? REEL.sceneScroll,
+    linger: v.linger,
+    accent: c.accent,
+  });
+  const t = TRANSITIONS[i];
+  const next = CHAPTERS[i + 1];
+  if (t && next) {
+    segs.push({
+      kind: 'transition',
+      chapter: i,
+      clip: t,
+      poster: CHAPTER_VIDEOS[next.id]?.poster,
+      w: REEL.transitionScroll,
+      accent: next.accent,
+    });
+  }
+});
+const last = CHAPTERS.length - 1;
+// Mientras falten escenas la página no se indexa ni se enlaza.
+const complete = CHAPTERS.every((c) => CHAPTER_VIDEOS[c.id]?.clip);
+---
+<BaseLayout
+  title="Nuestra historia"
+  description="La historia de Zektra como un recorrido por una Medellín en miniatura: de la idea a tu proyecto, pasando por estrategia, diseño, desarrollo y evolución."
+  breadcrumbs={[{ name: 'Nuestra historia', path: '/historia-video/' }]}
+  noindex={!complete}
+>
+  <section class="reel" data-reel data-crossfade={REEL.crossfade}>
+    <div class="reel__stage" aria-hidden="true">
+      {segs.map((s) => (
+        <div
+          class:list={['reel__seg', { 'reel__seg--pending': !s.clip && !s.poster }]}
+          data-reel-seg
+          data-kind={s.kind}
+          data-chapter={s.chapter}
+          data-clip={s.clip}
+          data-clip-mobile={s.clipMobile}
+          data-w={s.w}
+          data-linger={s.linger}
+          style={`--chapter-accent: var(--${s.accent})`}
+        >
+          {s.poster
+            ? <img class="reel__poster" src={s.poster} alt="" decoding="async" loading={s.chapter === 0 ? 'eager' : 'lazy'} width="1920" height="1080" />
+            : <span class="reel__pending">Escena {s.chapter + 1} en producción</span>}
+        </div>
+      ))}
+    </div>
+
+    <ol class="reel__chapters" role="list">
+      {CHAPTERS.map((c, i) => (
+        <li class="reel__chapter" id={c.id} data-reel-card>
+          <article class="reel__card" style={`--chapter-accent: var(--${c.accent})`}>
+            <span class="eyebrow">{c.eyebrow}</span>
+            {i === 0
+              ? <h1 class="reel__title reel__title--lead" set:html={c.title} />
+              : <h2 class="reel__title" set:html={c.title} />}
+            <p class="reel__text">{c.text}</p>
+            {c.tags && (
+              <ul class="reel__tags" role="list">
+                {c.tags.map((t) => <li class="tag">{t}</li>)}
+              </ul>
+            )}
+            {i === last && (
+              <div class="reel__actions">
+                <Button href="/contacto/" variant="brand" size="lg" arrow>Agenda una llamada</Button>
+                <Button href="/servicios/" variant="ghost" size="lg">Ver servicios</Button>
+              </div>
+            )}
+            {i === 0 && (
+              <span class="reel__hint" data-reel-hint aria-hidden="true">
+                <span class="reel__hint-line"></span>
+                Desliza para recorrer
+              </span>
+            )}
+          </article>
+        </li>
+      ))}
+    </ol>
+
+    <nav class="reel__rail" aria-label="Capítulos de la historia">
+      <ol class="reel__rail-list" role="list">
+        {CHAPTERS.map((c, i) => (
+          <li>
+            <a
+              class="reel__rail-link"
+              href={`#${c.id}`}
+              data-reel-link
+              style={`--chapter-accent: var(--${c.accent})`}
+              aria-current={i === 0 ? 'step' : undefined}
+            >
+              <span class="reel__rail-label">{c.label}</span>
+              <span class="reel__rail-dot" aria-hidden="true"></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    <div class="reel__track" data-reel-track></div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { initStoryVideo } from '../scripts/story-video';
+  initStoryVideo();
+</script>
+
+<style>
+  /* Bloque: reel --------------------------------------------------------------
+     Sin JavaScript: los capítulos se leen como una página normal sobre Azul Noche.
+     Con JavaScript (reel--live): escenario y tarjetas quedan fijos mientras una pista
+     alta (reel__track) da el recorrido de scroll; el script mueve los videos y el texto.
+     Las escenas son maquetas de plastilina sobre fondo crema, por eso el escenario es
+     crema y las tarjetas siguen en superficie Noche. */
+  .reel { position: relative; isolation: isolate; background: var(--azul-noche); }
+  .reel__stage { display: none; }
+  .reel__track { display: none; }
+  .reel__rail { display: none; }
+
+  .reel__chapters { margin: 0; padding: calc(var(--header-h) + var(--space-8)) var(--gutter) var(--space-9); display: grid; gap: var(--space-6); }
+
+  .reel__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    width: 100%;
+    max-width: 34rem;
+    padding: var(--space-6);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: rgba(10, 12, 36, 0.9);
+  }
+  .reel__title { font-size: var(--fs-h1); line-height: 1.1; color: var(--ink); }
+  .reel__title--lead { font-size: var(--fs-display-l); line-height: 1.06; letter-spacing: -0.03em; }
+  .reel__title :global(strong) { font-style: italic; font-weight: 700; color: var(--accent); }
+  .reel__text { max-width: 52ch; color: var(--ink-2); }
+  .reel__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; }
+  .reel__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-2); }
+
+  .reel__hint {
+    display: none;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+    font-size: var(--fs-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .reel__hint-line { position: relative; width: 48px; height: 1px; overflow: hidden; background: var(--line-strong); }
+  .reel__hint-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--menta);
+    animation: reel-hint 2.2s var(--ease-out) infinite;
+  }
+  @keyframes reel-hint { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
+
+  /* ---------------------------------------------------------------- en vivo */
+  /* Sobre la escena crema los enlaces claros del menú no se leen: el menú lleva su fondo
+     Noche desde arriba (sin desenfoque, que se recalcularía en cada cuadro de video). */
+  :global(body:has(.reel--live) .header) { background: rgba(2, 3, 21, 0.86); border-bottom-color: var(--line); }
+  .reel--live { background: #F2DCBE; }
+  .reel--live .reel__stage {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    background: #F2DCBE;
+  }
+  .reel__seg { position: absolute; inset: 0; opacity: 0; overflow: hidden; will-change: opacity; }
+  .reel__poster,
+  .reel__seg :global(.reel__video) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 42%;
+  }
+  .reel__poster { will-change: transform; transform-origin: center 60%; }
+  .reel__seg :global(.reel__video) { z-index: 1; }
+  .reel__seg:global(.has-clip) .reel__poster { opacity: 0; }
+
+  /* Escena aún sin video: fondo crema con el color del capítulo, para revisar el ritmo. */
+  .reel__seg--pending {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(48% 40% at 62% 46%, color-mix(in srgb, var(--chapter-accent) 34%, transparent), transparent 72%),
+      #F2DCBE;
+  }
+  .reel__pending {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-pill);
+    background: rgba(2, 3, 21, 0.08);
+    color: var(--azul-noche);
+    font-size: var(--fs-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: translateX(14vw);
+  }
+
+  .reel--live .reel__chapters {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: block;
+    height: 100vh;
+    height: 100svh;
+    margin-top: -100vh;
+    margin-top: -100svh;
+    padding: 0;
+    pointer-events: none;
+  }
+  .reel--live .reel__chapter {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: var(--space-8);
+    display: flex;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+  .reel--live .reel__chapter:global(.is-active) { pointer-events: auto; }
+  .reel--live .reel__hint { display: inline-flex; }
+
+  .reel--live .reel__track {
+    display: block;
+    margin-top: -100vh;
+    margin-top: -100svh;
+    pointer-events: none;
+  }
+
+  .reel--live .reel__rail {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    height: 100vh;
+    height: 100svh;
+    margin-top: -100vh;
+    margin-top: -100svh;
+    pointer-events: none;
+  }
+  .reel__rail-list {
+    position: absolute;
+    top: 50%;
+    right: var(--gutter);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin: 0;
+    padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: rgba(2, 3, 21, 0.82);
+    transform: translateY(-50%);
+    pointer-events: auto;
+  }
+  .reel__rail-link {
+    display: grid;
+    grid-template-columns: auto 10px;
+    justify-content: end;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--fs-caption);
+    color: var(--muted);
+    text-decoration: none;
+    transition: color var(--dur) ease;
+  }
+  .reel__rail-link:hover { color: var(--ink-2); }
+  .reel__rail-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line-strong);
+    transition: background-color var(--dur) ease, border-color var(--dur) ease, box-shadow var(--dur) ease;
+  }
+  .reel__rail-link[aria-current] { color: var(--ink); }
+  .reel__rail-link[aria-current] .reel__rail-dot {
+    background: var(--chapter-accent);
+    border-color: var(--chapter-accent);
+    box-shadow: 0 0 12px var(--chapter-accent);
+  }
+
+  @media (max-width: 860px) {
+    .reel--live .reel__rail { display: none; }
+    .reel--live .reel__chapter { bottom: calc(var(--space-6) + env(safe-area-inset-bottom)); }
+    .reel__card { padding: var(--space-5); }
+    .reel__title--lead { font-size: var(--fs-h1); }
+    .reel__pending { transform: translateY(-18vh); }
+    .reel__poster, .reel__seg :global(.reel__video) { object-position: 58% 44%; }
+  }
+</style>
