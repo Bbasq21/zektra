@@ -7,7 +7,7 @@
 #
 # Deja en public/historia/:
 #   <nombre>.mp4     escritorio: resolución original, crf 20, GOP 8, sin audio
-#   <nombre>-m.mp4   celulares: 1280 de ancho, crf 23, GOP 4 (busca cuadros más rápido)
+#   <nombre>-m.mp4   celulares: 960 de ancho, crf 24, GOP 4 (busca cuadros más rápido)
 #   <nombre>.webp    primer cuadro, póster mientras carga el video
 # Y junto al original, para generar las transiciones en Flow:
 #   <nombre>-primer-frame.png  y  <nombre>-ultimo-frame.png
@@ -25,8 +25,8 @@ ffmpeg -v error -y -i "$src" -an -vf "unsharp=5:5:0.8:5:5:0.0" \
   -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p \
   -g 8 -keyint_min 8 -sc_threshold 0 -movflags +faststart "$out/$name.mp4"
 
-ffmpeg -v error -y -i "$src" -an -vf "scale=1280:-2,unsharp=5:5:0.6:5:5:0.0" \
-  -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p \
+ffmpeg -v error -y -i "$src" -an -vf "scale=960:-2" \
+  -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p \
   -g 4 -keyint_min 4 -sc_threshold 0 -movflags +faststart "$out/$name-m.mp4"
 
 ffmpeg -v error -y -ss 0 -i "$src" -frames:v 1 -c:v libwebp -quality 82 "$out/$name.webp"

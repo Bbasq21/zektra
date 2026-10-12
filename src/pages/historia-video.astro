@@ -13,6 +13,7 @@ type Seg = {
   poster?: string;
   w: number;
   linger?: number;
+  focus?: number;
   accent: string;
 };
 const segs: Seg[] = [];
@@ -26,6 +27,7 @@ CHAPTERS.forEach((c, i) => {
     poster: v.poster,
     w: v.scroll ?? REEL.sceneScroll,
     linger: v.linger,
+    focus: v.focus,
     accent: c.accent,
   });
   const t = TRANSITIONS[i];
@@ -42,14 +44,15 @@ CHAPTERS.forEach((c, i) => {
   }
 });
 const last = CHAPTERS.length - 1;
-// Mientras falten escenas la página no se indexa ni se enlaza.
-const complete = CHAPTERS.every((c) => CHAPTER_VIDEOS[c.id]?.clip);
+// No se indexa mientras convivan las dos versiones de la historia (/historia/ en 3D y esta);
+// cuando se elija una, quita el noindex de la que quede.
+const noindex = true;
 ---
 <BaseLayout
   title="Nuestra historia"
-  description="La historia de Zektra como un recorrido por una Medellín en miniatura: de la idea a tu proyecto, pasando por estrategia, diseño, desarrollo y evolución."
+  description="La historia de Zektra como un recorrido por un mundo en miniatura: de la idea en Medellín a tu proyecto, pasando por estrategia, diseño, desarrollo y evolución."
   breadcrumbs={[{ name: 'Nuestra historia', path: '/historia-video/' }]}
-  noindex={!complete}
+  noindex={noindex}
 >
   <section class="reel" data-reel data-crossfade={REEL.crossfade}>
     <div class="reel__stage" aria-hidden="true">
@@ -63,6 +66,7 @@ const complete = CHAPTERS.every((c) => CHAPTER_VIDEOS[c.id]?.clip);
           data-clip-mobile={s.clipMobile}
           data-w={s.w}
           data-linger={s.linger}
+          data-focus={s.focus}
           style={`--chapter-accent: var(--${s.accent})`}
         >
           {s.poster
@@ -136,9 +140,9 @@ const complete = CHAPTERS.every((c) => CHAPTER_VIDEOS[c.id]?.clip);
      Sin JavaScript: los capítulos se leen como una página normal sobre Azul Noche.
      Con JavaScript (reel--live): escenario y tarjetas quedan fijos mientras una pista
      alta (reel__track) da el recorrido de scroll; el script mueve los videos y el texto.
-     Las escenas son maquetas de plastilina sobre fondo crema, por eso el escenario es
-     crema y las tarjetas siguen en superficie Noche. */
-  .reel { position: relative; isolation: isolate; background: var(--azul-noche); }
+     Las escenas son maquetas de plastilina flotando en un cielo nocturno; el escenario
+     toma ese mismo azul para que el póster y el video no muestren bordes. */
+  .reel { --reel-sky: #0F1735; position: relative; isolation: isolate; background: var(--azul-noche); }
   .reel__stage { display: none; }
   .reel__track { display: none; }
   .reel__rail { display: none; }
@@ -185,10 +189,7 @@ const complete = CHAPTERS.every((c) => CHAPTER_VIDEOS[c.id]?.clip);
   @keyframes reel-hint { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
 
   /* ---------------------------------------------------------------- en vivo */
-  /* Sobre la escena crema los enlaces claros del menú no se leen: el menú lleva su fondo
-     Noche desde arriba (sin desenfoque, que se recalcularía en cada cuadro de video). */
-  :global(body:has(.reel--live) .header) { background: rgba(2, 3, 21, 0.86); border-bottom-color: var(--line); }
-  .reel--live { background: #F2DCBE; }
+  .reel--live { background: var(--reel-sky); }
   .reel--live .reel__stage {
     display: block;
     position: sticky;
@@ -197,7 +198,7 @@ const complete = CHAPTERS.every((c) => CHAPTER_VIDEOS[c.id]?.clip);
     height: 100vh;
     height: 100svh;
     overflow: hidden;
-    background: #F2DCBE;
+    background: var(--reel-sky);
   }
   .reel__seg { position: absolute; inset: 0; opacity: 0; overflow: hidden; will-change: opacity; }
   .reel__poster,
@@ -213,19 +214,19 @@ const complete = CHAPTERS.every((c) => CHAPTER_VIDEOS[c.id]?.clip);
   .reel__seg :global(.reel__video) { z-index: 1; }
   .reel__seg:global(.has-clip) .reel__poster { opacity: 0; }
 
-  /* Escena aún sin video: fondo crema con el color del capítulo, para revisar el ritmo. */
+  /* Escena aún sin video: cielo con el color del capítulo, para revisar el ritmo. */
   .reel__seg--pending {
     display: grid;
     place-items: center;
     background:
-      radial-gradient(48% 40% at 62% 46%, color-mix(in srgb, var(--chapter-accent) 34%, transparent), transparent 72%),
-      #F2DCBE;
+      radial-gradient(48% 40% at 62% 46%, color-mix(in srgb, var(--chapter-accent) 30%, transparent), transparent 72%),
+      var(--reel-sky);
   }
   .reel__pending {
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius-pill);
-    background: rgba(2, 3, 21, 0.08);
-    color: var(--azul-noche);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--ink-2);
     font-size: var(--fs-caption);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -321,6 +322,6 @@ const complete = CHAPTERS.every((c) => CHAPTER_VIDEOS[c.id]?.clip);
     .reel__card { padding: var(--space-5); }
     .reel__title--lead { font-size: var(--fs-h1); }
     .reel__pending { transform: translateY(-18vh); }
-    .reel__poster, .reel__seg :global(.reel__video) { object-position: 58% 44%; }
+    .reel__poster, .reel__seg :global(.reel__video) { object-position: center 44%; }
   }
 </style>

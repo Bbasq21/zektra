@@ -26,6 +26,8 @@ interface Segment {
   clipMobile?: string;
   w: number;
   linger: number;
+  /** 0–1: dónde el texto de la escena queda del todo visible. */
+  focus: number;
   start: number;
   end: number;
   video: HTMLVideoElement | null;
@@ -71,6 +73,7 @@ export function initStoryVideo() {
     clipMobile: el.dataset.clipMobile || undefined,
     w: Number(el.dataset.w) || 1.2,
     linger: clamp(Number(el.dataset.linger) || 0, 0, 0.6),
+    focus: clamp(Number(el.dataset.focus ?? 0.5)),
     start: 0,
     end: 0,
     video: null,
@@ -148,11 +151,6 @@ export function initStoryVideo() {
       });
   }
 
-  function chapterProgress(i: number, y: number) {
-    const s = scenes[i];
-    return { pr: clamp((y - s.start) / (s.end - s.start)), before: y < s.start, after: y > s.end };
-  }
-
   function read() {
     const y = window.scrollY - top;
     const fade = crossfade * vh;
@@ -177,23 +175,28 @@ export function initStoryVideo() {
       }
     });
 
+    /* El texto entra mientras la cámara llega a la escena (hasta `focus`), se queda durante
+       la pausa y se va cuando la escena siguiente empieza a moverse. El primero ya está
+       visible al cargar; el último se queda con el llamado final. */
     cards.forEach((c, i) => {
-      const { pr, before, after } = chapterProgress(i, y);
-      let op: number;
-      if (i === 0) op = after ? 0 : smooth(1 - pr / 0.62); // saluda al llegar
-      else if (i === n - 1) op = before ? 0 : smooth(pr / 0.4); // se queda con el llamado final
-      else op = before || after ? 0 : smooth(1 - Math.abs(pr - 0.5) / 0.5);
+      const s = scenes[i];
+      const len = s.end - s.start;
+      const inEnd = s.start + s.focus * len;
+      const fadeIn = i === 0 ? 1 : smooth((y - (inEnd - 0.3 * len)) / (0.3 * len));
+      const fadeOut = i === n - 1 ? 1 : smooth(1 - (y - (s.end - 0.05 * vh)) / (0.4 * vh));
+      const op = Math.min(fadeIn, fadeOut);
       c.style.opacity = String(op);
-      c.style.transform = reduce ? 'none' : `translateY(${((0.5 - pr) * 4).toFixed(2)}vh)`;
+      c.style.transform = reduce ? 'none' : `translateY(${((1 - op) * 2.5).toFixed(2)}vh)`;
       c.classList.toggle('is-active', op > 0.5);
       c.toggleAttribute('inert', op <= 0.5);
     });
 
-    const cur = segs[ci];
-    const near =
-      cur.kind === 'scene'
-        ? cur.chapter
-        : clamp((y - cur.start) / (cur.end - cur.start) > 0.5 ? cur.chapter + 1 : cur.chapter, 0, n - 1);
+    // El capítulo activo cambia cuando su texto empieza a entrar, no cuando arranca su clip
+    // (cada clip empieza todavía en la escena anterior, con la cámara saliendo de ella).
+    let near = 0;
+    scenes.forEach((s, i) => {
+      if (i > 0 && y >= s.start + (s.focus - 0.3) * (s.end - s.start)) near = i;
+    });
     if (near !== active) {
       active = near;
       links.forEach((l, k) => (k === near ? l.setAttribute('aria-current', 'step') : l.removeAttribute('aria-current')));
@@ -225,7 +228,7 @@ export function initStoryVideo() {
       e.preventDefault();
       e.stopImmediatePropagation();
       const s = scenes[i];
-      scrollToY(top + s.start + (s.end - s.start) * (i === n - 1 ? 0.7 : 0.5));
+      scrollToY(top + s.start + (s.end - s.start) * Math.min(0.95, Math.max(0.3, s.focus + 0.15)));
     }, { capture: true }),
   );
 
