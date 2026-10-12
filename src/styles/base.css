@@ -116,8 +116,9 @@ p { text-wrap: pretty; }
 
 /* Estados de animación (GSAP los resuelve; sin JS todo es visible) -------- */
 .js [data-reveal],
-.js [data-hero-item],
 .js [data-stagger] > * { opacity: 0; }
+/* El hero es el LCP: nunca arranca invisible; GSAP solo lo desliza a su sitio. */
+.js [data-hero-item] { transform: translateY(24px); }
 .js [data-split] { visibility: hidden; }
 .js [data-split][data-split-done] { visibility: visible; }
 .js [data-split] .split__word { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
@@ -125,7 +126,8 @@ p { text-wrap: pretty; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-  .js [data-reveal], .js [data-hero-item], .js [data-stagger] > * { opacity: 1; }
+  .js [data-reveal], .js [data-stagger] > * { opacity: 1; }
+  .js [data-hero-item] { transform: none; }
   .js [data-split] { visibility: visible; }
 }
 

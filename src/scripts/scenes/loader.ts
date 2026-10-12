@@ -13,10 +13,17 @@ const factories: Record<string, () => Promise<{ default: SceneFactory }>> = {
   monogram: () => import('./monogram'),
 };
 
+/** WebGL disponible y acelerado por hardware. Con SwiftShader/llvmpipe (sin GPU) three.js
+    renderiza por CPU y cada frame bloquea el hilo principal: mejor dejar el hero en CSS. */
 function supportsWebGL() {
   try {
     const c = document.createElement('canvas');
-    return !!(c.getContext('webgl2') || c.getContext('webgl'));
+    const gl = (c.getContext('webgl2') || c.getContext('webgl')) as WebGLRenderingContext | null;
+    if (!gl) return false;
+    const info = gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return !/swiftshader|llvmpipe|softpipe|software|mesa offscreen|basic render/i.test(renderer);
   } catch {
     return false;
   }

@@ -140,7 +140,7 @@ function initSplits() {
 function initReveals() {
   const heroItems = document.querySelectorAll<HTMLElement>('[data-hero-item]');
   if (heroItems.length) {
-    gsap.fromTo(heroItems, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.1, delay: 0.25 });
+    gsap.to(heroItems, { y: 0, duration: 0.9, ease: 'expo.out', stagger: 0.1, delay: 0.15, clearProps: 'transform' });
   }
 
   document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {

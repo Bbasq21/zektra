@@ -29,6 +29,9 @@ const { gtmId, ga4Id } = ANALYTICS;
       gtag('set', 'url_passthrough', false);
       gtag('set', 'ads_data_redaction', true);
 
+      /* Los tags se descargan después de `load` para no competir con el CSS, las fuentes y el
+         bundle de la página (LCP). El consentimiento por defecto ya quedó fijado arriba. */
+      function loadTags() {
       /* Google Tag Manager */
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
@@ -48,6 +51,9 @@ const { gtmId, ga4Id } = ANALYTICS;
         gtag('js', new Date());
         gtag('config', ga4Id);
       }
+      }
+      if (document.readyState === 'complete') setTimeout(loadTags, 0);
+      else window.addEventListener('load', function () { setTimeout(loadTags, 0); }, { once: true });
     </script>
   </>
 )}

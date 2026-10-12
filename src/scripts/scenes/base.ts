@@ -62,10 +62,28 @@ export function createStage(
   let running = false;
   let elapsed = 0;
 
+  /* Guardia de rendimiento: si los primeros 45 frames promedian > 40 ms (≈25 fps), el equipo
+     no da para la escena animada; se deja el último cuadro quieto y se libera el hilo principal. */
+  let slowFrames = 0;
+  let sampled = 0;
+  let frozen = false;
+
   const frame = () => {
+    if (frozen) return;
     raf = requestAnimationFrame(frame);
     const now = performance.now();
     const dt = Math.min((now - lastTime) / 1000, 0.05);
+    if (sampled < 45 && document.hasFocus()) {
+      sampled++;
+      if (now - lastTime > 40) slowFrames++;
+      if (sampled === 45 && slowFrames > 30) {
+        frozen = true;
+        running = false;
+        cancelAnimationFrame(raf);
+        window.removeEventListener('pointermove', onPointer);
+        return;
+      }
+    }
     lastTime = now;
     elapsed += dt;
     stage.pointer.x += (stage.pointer.tx - stage.pointer.x) * 0.05;
@@ -83,7 +101,7 @@ export function createStage(
 
   return {
     start() {
-      if (running || opts.reduced) return;
+      if (running || opts.reduced || frozen) return;
       running = true;
       lastTime = performance.now();
       raf = requestAnimationFrame(frame);
