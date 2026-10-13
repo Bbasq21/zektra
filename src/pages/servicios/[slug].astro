@@ -137,6 +137,9 @@ const serviceSchema = {
           <h2 class="outcome__title">Qué recibes al final</h2>
           <p class="outcome__text">{detail.outcome}</p>
         </div>
+        <div class="approach__more">
+          <Button href="/como-trabajamos/" variant="link" arrow>Ver cómo trabajamos</Button>
+        </div>
       </div>
     </section>
   )}
@@ -234,6 +237,7 @@ const serviceSchema = {
   .service-page__posts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); margin: var(--space-4) 0 0; padding: 0; }
   .service-page__post { display: block; height: 100%; padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font-weight: 500; text-decoration: none; }
   .service-page__post:hover { border-color: var(--line-strong); color: var(--accent); }
+  .approach__more { margin-top: var(--space-6); }
   @media (max-width: 640px) { .approach { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 860px) { .service-page__posts { grid-template-columns: minmax(0, 1fr); } }
   .service-page__cases { display: flex; flex-direction: column; gap: var(--space-6); }

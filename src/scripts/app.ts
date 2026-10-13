@@ -220,6 +220,8 @@ function initPointerEffects() {
 /* ------------------------------------------------------------------ App */
 export function initApp() {
   document.documentElement.classList.add('is-ready');
+  // Para scripts de página que no importan app.ts (y así no lo cargan antes de tiempo).
+  (window as Window & { zkScrollTo?: typeof scrollToY }).zkScrollTo = scrollToY;
   initHeader();
 
   if (reduceMotion()) {

@@ -1,10 +1,6 @@
 ---
-const steps = [
-  { title: 'Estrategia', text: 'Entendemos tu negocio, a tus usuarios y qué tiene que lograr el producto. Salimos con un alcance claro y priorizado.' },
-  { title: 'Diseño', text: 'Flujos, arquitectura y prototipo de alta fidelidad. Lo validamos contigo, y con usuarios reales cuando hace falta, antes de construir.' },
-  { title: 'Desarrollo', text: 'Código limpio, administrable y medido desde el primer despliegue. Ves avances en un entorno de pruebas durante todo el proceso.' },
-  { title: 'Evolución', text: 'Lanzamos y nos quedamos: medimos, corregimos y mejoramos. Un producto digital nunca está terminado.' },
-];
+/* Paso de proceso: los cuatro pasos salen de src/data/proceso.ts, los mismos de /como-trabajamos/. */
+import { STEPS as steps } from '../data/proceso';
 ---
 <div class="process" data-progress>
   <div class="process__rail" aria-hidden="true"><span class="process__bar" data-progress-bar></span></div>
