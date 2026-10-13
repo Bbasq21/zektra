@@ -11,7 +11,6 @@ const factories: Record<string, () => Promise<{ default: SceneFactory }>> = {
   flow: () => import('./flow'),
   network: () => import('./network'),
   monogram: () => import('./monogram'),
-  world: () => import('./world'),
 };
 
 /** WebGL disponible y acelerado por hardware. Con SwiftShader/llvmpipe (sin GPU) three.js
