@@ -34,17 +34,35 @@ function initSmoothScroll() {
 function initHeader() {
   const header = document.querySelector<HTMLElement>('[data-header]');
   if (!header) return;
+  // Oculta al bajar, muestra al subir. Con histéresis: solo cambia de estado
+  // cuando el desplazamiento acumulado en una dirección supera el umbral, así
+  // los micro-movimientos del scroll suave (Lenis) no hacen parpadear el header.
+  const THRESHOLD = 12;
   let last = window.scrollY;
-  const onScroll = () => {
+  let ticking = false;
+  const update = () => {
+    ticking = false;
     const y = window.scrollY;
+    const delta = y - last;
     header.classList.toggle('header--scrolled', y > 24);
-    if (!header.classList.contains('header--open')) {
-      header.classList.toggle('header--hidden', y > 320 && y > last + 4);
-      if (y < last - 4) header.classList.remove('header--hidden');
+    if (header.classList.contains('header--open')) { last = y; return; }
+
+    if (y <= 320 || delta < -THRESHOLD) {
+      header.classList.remove('header--hidden');
+      last = y;
+    } else if (delta > THRESHOLD) {
+      header.classList.add('header--hidden');
+      last = y;
     }
-    last = y;
+    // Si |delta| <= THRESHOLD no tocamos nada ni movemos `last`:
+    // el umbral se acumula hasta que el usuario cambia de dirección de verdad.
   };
-  onScroll();
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+  update();
   window.addEventListener('scroll', onScroll, { passive: true });
 
   const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
