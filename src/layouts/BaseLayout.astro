@@ -25,9 +25,6 @@ interface Props {
   /** Fuentes que se precargan (nombre del archivo en /fonts/, sin extensión). Precarga solo
       las que usa el elemento LCP de la página; el resto llega con font-display: swap. */
   preloadFonts?: string[];
-  /** Carga GSAP, Lenis y el resto de app.ts después de `load`, en un momento libre. Para
-      páginas cuyo primer pintado no depende de ninguna animación (/como-trabajamos/). */
-  deferApp?: boolean;
 }
 const {
   title,
@@ -39,7 +36,6 @@ const {
   schema = [],
   article,
   preloadFonts = ['GoogleSans-Regular', 'GoogleSans-SemiBold', 'Technovier-Regular'],
-  deferApp = false,
 } = Astro.props;
 const fullTitle = title ? `${title} · Zektra` : `Zektra · Software a la medida y soluciones digitales en Medellín`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -176,19 +172,9 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
         <script is:inline defer src="/_vercel/insights/script.js"></script>
       </>
     )}
-    {deferApp ? (
-      <script>
-        /* app.ts (GSAP + Lenis, ~47 KB) no compite con el primer pintado: llega después de load. */
-        const start = () => import('../scripts/app').then((m) => m.initApp());
-        const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(() => start(), { timeout: 1500 }) : setTimeout(start, 200));
-        if (document.readyState === 'complete') idle();
-        else addEventListener('load', idle, { once: true });
-      </script>
-    ) : (
-      <script>
-        import { initApp } from '../scripts/app';
-        initApp();
-      </script>
-    )}
+    <script>
+      import { initApp } from '../scripts/app';
+      initApp();
+    </script>
   </body>
 </html>

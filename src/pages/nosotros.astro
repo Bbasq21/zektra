@@ -4,21 +4,13 @@ import Hero from '../components/Hero.astro';
 import Button from '../components/Button.astro';
 import SectionHead from '../components/SectionHead.astro';
 import CtaBand from '../components/CtaBand.astro';
+import ProcesoReel from '../components/ProcesoReel.astro';
 
 const values = [
   { word: 'Innovación', color: 'violeta', text: 'Buscamos la mejor forma de resolver, no la más conocida. Probamos, medimos y elegimos con criterio.' },
   { word: 'Tecnología', color: 'menta', text: 'Usamos herramientas modernas y estables para que tu producto sea rápido, seguro y fácil de mantener.' },
   { word: 'Confianza', color: 'indigo', text: 'Comunicación directa, alcances claros y entregas que puedes revisar en cada etapa del proyecto.' },
   { word: 'Evolución', color: 'ambar', text: 'Un producto digital nunca está terminado. Te acompañamos para que crezca al ritmo de tu negocio.' },
-];
-
-const principles = [
-  { title: 'Primero entender', text: 'Antes de diseñar una pantalla entendemos el proceso, a las personas que lo usan y lo que el negocio necesita lograr.' },
-  { title: 'Diseño que se valida', text: 'Los prototipos se prueban antes de convertirse en código. Es la forma más barata de equivocarse.' },
-  { title: 'Hecho para tu equipo', text: 'Entregamos productos que tu equipo puede administrar, con documentación y sin depender de nosotros para cada cambio.' },
-  { title: 'Rendimiento por defecto', text: 'Velocidad, accesibilidad y SEO técnico no son un extra: son parte de cómo construimos.' },
-  { title: 'IA de la mano, calidad humana', text: 'Usamos inteligencia artificial para ir más rápido y explorar más opciones. Las decisiones, el diseño y la revisión final siempre los hace una persona.' },
-  { title: 'Siempre hablas con una persona', text: 'Comunicación directa con quien diseña y construye tu proyecto, de principio a fin.' },
 ];
 ---
 <BaseLayout
@@ -67,23 +59,7 @@ const principles = [
     </div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <SectionHead eyebrow="Principios" title="Cómo trabajamos" />
-      <ol class="principles" role="list" data-stagger>
-        {principles.map((p, i) => (
-          <li class="principles__item">
-            <span class="principles__number">{String(i + 1).padStart(2, '0')}</span>
-            <h3 class="principles__title">{p.title}</h3>
-            <p class="principles__text">{p.text}</p>
-          </li>
-        ))}
-      </ol>
-      <div class="principles__more">
-        <Button href="/como-trabajamos/" variant="link" arrow>Ver cómo trabajamos</Button>
-      </div>
-    </div>
-  </section>
+  <ProcesoReel />
 
   <CtaBand />
 </BaseLayout>
@@ -114,18 +90,11 @@ const principles = [
   .value__word { font-family: var(--font-display); font-size: clamp(1.0625rem, 0.85rem + 0.5vw, 1.3rem); font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; overflow-wrap: anywhere; }
   .value__text { font-size: var(--fs-body-s); line-height: 1.6; color: var(--ink-2); }
 
-  .principles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--space-8); margin: 0; padding: 0; }
-  .principles__item { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-5); padding-block: var(--space-6); border-top: 1px solid var(--line); }
-  .principles__number { grid-row: span 2; font-size: var(--fs-h3); font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
-  .principles__title { font-size: var(--fs-h4); }
-  .principles__more { margin-top: var(--space-6); }
-  .principles__text { color: var(--ink-2); font-size: var(--fs-body-s); line-height: 1.6; }
-
   @media (max-width: 1024px) {
     .about-story { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
     .values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 720px) {
-    .values, .principles { grid-template-columns: minmax(0, 1fr); }
+    .values { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
