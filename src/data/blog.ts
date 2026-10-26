@@ -4,7 +4,8 @@ export type Post = CollectionEntry<'blog'>;
 
 /** Artículos publicados, del más reciente al más antiguo. */
 export async function getPosts(): Promise<Post[]> {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  // Un pubDate futuro deja el artículo programado: aparece en el primer build posterior a esa hora.
+  const posts = await getCollection('blog', ({ data }) => !data.draft && data.pubDate <= new Date());
   return posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 }
 

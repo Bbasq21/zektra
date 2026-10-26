@@ -1,0 +1,14 @@
+# El blog se genera en el build: un artículo con pubDate futura solo aparece cuando el sitio
+# se vuelve a construir. Este redespliegue diario a las 7:00 a. m. de Colombia lo publica solo.
+name: Publicar artículos programados
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # 12:00 UTC = 7:00 a. m. en Colombia (UTC-5, sin horario de verano)
+  workflow_dispatch:
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
