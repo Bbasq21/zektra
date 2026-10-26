@@ -199,7 +199,7 @@ const fallbackSrc = (p: (typeof scenes)[number]['v']['poster']) => p.webp.find((
   /* ---------------------------------------------------------------- recorrido */
   :global(.pv-live) .reel { background: var(--reel-sky); }
   /* Sin backdrop-filter sobre el video: obligaría a recomponer el desenfoque en cada cuadro. */
-  :global(html.pv-live .header.header--scrolled) {
+  :global(html.pv-live .header.header--scrolled::before) {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     background: rgba(2, 3, 21, 0.92);
