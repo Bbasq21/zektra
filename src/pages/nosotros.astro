@@ -79,6 +79,9 @@ const principles = [
           </li>
         ))}
       </ol>
+      <div class="principles__more">
+        <Button href="/como-trabajamos/" variant="link" arrow>Ver cómo trabajamos</Button>
+      </div>
     </div>
   </section>
 
@@ -115,6 +118,7 @@ const principles = [
   .principles__item { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-5); padding-block: var(--space-6); border-top: 1px solid var(--line); }
   .principles__number { grid-row: span 2; font-size: var(--fs-h3); font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
   .principles__title { font-size: var(--fs-h4); }
+  .principles__more { margin-top: var(--space-6); }
   .principles__text { color: var(--ink-2); font-size: var(--fs-body-s); line-height: 1.6; }
 
   @media (max-width: 1024px) {

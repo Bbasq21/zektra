@@ -5,7 +5,7 @@ Sitio web de Zektra, construido sobre el Design System Zektra (Manual de Identid
 - **Astro 7**: páginas estáticas, más una sola función serverless para el formulario.
 - **CSS con BEM**: sin Tailwind. Tokens en `src/styles/tokens.css` y estilos de cada componente dentro de su `.astro`.
 - **GSAP + ScrollTrigger**: animaciones de entrada, texto por palabras y progreso del proceso. **Lenis** maneja el scroll suave.
-- **three.js**: tres escenas que se cargan solo cuando hacen falta.
+- **three.js**: cuatro escenas que se cargan solo cuando hacen falta.
 
 ## Empezar
 
@@ -25,11 +25,12 @@ src/
   layouts/       BaseLayout.astro (SEO, Open Graph, header, footer, scripts)
   components/    Header, Footer, Hero, Button, SectionHead, ServiceCard, CaseCard,
                  Process, CtaBand, Marquee, Icon
-  pages/         index · servicios · casos · nosotros · contacto · 404 · api/contacto.ts
-  data/          site.ts (nav y contacto) · services.ts · cases.ts · monogram.ts
+  pages/         index · servicios · casos · nosotros · historia · contacto · 404 · api/contacto.ts
+  data/          site.ts (nav y contacto) · services.ts · cases.ts · monogram.ts · story.ts
   scripts/
     app.ts       Lenis, header, menú, split de texto, reveals, efectos de puntero
-    scenes/      loader.ts (carga perezosa) · base.ts · flow.ts · network.ts · monogram.ts
+    story.ts     capítulos de /historia/: avance por scroll, tarjetas y riel
+    scenes/      loader.ts (carga perezosa) · base.ts · flow.ts · network.ts · monogram.ts · world.ts
 public/          fonts (woff2), logos (SVG oficiales), favicon, og.png
 ```
 
@@ -54,6 +55,9 @@ public/          fonts (woff2), logos (SVG oficiales), favicon, og.png
 | `flow` | Inicio y 404 | Cintas de partículas que recorren el gradiente oficial |
 | `network` | Servicios | Constelación de nodos conectados con pulsos de datos |
 | `monogram` | Nosotros | El monograma ZK oficial, extruido en 3D |
+| `world` | Nuestra historia | Seis islas de arcilla en la noche, una por capítulo. El scroll lleva la cámara de isla en isla por un hilo de datos con el gradiente oficial |
+
+En `/historia/` cada capítulo ocupa 2,4 pantallas de scroll: la cámara baja a la isla, se queda mientras se lee la tarjeta y vuela a la siguiente. En móvil, sin WebGL, con movimiento reducido o si el equipo no sostiene la escena, los capítulos se apilan como una página normal. Los textos están en `src/data/story.ts`.
 
 three.js se descarga solo cuando la escena está cerca de la pantalla y se pausa cuando sale de ella. Con `prefers-reduced-motion` se dibuja un único cuadro estático y no hay scroll suave ni animaciones. Sin WebGL, el hero muestra el resplandor en CSS.
 
@@ -62,6 +66,7 @@ three.js se descarga solo cuando la escena está cerca de la pantalla y se pausa
 - Servicios: `src/data/services.ts`
 - Casos (sin nombre de cliente): `src/data/cases.ts`
 - Correo, ciudad y menú: `src/data/site.ts`
+- Capítulos de Nuestra historia: `src/data/story.ts`
 
 ## Publicar en Vercel (recomendado)
 

@@ -10,6 +10,12 @@ const finePointer = () => window.matchMedia('(hover: hover) and (pointer: fine)'
 
 let lenis: Lenis | null = null;
 
+/** Lleva el scroll a una posición, con Lenis si está activo. `immediate` salta sin animar. */
+export function scrollToY(y: number, immediate = false) {
+  if (lenis) lenis.scrollTo(y, { immediate });
+  else window.scrollTo({ top: y, behavior: immediate || reduceMotion() ? 'auto' : 'smooth' });
+}
+
 /* ---------------------------------------------------------------- Lenis */
 function initSmoothScroll() {
   if (reduceMotion()) return;
@@ -232,6 +238,8 @@ function initPointerEffects() {
 /* ------------------------------------------------------------------ App */
 export function initApp() {
   document.documentElement.classList.add('is-ready');
+  // Para scripts de página que no importan app.ts (y así no lo cargan antes de tiempo).
+  (window as Window & { zkScrollTo?: typeof scrollToY }).zkScrollTo = scrollToY;
   initHeader();
 
   if (reduceMotion()) {
