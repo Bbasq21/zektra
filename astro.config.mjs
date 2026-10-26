@@ -50,7 +50,11 @@ const vercelHeaders = {
 export default defineConfig({
   site: 'https://zektra.co',
   trailingSlash: 'ignore',
-  adapter: vercel(),
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
   integrations: [
     vercelHeaders,
     sitemap({
@@ -63,8 +67,6 @@ export default defineConfig({
       },
     }),
   ],
-  /* El recorrido «Cómo trabajamos» vive ahora en /nosotros/. */
-  redirects: { '/como-trabajamos': '/nosotros/#como-trabajamos' },
   devToolbar: { enabled: false },
   vite: {
     optimizeDeps: {
