@@ -1,0 +1,267 @@
+{
+  "escena-1": {
+    "clip": "/como-trabajamos/escena-1.db65b373.mp4",
+    "clipMobile": "/como-trabajamos/escena-1-m.a634170b.mp4",
+    "poster": {
+      "width": 1280,
+      "height": 720,
+      "avif": [
+        [
+          640,
+          "/como-trabajamos/escena-1-640.a3affefc.avif"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-1-960.f627f668.avif"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-1-1280.34cc555f.avif"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-1-1920.3645f59b.avif"
+        ]
+      ],
+      "webp": [
+        [
+          640,
+          "/como-trabajamos/escena-1-640.9b63eedf.webp"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-1-960.53f26e82.webp"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-1-1280.2f7c0754.webp"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-1-1920.8033bf48.webp"
+        ]
+      ]
+    },
+    "og": "/como-trabajamos/og.1deb4aa4.jpg"
+  },
+  "escena-2": {
+    "clip": "/como-trabajamos/escena-2.5c704584.mp4",
+    "clipMobile": "/como-trabajamos/escena-2-m.522979f9.mp4",
+    "poster": {
+      "width": 1280,
+      "height": 720,
+      "avif": [
+        [
+          640,
+          "/como-trabajamos/escena-2-640.47309629.avif"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-2-960.bb21ea7d.avif"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-2-1280.ce947b8f.avif"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-2-1920.bf180ae9.avif"
+        ]
+      ],
+      "webp": [
+        [
+          640,
+          "/como-trabajamos/escena-2-640.ccd0e66b.webp"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-2-960.d1f6283e.webp"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-2-1280.b9994cda.webp"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-2-1920.704252c2.webp"
+        ]
+      ]
+    }
+  },
+  "escena-3": {
+    "clip": "/como-trabajamos/escena-3.9ee9e278.mp4",
+    "clipMobile": "/como-trabajamos/escena-3-m.0cd8ea18.mp4",
+    "poster": {
+      "width": 1280,
+      "height": 720,
+      "avif": [
+        [
+          640,
+          "/como-trabajamos/escena-3-640.91eff318.avif"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-3-960.dca8b26f.avif"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-3-1280.fc57710c.avif"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-3-1920.ab517332.avif"
+        ]
+      ],
+      "webp": [
+        [
+          640,
+          "/como-trabajamos/escena-3-640.6b7f91f0.webp"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-3-960.9c0034c9.webp"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-3-1280.472d5722.webp"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-3-1920.465cf005.webp"
+        ]
+      ]
+    }
+  },
+  "escena-4": {
+    "clip": "/como-trabajamos/escena-4.98f3831b.mp4",
+    "clipMobile": "/como-trabajamos/escena-4-m.a35ad84b.mp4",
+    "poster": {
+      "width": 1280,
+      "height": 720,
+      "avif": [
+        [
+          640,
+          "/como-trabajamos/escena-4-640.c796f93e.avif"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-4-960.62eba849.avif"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-4-1280.f6cb9827.avif"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-4-1920.b665c6fe.avif"
+        ]
+      ],
+      "webp": [
+        [
+          640,
+          "/como-trabajamos/escena-4-640.f7423f29.webp"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-4-960.083a9afc.webp"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-4-1280.b8d0aa26.webp"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-4-1920.5484f16d.webp"
+        ]
+      ]
+    }
+  },
+  "escena-5": {
+    "clip": "/como-trabajamos/escena-5.1131f6e1.mp4",
+    "clipMobile": "/como-trabajamos/escena-5-m.24c4f19e.mp4",
+    "poster": {
+      "width": 1280,
+      "height": 720,
+      "avif": [
+        [
+          640,
+          "/como-trabajamos/escena-5-640.9f7096c7.avif"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-5-960.4a1f6f0b.avif"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-5-1280.8c663481.avif"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-5-1920.89e3cab1.avif"
+        ]
+      ],
+      "webp": [
+        [
+          640,
+          "/como-trabajamos/escena-5-640.24972407.webp"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-5-960.e27c6c84.webp"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-5-1280.537eefd7.webp"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-5-1920.c88f07a6.webp"
+        ]
+      ]
+    }
+  },
+  "escena-6": {
+    "clip": "/como-trabajamos/escena-6.bc90db12.mp4",
+    "clipMobile": "/como-trabajamos/escena-6-m.a839db45.mp4",
+    "poster": {
+      "width": 1280,
+      "height": 720,
+      "avif": [
+        [
+          640,
+          "/como-trabajamos/escena-6-640.798b6c41.avif"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-6-960.911caf20.avif"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-6-1280.f71987ea.avif"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-6-1920.1baccd85.avif"
+        ]
+      ],
+      "webp": [
+        [
+          640,
+          "/como-trabajamos/escena-6-640.e99ff33a.webp"
+        ],
+        [
+          960,
+          "/como-trabajamos/escena-6-960.a32807f5.webp"
+        ],
+        [
+          1280,
+          "/como-trabajamos/escena-6-1280.96f80b88.webp"
+        ],
+        [
+          1920,
+          "/como-trabajamos/escena-6-1920.21ec4529.webp"
+        ]
+      ]
+    }
+  }
+}

@@ -10,6 +10,12 @@ const finePointer = () => window.matchMedia('(hover: hover) and (pointer: fine)'
 
 let lenis: Lenis | null = null;
 
+/** Lleva el scroll a una posición, con Lenis si está activo. `immediate` salta sin animar. */
+export function scrollToY(y: number, immediate = false) {
+  if (lenis) lenis.scrollTo(y, { immediate });
+  else window.scrollTo({ top: y, behavior: immediate || reduceMotion() ? 'auto' : 'smooth' });
+}
+
 /* ---------------------------------------------------------------- Lenis */
 function initSmoothScroll() {
   if (reduceMotion()) return;
@@ -34,17 +40,35 @@ function initSmoothScroll() {
 function initHeader() {
   const header = document.querySelector<HTMLElement>('[data-header]');
   if (!header) return;
+  // Oculta al bajar, muestra al subir. Con histéresis: solo cambia de estado
+  // cuando el desplazamiento acumulado en una dirección supera el umbral, así
+  // los micro-movimientos del scroll suave (Lenis) no hacen parpadear el header.
+  const THRESHOLD = 12;
   let last = window.scrollY;
-  const onScroll = () => {
+  let ticking = false;
+  const update = () => {
+    ticking = false;
     const y = window.scrollY;
+    const delta = y - last;
     header.classList.toggle('header--scrolled', y > 24);
-    if (!header.classList.contains('header--open')) {
-      header.classList.toggle('header--hidden', y > 320 && y > last + 4);
-      if (y < last - 4) header.classList.remove('header--hidden');
+    if (header.classList.contains('header--open')) { last = y; return; }
+
+    if (y <= 320 || delta < -THRESHOLD) {
+      header.classList.remove('header--hidden');
+      last = y;
+    } else if (delta > THRESHOLD) {
+      header.classList.add('header--hidden');
+      last = y;
     }
-    last = y;
+    // Si |delta| <= THRESHOLD no tocamos nada ni movemos `last`:
+    // el umbral se acumula hasta que el usuario cambia de dirección de verdad.
   };
-  onScroll();
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+  update();
   window.addEventListener('scroll', onScroll, { passive: true });
 
   const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
@@ -109,11 +133,18 @@ function splitWords(el: HTMLElement) {
     });
     node.replaceWith(frag);
   });
-  el.setAttribute('aria-label', label);
+  /* Texto íntegro para lectores de pantalla: aria-label no está permitido en <p>/<h*> sin rol,
+     así que va en un span visualmente oculto y las palabras animadas quedan aria-hidden. */
+  const sr = document.createElement('span');
+  sr.className = 'visually-hidden';
+  sr.textContent = label;
+  el.prepend(sr);
   return inners;
 }
 
 function initSplits() {
+  // En móvil el titular se deja quieto: es el elemento LCP y no debe esperar al JS.
+  if (!window.matchMedia('(min-width: 861px)').matches) return;
   document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
     const words = splitWords(el);
     if (!words.length) return;
@@ -135,7 +166,7 @@ function initSplits() {
 function initReveals() {
   const heroItems = document.querySelectorAll<HTMLElement>('[data-hero-item]');
   if (heroItems.length) {
-    gsap.fromTo(heroItems, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'expo.out', stagger: 0.12, delay: 0.45 });
+    gsap.to(heroItems, { y: 0, duration: 0.9, ease: 'expo.out', stagger: 0.1, delay: 0.15 });
   }
 
   document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
@@ -168,7 +199,7 @@ function initReveals() {
   document.querySelectorAll<HTMLElement>('[data-scrub-text]').forEach((el) => {
     const words = splitWords(el);
     if (!words.length) return;
-    gsap.fromTo(words, { opacity: 0.18 }, { opacity: 1, stagger: 0.05, ease: 'none', scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: true } });
+    gsap.fromTo(words, { opacity: 0.45 }, { opacity: 1, stagger: 0.05, ease: 'none', scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: true } });
   });
 
   document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
@@ -207,6 +238,8 @@ function initPointerEffects() {
 /* ------------------------------------------------------------------ App */
 export function initApp() {
   document.documentElement.classList.add('is-ready');
+  // Para scripts de página que no importan app.ts (y así no lo cargan antes de tiempo).
+  (window as Window & { zkScrollTo?: typeof scrollToY }).zkScrollTo = scrollToY;
   initHeader();
 
   if (reduceMotion()) {

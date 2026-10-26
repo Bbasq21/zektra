@@ -4,7 +4,7 @@ import type { Service } from '../data/services';
 interface Props { service: Service; index: number }
 const { service, index } = Astro.props;
 ---
-<a class="service-card" href={`/servicios/#${service.id}`} data-tilt>
+<a class="service-card" href={`/servicios/${service.id}/`} data-tilt>
   <span class="service-card__index">{String(index + 1).padStart(2, '0')}</span>
   <span class="service-card__icon"><Icon name={service.icon} /></span>
   <h3 class="service-card__title">{service.title}</h3>

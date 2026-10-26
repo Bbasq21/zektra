@@ -1,0 +1,86 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { LEGAL, SITE } from '../../data/site';
+---
+<LegalLayout
+  title="Términos y condiciones"
+  description="Condiciones de uso del sitio web de Zektra: propiedad intelectual, alcance de la información publicada, responsabilidad y ley aplicable."
+  lead="Las reglas para usar este sitio. Los proyectos que contrates con nosotros se rigen por su propia propuesta y contrato."
+  path="/legal/terminos/"
+>
+  <p>
+    Estos términos regulan el acceso y uso de <a href={SITE.url}>zektra.co</a> (el «sitio»), operado por {LEGAL.holder}
+    {LEGAL.document && <> ({LEGAL.document})</>}, con domicilio en {LEGAL.domicile}. Al navegar el sitio aceptas estos términos.
+    Si no estás de acuerdo, te pedimos no usarlo.
+  </p>
+
+  <h2 id="objeto">1. Objeto del sitio</h2>
+  <p>
+    El sitio presenta los servicios de Zektra (desarrollo de software, diseño UX/UI y soluciones digitales), casos de trabajo,
+    artículos y un canal de contacto. Su contenido es informativo.
+  </p>
+
+  <h2 id="propuestas">2. Información comercial y propuestas</h2>
+  <p>
+    Las descripciones de servicios, tiempos o alcances publicados son orientativos y no constituyen una oferta mercantil vinculante.
+    Cada proyecto se define en una propuesta escrita y, cuando corresponde, en un contrato que establece alcance, precio, plazos,
+    entregables, garantías y propiedad de lo desarrollado. Si hay diferencias entre este sitio y esos documentos, prevalecen estos últimos.
+  </p>
+
+  <h2 id="uso">3. Uso permitido</h2>
+  <p>Te comprometes a usar el sitio de forma lícita y a no:</p>
+  <ul>
+    <li>Enviar información falsa, de terceros sin su autorización, o contenido ilícito, ofensivo o malicioso a través del formulario.</li>
+    <li>Intentar acceder sin autorización a sistemas, cuentas o datos, ni afectar el funcionamiento del sitio (por ejemplo, con ataques, bots o envíos masivos).</li>
+    <li>Copiar, extraer de forma automatizada o reutilizar el contenido con fines comerciales sin nuestra autorización.</li>
+  </ul>
+
+  <h2 id="propiedad">4. Propiedad intelectual</h2>
+  <p>
+    La marca Zektra, sus logotipos, el diseño del sitio, los textos, gráficos, animaciones y el código fuente son de Zektra o de
+    sus licenciantes y están protegidos por la Ley 23 de 1982, la Decisión Andina 351 de 1993 y demás normas de propiedad intelectual.
+    No se concede ninguna licencia sobre ellos por el hecho de visitar el sitio.
+  </p>
+  <p>
+    Puedes citar o compartir fragmentos de los artículos del blog siempre que menciones la fuente y enlaces a la página original.
+    Las marcas, nombres y logotipos de clientes mostrados en los casos pertenecen a sus titulares y se publican con fines de referencia.
+  </p>
+
+  <h2 id="enlaces">5. Enlaces a terceros</h2>
+  <p>
+    El sitio puede incluir enlaces a sitios de terceros. No controlamos su contenido ni sus políticas de privacidad, y no somos
+    responsables por ellos.
+  </p>
+
+  <h2 id="responsabilidad">6. Disponibilidad y responsabilidad</h2>
+  <p>
+    Procuramos que el sitio funcione de forma continua y que su información sea correcta y esté actualizada, pero no garantizamos
+    que esté libre de errores o interrupciones. Los artículos del blog son de carácter general y no reemplazan una asesoría para
+    tu caso concreto. En la medida que lo permita la ley, Zektra no responde por daños derivados del uso del sitio o de decisiones
+    tomadas solo con base en su contenido, ni por fallas causadas por terceros o por fuerza mayor.
+  </p>
+
+  <h2 id="datos">7. Datos personales</h2>
+  <p>
+    Los datos que nos envíes se tratan según nuestra <a href="/legal/privacidad/">Política de tratamiento de datos personales</a>.
+    El uso de cookies se explica en la <a href="/legal/cookies/">Política de cookies</a>.
+  </p>
+
+  <h2 id="cambios">8. Cambios</h2>
+  <p>
+    Podemos actualizar estos términos en cualquier momento. La versión vigente es la publicada en esta página, con su fecha de
+    vigencia.
+  </p>
+
+  <h2 id="ley">9. Ley aplicable y jurisdicción</h2>
+  <p>
+    Estos términos se rigen por las leyes de la República de Colombia. Cualquier controversia se intentará resolver primero de forma
+    directa; si no es posible, se someterá a los jueces competentes de Medellín, sin perjuicio de los derechos que la ley reconozca
+    a los consumidores.
+  </p>
+
+  <h2 id="contacto">10. Contacto</h2>
+  <p>
+    Para cualquier pregunta sobre estos términos escríbenos a <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a>.
+  </p>
+</LegalLayout>

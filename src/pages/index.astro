@@ -61,7 +61,10 @@ import { CASES } from '../data/cases';
           title="Cómo convertimos una idea en un producto real"
           lead="Cuatro etapas, un mismo equipo y comunicación directa de principio a fin."
         />
-        <Button href="/contacto/" variant="link" arrow>Empecemos por la estrategia</Button>
+        <div class="home-process__links">
+          <Button href="/nosotros/#como-trabajamos" variant="link" arrow>Ver cómo trabajamos</Button>
+          <Button href="/contacto/" variant="link" arrow>Empecemos por la estrategia</Button>
+        </div>
       </div>
       <Process />
     </div>
@@ -101,6 +104,7 @@ import { CASES } from '../data/cases';
 
   .home-process { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-8); align-items: start; }
   .home-process__intro { position: sticky; top: calc(var(--header-h) + var(--space-6)); }
+  .home-process__links { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-6); }
 
   .home-cases__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--space-7); }
   .home-cases__head :global(.section-head) { margin-bottom: 0; }

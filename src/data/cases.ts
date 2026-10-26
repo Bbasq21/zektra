@@ -9,6 +9,8 @@ export type Case = {
   deliverables: string[];
   tags: string[];
   accent: 'menta' | 'violeta' | 'magenta' | 'coral' | 'ambar' | 'indigo';
+  /** id del servicio de Zektra que resolvió el caso (enlaza a /servicios/<id>/). */
+  service: string;
 };
 
 export const CASES: Case[] = [
@@ -23,6 +25,7 @@ export const CASES: Case[] = [
     deliverables: ['Flujos de usuario navegables', 'Arquitectura de información', 'Prototipo Hi-Fi', 'Plan de validación de usabilidad'],
     tags: ['UX', 'Prototipo Hi-Fi', 'Figma Make'],
     accent: 'violeta',
+    service: 'ux-ui',
   },
   {
     id: 'migracion-inmobiliaria',
@@ -35,6 +38,7 @@ export const CASES: Case[] = [
     deliverables: ['Auditoría SEO y de rendimiento', 'Migración del blog', 'Landing de inversionistas', 'Plan de redirecciones'],
     tags: ['SEO', 'Oqtane', 'Migración'],
     accent: 'menta',
+    service: 'seo-rendimiento',
   },
   {
     id: 'experiencias-administrables',
@@ -47,6 +51,7 @@ export const CASES: Case[] = [
     deliverables: ['Maquetación desde Figma', 'Componente interactivo', 'Contenido administrable'],
     tags: ['WordPress', 'Elementor', 'Interacción'],
     accent: 'magenta',
+    service: 'cms',
   },
   {
     id: 'demo-restringido',
@@ -59,5 +64,6 @@ export const CASES: Case[] = [
     deliverables: ['Despliegue del frontend', 'Acceso restringido', 'Ruta hacia AWS'],
     tags: ['Despliegue', 'Hosting', 'Seguridad'],
     accent: 'ambar',
+    service: 'despliegue',
   },
 ];

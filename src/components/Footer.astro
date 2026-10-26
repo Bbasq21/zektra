@@ -1,5 +1,5 @@
 ---
-import { SITE } from '../data/site';
+import { SITE, LEGAL_NAV } from '../data/site';
 import { SERVICES } from '../data/services';
 const year = new Date().getFullYear();
 ---
@@ -13,7 +13,8 @@ const year = new Date().getFullYear();
     <div class="footer__col">
       <h2 class="footer__title">Servicios</h2>
       <ul class="footer__list" role="list">
-        {SERVICES.slice(0, 4).map((s) => <li><a class="footer__link" href={`/servicios/#${s.id}`}>{s.title}</a></li>)}
+        {SERVICES.slice(0, 4).map((s) => <li><a class="footer__link" href={`/servicios/${s.id}/`}>{s.title}</a></li>)}
+        <li><a class="footer__link" href="/servicios/">Todos los servicios</a></li>
       </ul>
     </div>
 
@@ -22,6 +23,8 @@ const year = new Date().getFullYear();
       <ul class="footer__list" role="list">
         <li><a class="footer__link" href="/casos/">Casos</a></li>
         <li><a class="footer__link" href="/nosotros/">Nosotros</a></li>
+        <li><a class="footer__link" href="/nosotros/#como-trabajamos">Cómo trabajamos</a></li>
+        <li><a class="footer__link" href="/blog/">Blog</a></li>
         <li><a class="footer__link" href="/contacto/">Contacto</a></li>
       </ul>
     </div>
@@ -36,6 +39,10 @@ const year = new Date().getFullYear();
 
     <div class="footer__legal">
       <span>© {year} Zektra · Soluciones Digitales</span>
+      <ul class="footer__legal-nav" role="list">
+        {LEGAL_NAV.map((l) => <li><a class="footer__link" href={l.href}>{l.label}</a></li>)}
+        <li><button class="footer__link footer__link--button" type="button" data-cookie-settings>Preferencias de cookies</button></li>
+      </ul>
       <span>Innovación que conecta.</span>
     </div>
   </div>
@@ -68,6 +75,10 @@ const year = new Date().getFullYear();
     font-size: var(--fs-caption);
     color: var(--muted);
   }
+  .footer__legal-nav { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin: 0; padding: 0; }
+  .footer__legal-nav .footer__link { color: var(--muted); }
+  .footer__legal-nav .footer__link:hover { color: var(--accent); }
+  .footer__link--button { padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
   .footer__thread { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 0; }
 
   @media (max-width: 760px) {

@@ -54,17 +54,36 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
     position: fixed;
     inset: 0 0 auto 0;
     z-index: 100;
-    transition: transform var(--dur) var(--ease-out), background-color var(--dur) ease, border-color var(--dur) ease;
+    isolation: isolate;
+    will-change: transform;
+    transition: transform var(--dur) var(--ease-out), border-color var(--dur) ease;
     border-bottom: 1px solid transparent;
   }
-  .header--scrolled {
+  /* El fondo translúcido + blur vive en un pseudoelemento: en Chrome,
+     `backdrop-filter` y una transición de `transform` sobre el mismo elemento
+     dejan restos ("fantasmas") del contenido desenfocado durante la animación. */
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     background: rgba(2, 3, 21, 0.78);
     -webkit-backdrop-filter: blur(14px) saturate(1.3);
     backdrop-filter: blur(14px) saturate(1.3);
-    border-bottom-color: var(--line);
+    opacity: 0;
+    transition: opacity var(--dur) ease;
+    pointer-events: none;
   }
-  .header--hidden { transform: translateY(-100%); }
-  .header--open { background: var(--bg); transform: none; }
+  .header--scrolled { border-bottom-color: var(--line); }
+  .header--scrolled::before { opacity: 1; }
+  .header--hidden { transform: translateY(calc(-100% - 1px)); }
+  .header--open { transform: none; }
+  .header--open::before {
+    opacity: 1;
+    background: var(--bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 
   .header__bar { display: flex; align-items: center; gap: var(--space-6); height: var(--header-h); }
   .header__brand { display: block; flex: 0 0 auto; }

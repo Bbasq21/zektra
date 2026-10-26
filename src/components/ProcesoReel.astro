@@ -1,0 +1,334 @@
+---
+/* Recorrido en video «Cómo trabajamos» (sección de /nosotros/). Los pasos salen de
+   src/data/proceso.ts y los videos de src/data/proceso-video.ts. */
+import Button from './Button.astro';
+import { CHAPTERS } from '../data/proceso';
+import { CHAPTER_VIDEOS, CROSSFADE, srcset } from '../data/proceso-video';
+
+const scenes = CHAPTERS.map((c, i) => ({ c, i, v: CHAPTER_VIDEOS[c.id] }));
+/* Largo de la pista en pantallas: lo reserva el CSS antes de que corra cualquier script. */
+const len = scenes.reduce((sum, s) => sum + s.v.scroll, 0);
+const last = CHAPTERS.length - 1;
+const SIZES = '100vw';
+const fallbackSrc = (p: (typeof scenes)[number]['v']['poster']) => p.webp.find(([w]) => w === 960)?.[1] ?? p.webp[0][1];
+---
+{/* Decide el modo antes de pintar la sección, para que el paso de lista a recorrido no
+    mueva nada (CLS 0). pv-live: escenario fijo con scroll. pv-still: solo pósteres con
+    fundido (movimiento reducido, ahorro de datos, 2G/3G o ≤ 2 GB de memoria). Si el
+    script de la página no arranca, vuelve a la lista después de load. */}
+<script is:inline>
+  (function () {
+    var d = document.documentElement, n = navigator, c = n.connection || {};
+    if (!('IntersectionObserver' in window) || !window.CSS || !CSS.supports('position', 'sticky')) return;
+    var rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    d.classList.add('pv-live');
+    if (rm) d.classList.add('pv-reduce');
+    if (rm || c.saveData || /(^|-)(slow-)?(2g|3g)$/.test(c.effectiveType || '') || (n.deviceMemory && n.deviceMemory <= 2)) d.classList.add('pv-still');
+    addEventListener('load', function () {
+      setTimeout(function () { if (!d.classList.contains('pv-ready')) d.classList.remove('pv-live', 'pv-still', 'pv-reduce'); }, 2000);
+    });
+  })();
+</script>
+<section class="reel" id="como-trabajamos" data-reel data-crossfade={CROSSFADE} style={`--reel-len: ${len}`} aria-labelledby={CHAPTERS[0].id + '-titulo'}>
+  <div class="reel__stage" data-reel-stage aria-hidden="true">
+    {scenes.map(({ v, i }) => (
+      <div
+        class="reel__seg"
+        data-reel-seg
+        data-clip={v.clip}
+        data-clip-mobile={v.clipMobile}
+        data-w={v.scroll}
+        data-focus={v.focus}
+      >
+        <picture>
+          <source type="image/avif" srcset={srcset(v.poster.avif)} sizes={SIZES} />
+          <source type="image/webp" srcset={srcset(v.poster.webp)} sizes={SIZES} />
+          <img class="reel__poster" src={fallbackSrc(v.poster)} alt="" width={v.poster.width} height={v.poster.height} loading="lazy" decoding="async" />
+        </picture>
+      </div>
+    ))}
+  </div>
+
+  <ol class="reel__chapters" role="list">
+    {CHAPTERS.map((c, i) => (
+      <li class="reel__chapter" id={c.id} data-reel-card>
+        <article class:list={['reel__card', { 'reel__card--cta': i === last }]} aria-labelledby={`${c.id}-titulo`}>
+          <div class="reel__meta">
+            <span class="reel__number">{c.number}</span>
+            <span class="eyebrow">{c.eyebrow}</span>
+          </div>
+          <h2 class:list={['reel__title', { 'reel__title--lead': i === 0 }]} id={`${c.id}-titulo`} set:html={c.title} />
+          <p class="reel__text">{c.text}</p>
+          {c.deliverable && (
+            <p class="reel__deliverable"><span class="reel__deliverable-label">Al terminar recibes</span> {c.deliverable}</p>
+          )}
+          {i === last && (
+            <div class="reel__actions">
+              <Button href="/contacto/" variant="brand" size="lg" arrow>Agenda una llamada</Button>
+            </div>
+          )}
+          {i === 0 && (
+            <span class="reel__hint" data-reel-hint aria-hidden="true">
+              <span class="reel__hint-line"></span>
+              Desliza para recorrer
+            </span>
+          )}
+        </article>
+      </li>
+    ))}
+  </ol>
+
+  <nav class="reel__rail" aria-label="Pasos de cómo trabajamos">
+    <ol class="reel__rail-list" role="list">
+      {CHAPTERS.map((c, i) => (
+        <li>
+          <a
+            class="reel__rail-link"
+            href={`#${c.id}`}
+            data-reel-link
+            style={`--chapter-accent: var(--${c.accent})`}
+            aria-current={i === 0 ? 'step' : undefined}
+          >
+            <span class="reel__rail-dot" aria-hidden="true"></span>
+            <span class="reel__rail-label">{c.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  <div class="reel__track" aria-hidden="true"></div>
+</section>
+
+<script>
+  import { initProcesoVideo } from '../scripts/proceso-video';
+  initProcesoVideo();
+</script>
+
+<style>
+  /* Bloque: reel --------------------------------------------------------------
+     Sin JavaScript: los pasos se leen como una lista normal sobre Azul Noche.
+     Con html.pv-live (lo decide un script inline en el <head>, antes del primer pintado):
+     escenario, tarjetas y riel quedan fijos (sticky) mientras la pista (reel__track) da el
+     recorrido de scroll. La altura de la pista sale de --reel-len (pantallas de scroll de
+     cada escena), así el CSS reserva el espacio sin esperar al JavaScript.
+     Las escenas son maquetas de plastilina en un cielo nocturno; el escenario toma ese
+     mismo azul para que póster y video no muestren bordes. */
+  .reel {
+    --reel-sky: #0F1735;
+    --reel-unit: 100vh;
+    position: relative;
+    isolation: isolate;
+    background: var(--azul-noche);
+  }
+  @supports (height: 100svh) {
+    .reel { --reel-unit: 100svh; }
+  }
+  .reel__stage,
+  .reel__track,
+  .reel__rail,
+  .reel__hint { display: none; }
+
+  .reel__chapters {
+    display: grid;
+    gap: var(--space-6);
+    margin: 0;
+    padding: var(--space-9) var(--gutter);
+  }
+
+  .reel__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    width: 100%;
+    max-width: 35rem;
+    padding: var(--space-6);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    /* 92 % opaco: el texto conserva contraste AA aunque el cuadro detrás sea blanco. */
+    background: rgba(10, 12, 36, 0.92);
+  }
+  .reel__meta { display: flex; align-items: center; gap: var(--space-4); }
+  .reel__number {
+    font-family: var(--font-sans);
+    font-size: var(--fs-h4);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .reel__title { font-size: var(--fs-h1); line-height: 1.1; color: var(--ink); overflow-wrap: normal; hyphens: manual; }
+  .reel__title--lead { font-size: var(--fs-display-l); line-height: 1.06; letter-spacing: -0.03em; }
+  .reel__title :global(strong) { font-style: italic; font-weight: 700; color: var(--accent); }
+  .reel__title :global(em) { font-style: normal; color: var(--accent-hot); }
+  .reel__text { max-width: 52ch; color: var(--ink-2); }
+  .reel__deliverable { max-width: 52ch; font-size: var(--fs-body-s); line-height: 1.55; color: var(--ink); }
+  .reel__deliverable-label { display: block; margin-bottom: 2px; font-size: var(--fs-caption); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .reel__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-2); }
+
+  /* Cierre: banda CTA (Azul Noche con el gradiente cálido desde la esquina inferior derecha). */
+  .reel__card--cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--azul-noche);
+  }
+  .reel__card--cta::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--gradient-calido); }
+  .reel__card--cta::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--gradient-oficial); }
+
+  .reel__hint {
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--fs-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .reel__hint-line { position: relative; width: 48px; height: 1px; overflow: hidden; background: var(--line-strong); }
+  .reel__hint-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--menta);
+    animation: reel-hint 2.2s var(--ease-out) infinite;
+  }
+  @keyframes reel-hint { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
+
+  /* ---------------------------------------------------------------- recorrido */
+  :global(.pv-live) .reel { background: var(--reel-sky); }
+  /* Sin backdrop-filter sobre el video: obligaría a recomponer el desenfoque en cada cuadro. */
+  :global(html.pv-live .header.header--scrolled::before) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(2, 3, 21, 0.92);
+  }
+
+  :global(.pv-live) .reel__stage {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    height: var(--reel-unit);
+    overflow: hidden;
+    background: var(--reel-sky);
+  }
+  .reel__seg { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+  .reel__seg:first-child { opacity: 1; }
+  /* Las escenas lejanas no tienen caja: así sus pósteres (loading="lazy") no se descargan
+     en la carga inicial aunque estén apilados dentro del escenario. El script muestra la
+     escena actual y sus vecinas (is-near). Son absolutas: aparecer no mueve nada. */
+  .reel__seg:not(:first-child):not(:global(.is-near)) { display: none; }
+  .reel__poster,
+  .reel__seg :global(.reel__video) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 42%;
+  }
+  .reel__seg :global(.reel__video) { z-index: 1; }
+  .reel__seg:global(.has-clip) .reel__poster { visibility: hidden; }
+
+  :global(.pv-live) .reel__chapters {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: block;
+    height: var(--reel-unit);
+    margin-top: calc(-1 * var(--reel-unit));
+    padding: 0;
+    pointer-events: none;
+  }
+  :global(.pv-live) .reel__chapter {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: var(--space-8);
+    display: flex;
+    opacity: 0;
+  }
+  :global(.pv-live) .reel__chapter:first-child { opacity: 1; }
+  :global(.pv-live) .reel__chapter:global(.is-active) { pointer-events: auto; }
+  :global(.pv-live) .reel__hint { display: inline-flex; }
+
+  :global(.pv-live) .reel__track {
+    display: block;
+    height: calc(var(--reel-len) * var(--reel-unit));
+    pointer-events: none;
+  }
+
+  :global(.pv-live) .reel__rail {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    height: var(--reel-unit);
+    margin-top: calc(-1 * var(--reel-unit));
+    pointer-events: none;
+  }
+  .reel__rail-list {
+    position: absolute;
+    top: 50%;
+    right: var(--gutter);
+    display: flex;
+    flex-direction: column;
+    /* Ancho fijo y texto alineado a la izquierda: el cambio de fuente no mueve el riel. */
+    width: 12.5rem;
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: rgba(2, 3, 21, 0.9);
+    transform: translateY(-50%);
+    pointer-events: auto;
+  }
+  .reel__rail-link {
+    display: grid;
+    grid-template-columns: 10px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+    padding-inline: var(--space-2);
+    font-size: var(--fs-caption);
+    color: var(--ink-2);
+    text-decoration: none;
+    transition: color var(--dur) ease;
+  }
+  .reel__rail-link:hover { color: var(--ink); }
+  .reel__rail-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line-strong);
+    transition: background-color var(--dur) ease, border-color var(--dur) ease;
+  }
+  .reel__rail-link[aria-current] { color: var(--ink); }
+  .reel__rail-link[aria-current] .reel__rail-dot { background: var(--chapter-accent); border-color: var(--chapter-accent); }
+
+  @media (max-width: 860px) {
+    :global(.pv-live) .reel__rail { display: none; }
+    :global(.pv-live) .reel__chapter { bottom: calc(var(--space-5) + env(safe-area-inset-bottom)); }
+    .reel__card { gap: var(--space-3); padding: var(--space-5); }
+  }
+
+  /* Pantallas verticales: la escena ocupa la parte de arriba y se funde con el cielo, así el
+     sujeto queda por encima de la tarjeta y el video se escala menos. */
+  @media (max-aspect-ratio: 4/5) {
+    .reel__poster,
+    .reel__seg :global(.reel__video) { bottom: auto; height: 64%; }
+    :global(.pv-live) .reel__stage::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(64% - 96px);
+      z-index: 3;
+      height: 97px;
+      background: linear-gradient(to bottom, rgba(15, 23, 53, 0), var(--reel-sky));
+      pointer-events: none;
+    }
+  }
+</style>

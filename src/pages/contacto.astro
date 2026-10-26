@@ -5,8 +5,13 @@ import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
 import { SITE } from '../data/site';
 import { SERVICES } from '../data/services';
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
 ---
-<BaseLayout title="Contacto" description="Cuéntanos tu idea. Zektra diseña y desarrolla soluciones digitales desde Medellín, Colombia.">
+<BaseLayout
+  title="Contacto: cotiza tu proyecto digital"
+  description="Cuéntanos tu idea y te respondemos con una propuesta clara. Zektra diseña y desarrolla software y soluciones digitales desde Medellín, Colombia."
+  breadcrumbs={[{ name: 'Contacto', path: '/contacto/' }]}
+>
   <Hero
     eyebrow="Contacto"
     title="Cuéntanos tu idea. <strong>Hagámosla real.</strong>"
@@ -38,7 +43,7 @@ import { SERVICES } from '../data/services';
             <label class="field__label" for="servicio">¿Qué necesitas?</label>
             <select class="field__control field__control--select" id="servicio" name="servicio">
               <option value="">Elige una opción</option>
-              {SERVICES.map((s) => <option value={s.title}>{s.title}</option>)}
+              {SERVICES.map((s) => <option value={s.title} data-id={s.id}>{s.title}</option>)}
               <option value="Otro">Otra cosa / no estoy seguro</option>
             </select>
           </div>
@@ -51,10 +56,28 @@ import { SERVICES } from '../data/services';
           <p class="field__error" id="mensaje-error" hidden></p>
         </div>
 
+        <div class="field">
+          <div class="consent">
+            <input class="consent__control" id="autorizacion" name="autorizacion" type="checkbox" value="si" required />
+            <label class="consent__label" for="autorizacion">
+              Autorizo a Zektra a tratar mis datos personales para responder mi solicitud, según la{' '}
+              <a href="/legal/privacidad/" target="_blank" rel="noopener">Política de tratamiento de datos personales</a>.
+            </label>
+          </div>
+          <p class="field__error" id="autorizacion-error" hidden></p>
+        </div>
+
         <div class="form__honeypot" aria-hidden="true">
           <label for="sitio">No llenes este campo</label>
           <input id="sitio" name="sitio" type="text" tabindex="-1" autocomplete="off" />
         </div>
+        <input type="hidden" name="t0" value="" data-t0 />
+
+        {turnstileKey && (
+          <div class="form__turnstile">
+            <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="dark" data-language="es" data-size="flexible"></div>
+          </div>
+        )}
 
         <div class="form__footer">
           <Button type="submit" size="lg" arrow data-submit>Enviar mensaje</Button>
@@ -87,6 +110,18 @@ import { SERVICES } from '../data/services';
       </aside>
     </div>
   </section>
+  {turnstileKey && <script is:inline async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>}
+  <script is:inline>
+    (function () {
+      var t0 = document.querySelector('[data-t0]');
+      if (t0) t0.value = String(Date.now());
+      var id = new URLSearchParams(location.search).get('servicio');
+      var select = document.getElementById('servicio');
+      if (!id || !select) return;
+      var opt = select.querySelector('option[data-id="' + CSS.escape(id) + '"]');
+      if (opt) select.value = opt.value;
+    })();
+  </script>
 </BaseLayout>
 
 <script>
@@ -105,6 +140,7 @@ import { SERVICES } from '../data/services';
             ? ''
             : 'Revisa el correo: le falta el @ o el dominio. Ejemplo: nombre@empresa.co',
       mensaje: (v) => (v.trim().length < 10 ? 'Cuéntanos un poco más: con una o dos frases es suficiente.' : ''),
+      autorizacion: (v) => (v ? '' : 'Necesitamos tu autorización para usar tus datos y poder responderte.'),
     };
 
     const showError = (name: string, msg: string) => {
@@ -120,8 +156,13 @@ import { SERVICES } from '../data/services';
 
     Object.keys(rules).forEach((name) => {
       const input = form.elements.namedItem(name) as HTMLInputElement;
-      input?.addEventListener('blur', () => input.value && showError(name, rules[name](input.value)));
-      input?.addEventListener('input', () => input.getAttribute('aria-invalid') === 'true' && showError(name, rules[name](input.value)));
+      const value = () => (input.type === 'checkbox' ? (input.checked ? input.value : '') : input.value);
+      if (input?.type === 'checkbox') {
+        input.addEventListener('change', () => input.getAttribute('aria-invalid') === 'true' && showError(name, rules[name](value())));
+        return;
+      }
+      input?.addEventListener('blur', () => input.value && showError(name, rules[name](value())));
+      input?.addEventListener('input', () => input.getAttribute('aria-invalid') === 'true' && showError(name, rules[name](value())));
     });
 
     form.addEventListener('submit', async (e) => {
@@ -148,11 +189,13 @@ import { SERVICES } from '../data/services';
         const json = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(json.error || 'No pudimos enviar el mensaje.');
         form.reset();
+        form.querySelector<HTMLInputElement>('[data-t0]')!.value = String(Date.now());
+        (window as Window & { turnstile?: { reset: () => void } }).turnstile?.reset();
         status.className = 'form__status form__status--success';
         status.textContent = '¡Gracias! Recibimos tu mensaje y te responderemos pronto.';
       } catch (err) {
         status.className = 'form__status form__status--error';
-        status.textContent = `${(err as Error).message} Escríbenos directo a brandon@zektra.co.`;
+        status.textContent = `${(err as Error).message} Escríbenos directo a comunicaciones@zektra.co.`;
       } finally {
         submit.disabled = false;
         if (label) label.textContent = 'Enviar mensaje';
@@ -168,6 +211,7 @@ import { SERVICES } from '../data/services';
   .form { display: flex; flex-direction: column; gap: var(--space-5); }
   .form__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
   .form__honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .form__turnstile { min-height: 65px; }
   .form__footer { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5); margin-top: var(--space-2); }
   .form__status { font-size: var(--fs-body-s); color: var(--ink-2); }
   .form__status--success { color: var(--success); }
@@ -202,6 +246,13 @@ import { SERVICES } from '../data/services';
   .field__control--select option { background: var(--surface-2); color: var(--ink); }
   .field__help { font-size: var(--fs-caption); color: var(--muted); }
   .field__error { font-size: var(--fs-caption); color: var(--danger); }
+
+  .consent { display: flex; gap: var(--space-3); align-items: flex-start; }
+  .consent__control { flex: 0 0 auto; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+  .consent__control:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .consent__control[aria-invalid='true'] { outline: 2px solid var(--danger); outline-offset: 2px; }
+  .consent__label { font-size: var(--fs-body-s); line-height: 1.5; color: var(--ink-2); cursor: pointer; }
+  .consent__label a { color: var(--accent); text-underline-offset: 3px; }
 
   .contact__aside { display: flex; flex-direction: column; gap: var(--space-5); }
   .contact__card { padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }

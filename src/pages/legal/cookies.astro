@@ -1,0 +1,59 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { LEGAL } from '../../data/site';
+---
+<LegalLayout
+  title="Política de cookies"
+  description="Qué cookies usa el sitio de Zektra: ninguna de publicidad y solo medición de audiencia con Google Analytics si tú la aceptas."
+  lead="Corta y clara: solo usamos cookies de medición (Google Analytics) y únicamente si tú las aceptas. Nada de publicidad ni seguimiento entre sitios."
+  path="/legal/cookies/"
+>
+  <h2 id="que-son">1. Qué son las cookies</h2>
+  <p>
+    Las cookies son pequeños archivos que un sitio guarda en tu navegador para recordar información entre visitas. Hay tecnologías
+    parecidas, como el almacenamiento local del navegador, que cumplen funciones similares.
+  </p>
+
+  <h2 id="cuales">2. Qué cookies usamos</h2>
+  <h3>Estrictamente necesarias (no requieren consentimiento)</h3>
+  <ul>
+    <li>
+      <strong>zk-consent</strong> (almacenamiento local, propio): recuerda si aceptaste o rechazaste las cookies de medición para no
+      volver a preguntarte. Dura hasta que la borres.
+    </li>
+    <li>
+      Mecanismos técnicos de nuestro proveedor de alojamiento (Vercel) para entregar el sitio de forma segura, por ejemplo protección
+      contra tráfico malicioso. No sirven para identificarte ni para seguir tu navegación.
+    </li>
+  </ul>
+  <h3>De medición de audiencia (solo con tu consentimiento)</h3>
+  <ul>
+    <li>
+      <strong>Google Analytics 4</strong>, cargado a través de Google Tag Manager (Google LLC): cookies <strong>_ga</strong> y
+      <strong>_ga_*</strong>, que duran hasta 2 años y nos permiten saber cuántas personas visitan el sitio, desde qué páginas llegan y
+      qué contenidos consultan. Usamos esta información de forma agregada para mejorar el sitio. No la usamos para publicidad ni la
+      vendemos. Más información en la
+      <a href="https://policies.google.com/technologies/cookies?hl=es" rel="noopener noreferrer" target="_blank">política de cookies de Google</a>.
+    </li>
+  </ul>
+  <p>
+    Mientras no aceptes, Google Analytics funciona en «modo de consentimiento»: no instala cookies ni guarda identificadores
+    persistentes. Las fuentes tipográficas y las métricas de velocidad del sitio (Vercel Speed Insights) se sirven sin cookies.
+  </p>
+
+  <h2 id="control">3. Cómo aceptar, rechazar o cambiar tu decisión</h2>
+  <p>
+    La primera vez que visitas el sitio te mostramos un aviso con dos opciones: «Aceptar cookies» o «Solo las necesarias». Puedes
+    cambiar tu decisión en cualquier momento desde el enlace <strong>Preferencias de cookies</strong> en el pie de página.
+  </p>
+  <p>
+    También puedes ver, bloquear o borrar las cookies desde la configuración de tu navegador (Chrome, Safari, Firefox, Edge u otros).
+    Bloquearlas no afecta el funcionamiento de este sitio.
+  </p>
+
+  <h2 id="contacto">4. Contacto</h2>
+  <p>
+    Si tienes preguntas, escríbenos a <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a>. El tratamiento de tus datos personales
+    se explica en la <a href="/legal/privacidad/">Política de tratamiento de datos personales</a>.
+  </p>
+</LegalLayout>

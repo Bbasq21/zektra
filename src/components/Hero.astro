@@ -45,7 +45,8 @@ const { eyebrow, title, lead, scene = 'none', size = 'page' } = Astro.props;
     filter: blur(30px);
     opacity: 0.55;
   }
-  .hero--scene-none .hero__backdrop { opacity: 0.9; }
+  .hero--scene-none .hero__backdrop,
+  :global(html.no-scenes) .hero__backdrop { opacity: 0.9; }
   .hero--page.hero--scene-none { min-height: 0; padding-bottom: var(--space-7); }
 
   .hero__scene { position: absolute; inset: 0; z-index: -2; }

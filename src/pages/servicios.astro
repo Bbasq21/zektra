@@ -9,8 +9,9 @@ import CtaBand from '../components/CtaBand.astro';
 import { SERVICES } from '../data/services';
 ---
 <BaseLayout
-  title="Servicios"
-  description="Software a la medida de tus necesidades, automatizaciones e IA, branding, marketing digital, diseño gráfico, diseño UX/UI, SEO técnico, experiencias interactivas, CMS administrables y despliegue. Servicios de Zektra en Medellín, Colombia."
+  title="Servicios de software, diseño y marketing digital"
+  description="Software a la medida, diseño UX/UI, automatizaciones con IA, SEO técnico, branding y marketing digital. Conoce los 10 servicios de Zektra en Medellín."
+  breadcrumbs={[{ name: 'Servicios', path: '/servicios/' }]}
 >
   <Hero
     scene="network"
@@ -44,6 +45,7 @@ import { SERVICES } from '../data/services';
               <h2 class="service-detail__title" data-split>{s.title}</h2>
               <p class="service-detail__summary" data-reveal>{s.summary}</p>
               <p class="service-detail__text" data-reveal>{s.description}</p>
+              <a class="service-detail__more" href={`/servicios/${s.id}/`} data-reveal>Ver servicio<span class="visually-hidden">: {s.title}</span> <Icon name="arrow" size={18} /></a>
             </div>
             <div class="service-detail__meta" data-reveal>
               <h3 class="service-detail__label">Qué incluye</h3>
@@ -111,6 +113,8 @@ import { SERVICES } from '../data/services';
   .service-detail__title { font-size: var(--fs-h2); }
   .service-detail__summary { font-size: var(--fs-lead); line-height: 1.5; color: var(--ink); }
   .service-detail__text { color: var(--ink-2); max-width: 60ch; }
+  .service-detail__more { display: inline-flex; align-items: center; gap: var(--space-2); align-self: start; color: var(--accent); font-weight: 500; text-decoration: none; }
+  .service-detail__more:hover { text-decoration: underline; text-underline-offset: 4px; }
   .service-detail__meta { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); align-self: start; }
   .service-detail__label { font-size: var(--fs-caption); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
   .service-detail__label:not(:first-child) { margin-top: var(--space-3); }

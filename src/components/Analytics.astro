@@ -1,0 +1,59 @@
+---
+/* Medición: Google Tag Manager + Google Analytics 4 con Consent Mode v2.
+   - Los tags se cargan siempre, pero arrancan con el consentimiento en "denied": sin cookies
+     ni identificadores hasta que la persona acepte en el banner (CookieBanner.astro).
+   - Si ya aceptó antes (localStorage "zk-consent"), se concede antes de cargar los tags.
+   - Los IDs viven en src/data/site.ts (ANALYTICS). */
+import { ANALYTICS } from '../data/site';
+const { gtmId, ga4Id } = ANALYTICS;
+---
+{gtmId && (
+  <>
+    <script is:inline define:vars={{ gtmId, ga4Id }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      window.gtag = gtag;
+
+      var granted = false;
+      try { granted = localStorage.getItem('zk-consent') === 'granted'; } catch (e) {}
+      var state = granted ? 'granted' : 'denied';
+      gtag('consent', 'default', {
+        analytics_storage: state,
+        ad_storage: state,
+        ad_user_data: state,
+        ad_personalization: state,
+        functionality_storage: 'granted',
+        security_storage: 'granted',
+        wait_for_update: 500,
+      });
+      gtag('set', 'url_passthrough', false);
+      gtag('set', 'ads_data_redaction', true);
+
+      /* Los tags se descargan después de `load` para no competir con el CSS, las fuentes y el
+         bundle de la página (LCP). El consentimiento por defecto ya quedó fijado arriba. */
+      function loadTags() {
+      /* Google Tag Manager */
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', gtmId);
+
+      /* Google tag (gtag.js) */
+      if (ga4Id) {
+        var g = document.createElement('script');
+        g.async = true;
+        g.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga4Id;
+        document.head.appendChild(g);
+        gtag('js', new Date());
+        gtag('config', ga4Id);
+      }
+      }
+      if (document.readyState === 'complete') setTimeout(loadTags, 0);
+      else window.addEventListener('load', function () { setTimeout(loadTags, 0); }, { once: true });
+    </script>
+  </>
+)}
