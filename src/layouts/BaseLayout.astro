@@ -17,6 +17,8 @@ interface Props {
   breadcrumbs?: Crumb[];
   /** Nodos JSON-LD adicionales propios de la página (Service, FAQPage…). */
   schema?: Record<string, unknown>[];
+  /** Artículos: og:type article y fechas de publicación. */
+  article?: { published: Date; modified?: Date; tags?: string[] };
 }
 const {
   title,
@@ -26,6 +28,7 @@ const {
   noindex = false,
   breadcrumbs = [],
   schema = [],
+  article,
 } = Astro.props;
 const fullTitle = title ? `${title} · Zektra` : `Zektra · Software a la medida y soluciones digitales en Medellín`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -115,7 +118,11 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
     <link rel="preload" href="/fonts/GoogleSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/Technovier-Regular.woff2" as="font" type="font/woff2" crossorigin />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    {article && <meta property="article:published_time" content={article.published.toISOString()} />}
+    {article?.modified && <meta property="article:modified_time" content={article.modified.toISOString()} />}
+    {article?.tags?.map((t) => <meta property="article:tag" content={t} />)}
+    <link rel="alternate" type="application/rss+xml" title="Blog de Zektra" href="/rss.xml" />
     <meta property="og:locale" content={SITE.locale} />
     <meta property="og:site_name" content="Zektra" />
     <meta property="og:title" content={fullTitle} />

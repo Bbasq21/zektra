@@ -12,6 +12,9 @@ export type Service = {
   seoDescription: string;
   /** H1 de la página del servicio. Admite <strong> para el gesto de marca. */
   heading: string;
+  /** Preguntas frecuentes reales de clientes (opcional). Si existen, se muestran
+      en la página del servicio y se marcan como FAQPage para Google. No inventar. */
+  faqs?: { q: string; a: string }[];
 };
 
 export const SERVICES: Service[] = [
