@@ -1,4 +1,4 @@
-/* Videos del recorrido «Cómo trabajamos» (/como-trabajamos/).
+/* Videos del recorrido «Cómo trabajamos» (sección de /nosotros/).
    El scroll mueve el tiempo del video. Las seis escenas son cortes consecutivos de una sola
    película: cada una empieza donde termina la anterior (la cámara sale de la isla, vuela
    siguiendo el hilo de datos y baja a la isla siguiente) y termina quieta sobre su escena,
@@ -50,9 +50,6 @@ export const CHAPTER_VIDEOS: Record<string, ChapterVideo> = Object.fromEntries(
     return [id, { clip: m.clip, clipMobile: m.clipMobile, poster: m.poster, scroll: p.scroll, focus: p.focus }];
   }),
 );
-
-/** Imagen para redes (1200×630), sacada del póster de la escena 1. */
-export const OG_IMAGE = M['escena-1'].og ?? '/og.png';
 
 /** Fundido entre escenas, en pantallas. Corto: las costuras ya coinciden cuadro a cuadro. */
 export const CROSSFADE = 0.04;

@@ -1,125 +1,104 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Button from '../components/Button.astro';
+/* Recorrido en video «Cómo trabajamos» (sección de /nosotros/). Los pasos salen de
+   src/data/proceso.ts y los videos de src/data/proceso-video.ts. */
+import Button from './Button.astro';
 import { CHAPTERS } from '../data/proceso';
-import { CHAPTER_VIDEOS, CROSSFADE, OG_IMAGE, srcset } from '../data/proceso-video';
+import { CHAPTER_VIDEOS, CROSSFADE, srcset } from '../data/proceso-video';
 
 const scenes = CHAPTERS.map((c, i) => ({ c, i, v: CHAPTER_VIDEOS[c.id] }));
 /* Largo de la pista en pantallas: lo reserva el CSS antes de que corra cualquier script. */
 const len = scenes.reduce((sum, s) => sum + s.v.scroll, 0);
 const last = CHAPTERS.length - 1;
-const first = scenes[0].v.poster;
 const SIZES = '100vw';
-const fallbackSrc = (p: typeof first) => p.webp.find(([w]) => w === 960)?.[1] ?? p.webp[0][1];
-
-const description =
-  'Así trabajamos en Zektra: escuchamos tu idea y la llevamos por estrategia, diseño, desarrollo y evolución, con avances que ves en cada etapa. Desde Medellín.';
+const fallbackSrc = (p: (typeof scenes)[number]['v']['poster']) => p.webp.find(([w]) => w === 960)?.[1] ?? p.webp[0][1];
 ---
-<BaseLayout
-  title="Cómo trabajamos: de tu idea a tu producto digital"
-  description={description}
-  breadcrumbs={[{ name: 'Cómo trabajamos', path: '/como-trabajamos/' }]}
-  image={OG_IMAGE}
-  imageAlt="Islas de plastilina conectadas por un hilo de luz: el recorrido de una idea en Zektra"
-  preloadFonts={['GoogleSans-SemiBold', 'GoogleSans-Regular']}
-  deferApp
->
-  <Fragment slot="head">
-    <link rel="preload" as="image" type="image/avif" imagesrcset={srcset(first.avif)} imagesizes={SIZES} fetchpriority="high" />
-    {/* Decide el modo antes del primer pintado, para que el paso de lista a recorrido no
-        mueva nada (CLS 0). pv-live: escenario fijo con scroll. pv-still: solo pósteres con
-        fundido (movimiento reducido, ahorro de datos, 2G/3G o ≤ 2 GB de memoria). Si el
-        script de la página no arranca, vuelve a la lista después de load. */}
-    <script is:inline>
-      (function () {
-        var d = document.documentElement, n = navigator, c = n.connection || {};
-        if (!('IntersectionObserver' in window) || !window.CSS || !CSS.supports('position', 'sticky')) return;
-        var rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        d.classList.add('pv-live');
-        if (rm) d.classList.add('pv-reduce');
-        if (rm || c.saveData || /(^|-)(slow-)?(2g|3g)$/.test(c.effectiveType || '') || (n.deviceMemory && n.deviceMemory <= 2)) d.classList.add('pv-still');
-        addEventListener('load', function () {
-          setTimeout(function () { if (!d.classList.contains('pv-ready')) d.classList.remove('pv-live', 'pv-still', 'pv-reduce'); }, 2000);
-        });
-      })();
-    </script>
-  </Fragment>
+{/* Decide el modo antes de pintar la sección, para que el paso de lista a recorrido no
+    mueva nada (CLS 0). pv-live: escenario fijo con scroll. pv-still: solo pósteres con
+    fundido (movimiento reducido, ahorro de datos, 2G/3G o ≤ 2 GB de memoria). Si el
+    script de la página no arranca, vuelve a la lista después de load. */}
+<script is:inline>
+  (function () {
+    var d = document.documentElement, n = navigator, c = n.connection || {};
+    if (!('IntersectionObserver' in window) || !window.CSS || !CSS.supports('position', 'sticky')) return;
+    var rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    d.classList.add('pv-live');
+    if (rm) d.classList.add('pv-reduce');
+    if (rm || c.saveData || /(^|-)(slow-)?(2g|3g)$/.test(c.effectiveType || '') || (n.deviceMemory && n.deviceMemory <= 2)) d.classList.add('pv-still');
+    addEventListener('load', function () {
+      setTimeout(function () { if (!d.classList.contains('pv-ready')) d.classList.remove('pv-live', 'pv-still', 'pv-reduce'); }, 2000);
+    });
+  })();
+</script>
+<section class="reel" id="como-trabajamos" data-reel data-crossfade={CROSSFADE} style={`--reel-len: ${len}`} aria-labelledby={CHAPTERS[0].id + '-titulo'}>
+  <div class="reel__stage" data-reel-stage aria-hidden="true">
+    {scenes.map(({ v, i }) => (
+      <div
+        class="reel__seg"
+        data-reel-seg
+        data-clip={v.clip}
+        data-clip-mobile={v.clipMobile}
+        data-w={v.scroll}
+        data-focus={v.focus}
+      >
+        <picture>
+          <source type="image/avif" srcset={srcset(v.poster.avif)} sizes={SIZES} />
+          <source type="image/webp" srcset={srcset(v.poster.webp)} sizes={SIZES} />
+          <img class="reel__poster" src={fallbackSrc(v.poster)} alt="" width={v.poster.width} height={v.poster.height} loading="lazy" decoding="async" />
+        </picture>
+      </div>
+    ))}
+  </div>
 
-  <section class="reel" data-reel data-crossfade={CROSSFADE} style={`--reel-len: ${len}`} aria-labelledby={CHAPTERS[0].id + '-titulo'}>
-    <div class="reel__stage" data-reel-stage aria-hidden="true">
-      {scenes.map(({ v, i }) => (
-        <div
-          class="reel__seg"
-          data-reel-seg
-          data-clip={v.clip}
-          data-clip-mobile={v.clipMobile}
-          data-w={v.scroll}
-          data-focus={v.focus}
-        >
-          <picture>
-            <source type="image/avif" srcset={srcset(v.poster.avif)} sizes={SIZES} />
-            <source type="image/webp" srcset={srcset(v.poster.webp)} sizes={SIZES} />
-            {i === 0
-              ? <img class="reel__poster" src={fallbackSrc(v.poster)} alt="" width={v.poster.width} height={v.poster.height} fetchpriority="high" loading="eager" />
-              : <img class="reel__poster" src={fallbackSrc(v.poster)} alt="" width={v.poster.width} height={v.poster.height} loading="lazy" decoding="async" />}
-          </picture>
-        </div>
-      ))}
-    </div>
-
-    <ol class="reel__chapters" role="list">
-      {CHAPTERS.map((c, i) => (
-        <li class="reel__chapter" id={c.id} data-reel-card>
-          <article class:list={['reel__card', { 'reel__card--cta': i === last }]} aria-labelledby={`${c.id}-titulo`}>
-            <div class="reel__meta">
-              <span class="reel__number">{c.number}</span>
-              <span class="eyebrow">{c.eyebrow}</span>
+  <ol class="reel__chapters" role="list">
+    {CHAPTERS.map((c, i) => (
+      <li class="reel__chapter" id={c.id} data-reel-card>
+        <article class:list={['reel__card', { 'reel__card--cta': i === last }]} aria-labelledby={`${c.id}-titulo`}>
+          <div class="reel__meta">
+            <span class="reel__number">{c.number}</span>
+            <span class="eyebrow">{c.eyebrow}</span>
+          </div>
+          <h2 class:list={['reel__title', { 'reel__title--lead': i === 0 }]} id={`${c.id}-titulo`} set:html={c.title} />
+          <p class="reel__text">{c.text}</p>
+          {c.deliverable && (
+            <p class="reel__deliverable"><span class="reel__deliverable-label">Al terminar recibes</span> {c.deliverable}</p>
+          )}
+          {i === last && (
+            <div class="reel__actions">
+              <Button href="/contacto/" variant="brand" size="lg" arrow>Agenda una llamada</Button>
             </div>
-            {i === 0
-              ? <h1 class="reel__title reel__title--lead" id={`${c.id}-titulo`} set:html={c.title} />
-              : <h2 class="reel__title" id={`${c.id}-titulo`} set:html={c.title} />}
-            <p class="reel__text">{c.text}</p>
-            {c.deliverable && (
-              <p class="reel__deliverable"><span class="reel__deliverable-label">Al terminar recibes</span> {c.deliverable}</p>
-            )}
-            {i === last && (
-              <div class="reel__actions">
-                <Button href="/contacto/" variant="brand" size="lg" arrow>Agenda una llamada</Button>
-              </div>
-            )}
-            {i === 0 && (
-              <span class="reel__hint" data-reel-hint aria-hidden="true">
-                <span class="reel__hint-line"></span>
-                Desliza para recorrer
-              </span>
-            )}
-          </article>
+          )}
+          {i === 0 && (
+            <span class="reel__hint" data-reel-hint aria-hidden="true">
+              <span class="reel__hint-line"></span>
+              Desliza para recorrer
+            </span>
+          )}
+        </article>
+      </li>
+    ))}
+  </ol>
+
+  <nav class="reel__rail" aria-label="Pasos de cómo trabajamos">
+    <ol class="reel__rail-list" role="list">
+      {CHAPTERS.map((c, i) => (
+        <li>
+          <a
+            class="reel__rail-link"
+            href={`#${c.id}`}
+            data-reel-link
+            style={`--chapter-accent: var(--${c.accent})`}
+            aria-current={i === 0 ? 'step' : undefined}
+          >
+            <span class="reel__rail-dot" aria-hidden="true"></span>
+            <span class="reel__rail-label">{c.label}</span>
+          </a>
         </li>
       ))}
     </ol>
+  </nav>
 
-    <nav class="reel__rail" aria-label="Pasos de cómo trabajamos">
-      <ol class="reel__rail-list" role="list">
-        {CHAPTERS.map((c, i) => (
-          <li>
-            <a
-              class="reel__rail-link"
-              href={`#${c.id}`}
-              data-reel-link
-              style={`--chapter-accent: var(--${c.accent})`}
-              aria-current={i === 0 ? 'step' : undefined}
-            >
-              <span class="reel__rail-dot" aria-hidden="true"></span>
-              <span class="reel__rail-label">{c.label}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </nav>
-
-    <div class="reel__track" aria-hidden="true"></div>
-  </section>
-</BaseLayout>
+  <div class="reel__track" aria-hidden="true"></div>
+</section>
 
 <script>
   import { initProcesoVideo } from '../scripts/proceso-video';
@@ -154,7 +133,7 @@ const description =
     display: grid;
     gap: var(--space-6);
     margin: 0;
-    padding: calc(var(--header-h) + var(--space-8)) var(--gutter) var(--space-9);
+    padding: var(--space-9) var(--gutter);
   }
 
   .reel__card {

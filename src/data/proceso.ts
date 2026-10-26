@@ -1,7 +1,6 @@
 /* Método de trabajo de Zektra.
-   - STEPS: los cuatro pasos del proceso. Los usan el componente Process (inicio) y la
-     página /como-trabajamos/; cambiarlos aquí los cambia en los dos lugares.
-   - CHAPTERS: los seis capítulos del recorrido en /como-trabajamos/, en el orden de los
+   - STEPS: los cuatro pasos del proceso. Los usa el componente Process (inicio).
+   - CHAPTERS: los seis capítulos del recorrido de /nosotros/ (ProcesoReel), en el orden de los
      videos (src/data/proceso-video.ts). El `id` es el ancla de cada capítulo y la llave del
      video: no lo cambies sin cambiarlo allá.
    Los pasos de cada servicio (src/data/service-details.ts, «Cómo lo trabajamos») son estos

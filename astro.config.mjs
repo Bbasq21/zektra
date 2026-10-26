@@ -19,12 +19,12 @@ const blogDates = Object.fromEntries(
 /* Páginas fuera del blog con fecha real de su último cambio de contenido. Actualízala
    cuando cambie el texto o los videos de la página. */
 const pageDates = {
-  '/como-trabajamos/': '2026-10-13',
+  '/nosotros/': '2026-10-26',
 };
 
 /* Los encabezados de vercel.json también se escriben en la salida del adaptador
    (.vercel/output/config.json), que es la que Vercel usa al desplegar con el Build Output API.
-   Así la caché de un año de los videos y pósteres de /como-trabajamos/ no depende de que
+   Así la caché de un año de los videos y pósteres de public/como-trabajamos/ no depende de que
    Vercel combine los dos archivos. Las fuentes de vercel.json aquí son expresiones regulares. */
 const vercelHeaders = {
   name: 'zektra:vercel-headers',
@@ -40,6 +40,8 @@ const vercelHeaders = {
         continue: true,
       }));
       config.routes = [...routes, ...config.routes.filter((r) => !routes.some((n) => n.src === r.src))];
+      // Las redirecciones de Astro salen como ^/ruta$: con trailingSlash 'ignore' también deben aceptar /ruta/.
+      config.routes.forEach((r) => r.status >= 300 && r.status < 400 && (r.src = r.src.replace(/\/?\$$/, '/?$')));
       writeFileSync(out, JSON.stringify(config, null, '\t'));
     },
   },
@@ -61,6 +63,8 @@ export default defineConfig({
       },
     }),
   ],
+  /* El recorrido «Cómo trabajamos» vive ahora en /nosotros/. */
+  redirects: { '/como-trabajamos': '/nosotros/#como-trabajamos' },
   devToolbar: { enabled: false },
   vite: {
     optimizeDeps: {
